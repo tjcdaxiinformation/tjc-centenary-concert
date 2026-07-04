@@ -1,1035 +1,520 @@
+[slides]
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>「25詩歌音樂會」籌備會全功能協作儀表板</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts for elegant typography -->
+    <title>TJC傳台百年西區詩歌音樂會籌備規劃</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        serif: ['"Noto Serif TC"', 'serif'],
-                        sans: ['"Noto Sans TC"', 'sans-serif'],
-                    },
-                    colors: {
-                        bronze: {
-                            50: '#fdfaf6',
-                            100: '#f7f0e6',
-                            600: '#a3704c',
-                            700: '#8c5a3c',
-                            800: '#6f442d',
-                            900: '#4a2d1f',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- 使用 Noto Serif TC 與 Noto Sans TC 展現雅緻感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+/* 1. 基礎設定與配色 (暖調聖樂風格) */
+:root {
+    --bg-cream: #fdfaf6;
+    --bronze-accent: #a3704c;
+    --slate-text: #334155;
+    --gold-line: #d4af37;
+    --white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #e5e7eb;
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 1fr;
+    margin: 0;
+    min-height: 100vh;
+    padding: 40px 0;
+    place-items: center;
+}
+
+.slide-container {
+    align-items: center;
+    background-color: var(--bg-cream);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Noto Sans TC', sans-serif;
+    height: 720px;
+    justify-content: center;
+    overflow: hidden;
+    padding: 60px;
+    position: relative;
+    width: 1280px;
+}
+
+/* 2. 字體與標題 */
+.slide-container h1, .slide-container h2, .slide-container h3 {
+    color: var(--slate-text);
+    font-family: 'Noto Serif TC', serif;
+    margin: 0;
+}
+
+.slide-container h1 {
+    font-size: 80px;
+    letter-spacing: 2px;
+}
+
+.slide-container .slide-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    text-align: left;
+    width: 100%;
+    border-left: 8px solid var(--bronze-accent);
+    padding-left: 20px;
+}
+
+.slide-container p, .slide-container li {
+    color: #475569;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+.content-area {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+    width: 100%;
+}
+
+/* 3. 佈局樣式 */
+
+/* Title Slide 背景 */
+.title-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(253, 250, 246, 0.8) 0%, rgba(253, 250, 246, 0.2) 100%);
+    z-index: 1;
+}
+
+/* Tiled Icons 佈局 */
+.tiled-content {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+}
+
+.tile {
+    background-color: var(--white);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    flex: 1;
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.tile .icon {
+    color: var(--bronze-accent);
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.tile h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.tile p {
+    font-size: 16px;
+}
+
+/* 4. 圖表與表格 */
+.table-layout {
+    width: 100%;
+}
+
+.table-layout table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-layout th {
+    background-color: var(--bronze-accent);
+    color: white;
+    font-family: 'Noto Serif TC', serif;
+    padding: 15px;
+    text-align: left;
+}
+
+.table-layout td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 15px;
+}
+
+/* Timeline */
+.timeline-layout {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-top: 50px;
+}
+
+.timeline-line {
+    background-color: #cbd5e1;
+    height: 4px;
+    left: 0;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    z-index: 0;
+}
+
+.timeline-item {
+    position: relative;
+    width: 18%;
+    text-align: center;
+    z-index: 1;
+}
+
+.timeline-item::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: var(--bronze-accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 4px solid var(--white);
+}
+
+.timeline-content {
+    position: absolute;
+    width: 100%;
+}
+
+.timeline-item:nth-child(odd) .timeline-content { bottom: 60%; }
+.timeline-item:nth-child(even) .timeline-content { top: 60%; }
+
+/* Chart */
+.chart-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.bar-label {
+    width: 200px;
+    text-align: right;
+    font-weight: 700;
+}
+
+.bar-bg {
+    background-color: #f1f5f9;
+    flex-grow: 1;
+    height: 40px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    background: linear-gradient(90deg, var(--bronze-accent), #c08552);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    color: white;
+    font-weight: bold;
+}
+
+/* Bleed Image Layout */
+.slide-container.bleed-image-layout {
+    align-items: start;
+    display: grid;
+    gap: 50px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0;
+}
+
+.slide-container.bleed-image-layout > .content-container {
+    padding: 60px 0 60px 60px;
+}
+
+.slide-container.bleed-image-layout img.bleed-image-side {
+    height: 720px;
+    object-fit: cover;
+    width: 100%;
+}
     </style>
 </head>
-<body class="bg-bronze-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body>
 
-    <!-- 頂部優雅導覽列 -->
-    <header class="bg-white border-b border-bronze-100 shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-bronze-700 text-white p-2 rounded-lg flex items-center justify-center">
-                    <i class="fa-solid fa-music text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg sm:text-xl font-serif font-bold text-bronze-900 tracking-wide">25詩歌音樂會</h1>
-                    <p class="text-xs text-bronze-600 tracking-wider">籌備會官方協作儀表板 Portal</p>
-                </div>
+<!-- Slide 1: Title_Slide -->
+<div class="slide-container" id="slide1" style="background-image: url('http://googleusercontent.com/image_collection/image_retrieval/4498747759605228912'); background-size: cover;">
+    <div class="title-bg-overlay"></div>
+    <div class="content-area" style="position: relative; z-index: 2; text-align: center;">
+        <h3 style="color: var(--bronze-accent); letter-spacing: 5px; font-weight: 700; margin-bottom: 20px;">115年傳台百年</h3>
+        <h1>西區詩歌音樂會<br>籌備工作規劃</h1>
+        <p style="font-size: 24px; margin-top: 30px;">全功能協作網站與 GitHub 目錄規範</p>
+    </div>
+</div>
+
+<!-- Slide 2: Section_Title -->
+<div class="slide-container" id="slide2">
+    <div class="content-area">
+        <hr style="width: 100px; border: 3px solid var(--bronze-accent); margin-bottom: 30px;">
+        <h2 style="font-size: 64px;">組織體系：七大功能組</h2>
+        <p style="max-width: 800px; text-align: center;">依據「115年音樂會組織與工作分工辦法」，大會下設七大核心組別，負責人涵蓋西區四大區優秀同工。</p>
+    </div>
+</div>
+
+<!-- Slide 3: Tiled_Text_With_Icons (Group 1-4) -->
+<div class="slide-container" id="slide3">
+    <h2 class="slide-title">功能組規劃 (一)</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-music"></i></div>
+                <h3>節目企劃組</h3>
+                <p><strong>負責人：陳齊揚</strong><br>專案總企劃、聖樂信仰正確性審核、司儀串詞撰寫、播放 PPT 製作。</p>
             </div>
-            <div class="flex items-center space-x-2 sm:space-x-4">
-                <!-- 快速前往 Google 雲端按鈕 -->
-                <a href="https://drive.google.com/drive/folders/1t3YmaZt6aOYyIl98jSsOjr6FN_1NDwgL" target="_blank" class="flex items-center space-x-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full text-xs sm:text-sm font-medium transition shadow-sm">
-                    <i class="fa-brands fa-google-drive"></i>
-                    <span>開啟雲端硬碟</span>
-                </a>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-calculator"></i></div>
+                <h3>行政財務組</h3>
+                <p><strong>負責人：李永賢</strong><br>會議管理、預算核銷(15萬)、保險事務、各小區參加人數統計。</p>
             </div>
-        </div>
-    </header>
-
-    <!-- 核心內容區 -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        
-        <!-- 頂部歡迎與快速資訊 -->
-        <div class="bg-gradient-to-r from-bronze-900 to-bronze-800 text-white rounded-2xl p-6 sm:p-8 shadow-md relative overflow-hidden">
-            <div class="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-12 translate-y-12">
-                <i class="fa-solid fa-guitar text-[200px]"></i>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-sliders"></i></div>
+                <h3>場地技術組</h3>
+                <p><strong>負責人：黃彥綸</strong><br>鋼琴/合唱台租借、四機錄音錄影(預算3.5萬)、舞台動線規劃。</p>
             </div>
-            <div class="max-w-2xl relative z-10">
-                <span class="bg-bronze-700 text-bronze-100 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">音樂會籌備專案</span>
-                <h2 class="text-2xl sm:text-3xl font-serif font-bold mt-3 mb-2 leading-tight">文學與音樂的交響，在此啟航</h2>
-                <p class="text-bronze-100 text-sm sm:text-base leading-relaxed opacity-90">
-                    歡迎來到「25詩歌音樂會」籌備控制台。本系統整合了工作小組分類、完成時程甘特圖、互動式看板，並串接您的 Google 雲端硬碟資料夾，讓團隊溝通無障礙。
-                </p>
-                <div class="mt-6 flex flex-wrap gap-3">
-                    <span class="bg-white/10 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1.5">
-                        <i class="fa-solid fa-calendar-day text-amber-400"></i>
-                        <span>演出時間：預計 2026 年底</span>
-                    </span>
-                    <span class="bg-white/10 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1.5">
-                        <i class="fa-solid fa-users text-sky-400"></i>
-                        <span>5 個主要工作小組</span>
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 分欄佈局：左側工作小組與時程 / 右側雲端整合與AI -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- 左側 2 欄：工作計劃與時程 -->
-            <div class="lg:col-span-2 space-y-8">
-                
-                <!-- 工作小組分類計劃 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-bronze-700 text-xl"><i class="fa-solid fa-cubes"></i></span>
-                            <h3 class="text-lg font-serif font-bold text-slate-800">各工作小組工作計劃</h3>
-                        </div>
-                        <span class="text-xs text-slate-400">切換分頁查看詳細任務</span>
-                    </div>
-
-                    <!-- 小組頁籤導覽 -->
-                    <div class="flex border-b border-slate-100 overflow-x-auto custom-scrollbar mb-6" id="group-tabs" role="tablist">
-                        <button class="px-4 py-2.5 border-b-2 border-bronze-700 text-bronze-800 font-medium text-sm whitespace-nowrap focus:outline-none transition flex items-center space-x-1.5" onclick="switchGroupTab('group-general', this)">
-                            <i class="fa-solid fa-compass"></i>
-                            <span>總體協調組</span>
-                        </button>
-                        <button class="px-4 py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm whitespace-nowrap focus:outline-none transition flex items-center space-x-1.5" onclick="switchGroupTab('group-program', this)">
-                            <i class="fa-solid fa-book-open"></i>
-                            <span>節目策劃組</span>
-                        </button>
-                        <button class="px-4 py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm whitespace-nowrap focus:outline-none transition flex items-center space-x-1.5" onclick="switchGroupTab('group-pr', this)">
-                            <i class="fa-solid fa-bullhorn"></i>
-                            <span>宣傳公關組</span>
-                        </button>
-                        <button class="px-4 py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm whitespace-nowrap focus:outline-none transition flex items-center space-x-1.5" onclick="switchGroupTab('group-admin', this)">
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
-                            <span>票務行政組</span>
-                        </button>
-                        <button class="px-4 py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-medium text-sm whitespace-nowrap focus:outline-none transition flex items-center space-x-1.5" onclick="switchGroupTab('group-stage', this)">
-                            <i class="fa-solid fa-sliders"></i>
-                            <span>舞台技術組</span>
-                        </button>
-                    </div>
-
-                    <!-- 頁籤內容區 -->
-                    <div id="group-tab-contents">
-                        <!-- 總體協調組 -->
-                        <div id="group-general" class="tab-content block space-y-4">
-                            <div class="p-4 bg-bronze-50 rounded-xl border border-bronze-100/50">
-                                <h4 class="font-bold text-bronze-900 text-sm mb-1">主要職責</h4>
-                                <p class="text-xs text-slate-600 leading-relaxed">負責整體專案進度管控、召集籌備會議、預算編列審核、跨組別溝通與資源調配，對外代表籌備會簽署合約。</p>
-                            </div>
-                            <div class="space-y-2">
-                                <h4 class="font-bold text-slate-700 text-sm">核心任務清單</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-emerald-500 mt-0.5"><i class="fa-regular fa-circle-check"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">召開第一次籌備會議</p>
-                                            <p class="text-[10px] text-slate-400">負責人：全體 | 時程：已完成</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5"><i class="fa-regular fa-clock"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">定案整體預算表與合約範本</p>
-                                            <p class="text-[10px] text-slate-400">負責人：張秘書長 | 時程：進行中</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">中期進度檢討與募資狀況匯報</p>
-                                            <p class="text-[10px] text-slate-400">負責人：大會主席 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">正式演出總檢討會</p>
-                                            <p class="text-[10px] text-slate-400">負責人：全體 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 節目策劃組 -->
-                        <div id="group-program" class="tab-content hidden space-y-4">
-                            <div class="p-4 bg-bronze-50 rounded-xl border border-bronze-100/50">
-                                <h4 class="font-bold text-bronze-900 text-sm mb-1">主要職責</h4>
-                                <p class="text-xs text-slate-600 leading-relaxed">音樂會曲目挑選、詩歌挑選與朗誦人員邀請、演出樂團與歌手聯繫、節目單與文宣文本撰寫、彩排時程規劃。</p>
-                            </div>
-                            <div class="space-y-2">
-                                <h4 class="font-bold text-slate-700 text-sm">核心任務清單</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-emerald-500 mt-0.5"><i class="fa-regular fa-circle-check"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">確定演出曲目與詩作清單</p>
-                                            <p class="text-[10px] text-slate-400">負責人：林總監 | 時程：已完成</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5"><i class="fa-regular fa-clock"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">邀請朗誦詩人與特邀歌手</p>
-                                            <p class="text-[10px] text-slate-400">負責人：林總監 | 時程：進行中</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">設計編排節目流程與串場台詞</p>
-                                            <p class="text-[10px] text-slate-400">負責人：企劃組 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">安排彩排檔期與樂團排練</p>
-                                            <p class="text-[10px] text-slate-400">負責人：舞台經理 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 宣傳公關組 -->
-                        <div id="group-pr" class="tab-content hidden space-y-4">
-                            <div class="p-4 bg-bronze-50 rounded-xl border border-bronze-100/50">
-                                <h4 class="font-bold text-bronze-900 text-sm mb-1">主要職責</h4>
-                                <p class="text-xs text-slate-600 leading-relaxed">音樂會視覺意象設計（海報、DM、網頁）、社群媒體宣傳（FB、IG）、新聞稿撰寫與媒體發布、公關票邀請函發放。</p>
-                            </div>
-                            <div class="space-y-2">
-                                <h4 class="font-bold text-slate-700 text-sm">核心任務清單</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5"><i class="fa-regular fa-clock"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">主視覺海報與宣傳品設計</p>
-                                            <p class="text-[10px] text-slate-400">負責人：設計師 A | 時程：進行中</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">新聞稿發布與媒體聯絡聯絡</p>
-                                            <p class="text-[10px] text-slate-400">負責人：陳公關 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">自媒體社群宣傳啟動（貼文規劃）</p>
-                                            <p class="text-[10px] text-slate-400">負責人：小編團隊 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">貴賓公關票發放與確認</p>
-                                            <p class="text-[10px] text-slate-400">負責人：公關組 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 票務行政組 -->
-                        <div id="group-admin" class="tab-content hidden space-y-4">
-                            <div class="p-4 bg-bronze-50 rounded-xl border border-bronze-100/50">
-                                <h4 class="font-bold text-bronze-900 text-sm mb-1">主要職責</h4>
-                                <p class="text-xs text-slate-600 leading-relaxed">售票系統對接、票價方案擬定、志工招募與培訓、音樂會現場前台引導人員配置、觀眾意見回饋收集。</p>
-                            </div>
-                            <div class="space-y-2">
-                                <h4 class="font-bold text-slate-700 text-sm">核心任務清單</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5"><i class="fa-regular fa-clock"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">與售票平台（如 OPENTIX）簽約</p>
-                                            <p class="text-[10px] text-slate-400">負責人：黃會計 | 時程：進行中</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">前台志工招募簡章與分工</p>
-                                            <p class="text-[10px] text-slate-400">負責人：行政組 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">現場觀眾贈品與節目單發放規劃</p>
-                                            <p class="text-[10px] text-slate-400">負責人：行政組 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">結算售票總收入與退票處理</p>
-                                            <p class="text-[10px] text-slate-400">負責人：黃會計 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 舞台技術組 -->
-                        <div id="group-stage" class="tab-content hidden space-y-4">
-                            <div class="p-4 bg-bronze-50 rounded-xl border border-bronze-100/50">
-                                <h4 class="font-bold text-bronze-900 text-sm mb-1">主要職責</h4>
-                                <p class="text-xs text-slate-600 leading-relaxed">場地硬體協調（燈光、音響、投影）、舞台設計與道具、現場導播與錄影工程、演出硬體彩排與技術整合。</p>
-                            </div>
-                            <div class="space-y-2">
-                                <h4 class="font-bold text-slate-700 text-sm">核心任務清單</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-emerald-500 mt-0.5"><i class="fa-regular fa-circle-check"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">確認場館技術 specifications 與限制</p>
-                                            <p class="text-[10px] text-slate-400">負責人：王舞台經理 | 時程：已完成</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5"><i class="fa-regular fa-clock"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">燈光音響外包廠商招標與場勘</p>
-                                            <p class="text-[10px] text-slate-400">負責人：技術組 | 時程：進行中</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">撰寫舞台技術 Cue 表（燈光與音效）</p>
-                                            <p class="text-[10px] text-slate-400">負責人：導播團隊 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                    <div class="p-3 bg-white border border-slate-100 rounded-lg flex items-start space-x-3">
-                                        <span class="text-slate-300 mt-0.5"><i class="fa-regular fa-circle"></i></span>
-                                        <div>
-                                            <p class="text-xs font-semibold text-slate-800">演出當天全程錄音與錄影執行</p>
-                                            <p class="text-[10px] text-slate-400">負責人：外包技術 | 時程：未開始</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 甘特圖時程表 (完成時程) -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-bronze-700 text-xl"><i class="fa-solid fa-timeline"></i></span>
-                            <h3 class="text-lg font-serif font-bold text-slate-800">籌備進度完成時程表</h3>
-                        </div>
-                        <div class="flex items-center space-x-4 text-xs text-slate-500">
-                            <span class="flex items-center space-x-1"><span class="w-3 h-3 rounded bg-emerald-500 inline-block"></span> <span>已完成</span></span>
-                            <span class="flex items-center space-x-1"><span class="w-3 h-3 rounded bg-amber-500 inline-block"></span> <span>進行中</span></span>
-                            <span class="flex items-center space-x-1"><span class="w-3 h-3 rounded bg-slate-200 inline-block"></span> <span>未開始</span></span>
-                        </div>
-                    </div>
-
-                    <!-- 時程時間軸 -->
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <div class="min-w-[600px] space-y-4">
-                            <!-- 時程軸項目 1 -->
-                            <div class="flex items-center text-xs">
-                                <div class="w-24 font-semibold text-slate-600">階段一：籌備啟動</div>
-                                <div class="w-24 text-slate-400 text-right pr-4">3 月 - 4 月</div>
-                                <div class="flex-grow bg-slate-100 h-6 rounded-lg overflow-hidden relative">
-                                    <div class="bg-emerald-500 h-full w-full flex items-center px-3 text-white font-medium">
-                                        籌備會成立、核心定位與預算初估 (100%)
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 時程軸項目 2 -->
-                            <div class="flex items-center text-xs">
-                                <div class="w-24 font-semibold text-slate-600">階段二：內容規劃</div>
-                                <div class="w-24 text-slate-400 text-right pr-4">5 月 - 7 月</div>
-                                <div class="flex-grow bg-slate-100 h-6 rounded-lg overflow-hidden relative">
-                                    <div class="bg-gradient-to-r from-emerald-500 to-amber-500 h-full w-[70%] flex items-center px-3 text-white font-medium">
-                                        演出曲目、朗誦詩歌選定、合作藝人敲定 (70%)
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 時程軸項目 3 -->
-                            <div class="flex items-center text-xs">
-                                <div class="w-24 font-semibold text-slate-600">階段三：推廣售票</div>
-                                <div class="w-24 text-slate-400 text-right pr-4">8 月 - 10 月</div>
-                                <div class="flex-grow bg-slate-100 h-6 rounded-lg overflow-hidden relative">
-                                    <div class="bg-amber-500 h-full w-[25%] flex items-center px-3 text-white font-medium">
-                                        主視覺定案、售票系統上線、社群行銷 (25%)
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 時程軸項目 4 -->
-                            <div class="flex items-center text-xs">
-                                <div class="w-24 font-semibold text-slate-600">階段四：排練執行</div>
-                                <div class="w-24 text-slate-400 text-right pr-4">10 月 - 11 月</div>
-                                <div class="flex-grow bg-slate-100 h-6 rounded-lg overflow-hidden relative">
-                                    <div class="bg-slate-200 h-full w-[0%] flex items-center px-3 text-slate-500 font-medium">
-                                        技術彩排、宣傳衝刺、前台志工組訓 (0%)
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 時程軸項目 5 -->
-                            <div class="flex items-center text-xs">
-                                <div class="w-24 font-semibold text-slate-600">階段五：正式演出</div>
-                                <div class="w-24 text-slate-400 text-right pr-4">12 月底</div>
-                                <div class="flex-grow bg-slate-100 h-6 rounded-lg overflow-hidden relative">
-                                    <div class="bg-slate-200 h-full w-[0%] flex items-center px-3 text-slate-500 font-medium">
-                                        總彩排、演出執行、撤場與結案 (0%)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 互動式任務看板 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-bronze-700 text-xl"><i class="fa-solid fa-square-poll-horizontal"></i></span>
-                            <h3 class="text-lg font-serif font-bold text-slate-800">小組互動式看板</h3>
-                        </div>
-                        <button onclick="openAddTaskModal()" class="px-3 py-1.5 bg-bronze-700 hover:bg-bronze-800 text-white rounded-lg text-xs font-medium transition flex items-center space-x-1">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>新增任務</span>
-                        </button>
-                    </div>
-
-                    <!-- 看板欄位 -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="kanban-board">
-                        <!-- 待處理 -->
-                        <div class="bg-slate-50 rounded-xl p-4 flex flex-col h-[320px]">
-                            <h4 class="font-bold text-sm text-slate-700 mb-3 flex items-center justify-between">
-                                <span><i class="fa-regular fa-clipboard text-slate-400 mr-1.5"></i>待處理</span>
-                                <span class="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full" id="count-todo">2</span>
-                            </h4>
-                            <div class="space-y-3 overflow-y-auto custom-scrollbar flex-grow pr-1" id="column-todo">
-                                <!-- 任務卡片 1 -->
-                                <div class="bg-white p-3 rounded-lg shadow-xs border border-slate-100 space-y-2 hover:shadow-sm transition cursor-pointer" id="task-1" onclick="moveTask('task-1', 'doing')">
-                                    <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-[10px] rounded-full font-medium">宣傳公關組</span>
-                                    <p class="text-xs font-semibold text-slate-800">撰寫新聞發稿清單</p>
-                                    <p class="text-[10px] text-slate-400 flex justify-between"><span>負責：陳公關</span> <span class="text-slate-500">點擊移至進行中 &rarr;</span></p>
-                                </div>
-                                <!-- 任務卡片 2 -->
-                                <div class="bg-white p-3 rounded-lg shadow-xs border border-slate-100 space-y-2 hover:shadow-sm transition cursor-pointer" id="task-2" onclick="moveTask('task-2', 'doing')">
-                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-full font-medium">票務行政組</span>
-                                    <p class="text-xs font-semibold text-slate-800">設計志工招募網路表單</p>
-                                    <p class="text-[10px] text-slate-400 flex justify-between"><span>負責：行政組</span> <span class="text-slate-500">點擊移至進行中 &rarr;</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 進行中 -->
-                        <div class="bg-amber-50/50 rounded-xl p-4 flex flex-col h-[320px]">
-                            <h4 class="font-bold text-sm text-amber-800 mb-3 flex items-center justify-between">
-                                <span><i class="fa-solid fa-spinner text-amber-500 animate-spin mr-1.5"></i>進行中</span>
-                                <span class="bg-amber-200 text-amber-800 text-xs px-2 py-0.5 rounded-full" id="count-doing">2</span>
-                            </h4>
-                            <div class="space-y-3 overflow-y-auto custom-scrollbar flex-grow pr-1" id="column-doing">
-                                <!-- 任務卡片 3 -->
-                                <div class="bg-white p-3 rounded-lg shadow-xs border border-amber-100 space-y-2 hover:shadow-sm transition cursor-pointer" id="task-3" onclick="moveTask('task-3', 'done')">
-                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] rounded-full font-medium">節目策劃組</span>
-                                    <p class="text-xs font-semibold text-slate-800">聯繫詩人出席名單</p>
-                                    <p class="text-[10px] text-slate-400 flex justify-between"><span>負責：林總監</span> <span class="text-emerald-600 font-medium">點擊移至完成 &check;</span></p>
-                                </div>
-                                <!-- 任務卡片 4 -->
-                                <div class="bg-white p-3 rounded-lg shadow-xs border border-amber-100 space-y-2 hover:shadow-sm transition cursor-pointer" id="task-4" onclick="moveTask('task-4', 'done')">
-                                    <span class="px-2 py-0.5 bg-teal-100 text-teal-700 text-[10px] rounded-full font-medium">舞台技術組</span>
-                                    <p class="text-xs font-semibold text-slate-800">外包燈光音響規格比價</p>
-                                    <p class="text-[10px] text-slate-400 flex justify-between"><span>負責：技術組</span> <span class="text-emerald-600 font-medium">點擊移至完成 &check;</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 已完成 -->
-                        <div class="bg-emerald-50/50 rounded-xl p-4 flex flex-col h-[320px]">
-                            <h4 class="font-bold text-sm text-emerald-800 mb-3 flex items-center justify-between">
-                                <span><i class="fa-regular fa-circle-check text-emerald-500 mr-1.5"></i>已完成</span>
-                                <span class="bg-emerald-200 text-emerald-800 text-xs px-2 py-0.5 rounded-full" id="count-done">1</span>
-                            </h4>
-                            <div class="space-y-3 overflow-y-auto custom-scrollbar flex-grow pr-1" id="column-done">
-                                <!-- 任務卡片 5 -->
-                                <div class="bg-white p-3 rounded-lg shadow-xs border border-emerald-100 space-y-2 opacity-75 relative overflow-hidden" id="task-5">
-                                    <div class="absolute right-2 top-2 text-emerald-500"><i class="fa-solid fa-circle-check"></i></div>
-                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-700 text-[10px] rounded-full font-medium">總體協調組</span>
-                                    <p class="text-xs font-semibold text-slate-500 line-through">召開籌備處大會</p>
-                                    <p class="text-[10px] text-slate-400">負責：全體 | 時程：已結案</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- 右側 1 欄：Google 雲端文件庫 & AI 智慧助理 -->
-            <div class="space-y-8">
-                
-                <!-- Google 雲端文件庫連結區 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <span class="text-emerald-600 text-xl"><i class="fa-brands fa-google-drive"></i></span>
-                        <h3 class="text-lg font-serif font-bold text-slate-800">大會雲端文件庫</h3>
-                    </div>
-                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">
-                        本區對接您的 Google 雲端硬碟專屬資料夾，為小組成員提供快速捷徑。
-                    </p>
-                    
-                    <div class="space-y-3">
-                        <a href="https://drive.google.com/drive/folders/1t3YmaZt6aOYyIl98jSsOjr6FN_1NDwgL" target="_blank" class="block p-3 bg-slate-50 hover:bg-bronze-50 border border-slate-100 hover:border-bronze-200 rounded-xl transition">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <span class="text-yellow-500 text-lg"><i class="fa-solid fa-folder"></i></span>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800">詩歌音樂會籌備專區 (主目錄)</p>
-                                        <p class="text-[10px] text-slate-400">對應您的 Google 雲碟路徑</p>
-                                    </div>
-                                </div>
-                                <span class="text-slate-400 text-xs"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-                            </div>
-                        </a>
-
-                        <div class="p-3 bg-white border border-slate-100 rounded-xl space-y-2">
-                            <div class="flex items-center justify-between text-xs font-bold text-slate-700 border-b border-slate-50 pb-2">
-                                <span><i class="fa-solid fa-link text-slate-400 mr-1.5"></i>核心協作文件快速捷徑</span>
-                                <span class="text-[10px] text-emerald-600">即時同步</span>
-                            </div>
-                            <ul class="space-y-2 text-xs">
-                                <li>
-                                    <a href="#" class="flex items-center justify-between text-slate-600 hover:text-bronze-700 py-1">
-                                        <span><i class="fa-regular fa-file-lines text-blue-500 mr-2"></i>1. 音樂會整體企劃書.gdoc</span>
-                                        <span class="text-[10px] text-slate-400">林總監 3天前更新</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="flex items-center justify-between text-slate-600 hover:text-bronze-700 py-1">
-                                        <span><i class="fa-regular fa-file-excel text-emerald-500 mr-2"></i>2. 籌備預算表與開支明細.gsheet</span>
-                                        <span class="text-[10px] text-slate-400">黃會計 昨天更新</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="flex items-center justify-between text-slate-600 hover:text-bronze-700 py-1">
-                                        <span><i class="fa-regular fa-file-powerpoint text-amber-500 mr-2"></i>3. 贊助說明與公關簡報.gslides</span>
-                                        <span class="text-[10px] text-slate-400">陳公關 5小時前更新</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="flex items-center justify-between text-slate-600 hover:text-bronze-700 py-1">
-                                        <span><i class="fa-regular fa-file-lines text-blue-500 mr-2"></i>4. 第一次籌備大會會議記錄.gdoc</span>
-                                        <span class="text-[10px] text-slate-400">張秘書 1週前更新</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Gemini AI 籌備智慧助手 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6 flex flex-col">
-                    <div class="flex items-center justify-between mb-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-violet-600 text-xl"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-                            <h3 class="text-lg font-serif font-bold text-slate-800">Gemini 籌備小助手</h3>
-                        </div>
-                        <span class="bg-violet-100 text-violet-700 text-[10px] px-2 py-0.5 rounded-full font-semibold">Gemini 2.5 Flash</span>
-                    </div>
-                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">
-                        協助各工作小組草擬工作計劃、公關宣傳文案、詩歌音樂會排練時程與各項創意文案。
-                    </p>
-
-                    <!-- API Key 設定摺疊區 -->
-                    <div class="mb-4 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                        <button onclick="toggleApiKeyInput()" class="text-xs font-semibold text-slate-600 w-full flex items-center justify-between focus:outline-none">
-                            <span><i class="fa-solid fa-key mr-1 text-slate-400"></i> 設定 Gemini API 金鑰 (選填)</span>
-                            <span id="api-key-toggle-icon"><i class="fa-solid fa-chevron-down"></i></span>
-                        </button>
-                        <div id="api-key-container" class="hidden mt-2 space-y-1.5">
-                            <input type="password" id="gemini-api-key" placeholder="貼上您的 Gemini API Key..." class="w-full p-1.5 border border-slate-200 rounded text-xs focus:ring-1 focus:ring-bronze-600 focus:outline-none">
-                            <p class="text-[10px] text-slate-400 leading-snug">金鑰僅存於瀏覽器本地，用於發送規劃請求。留空將使用內建範例模擬回覆。</p>
-                        </div>
-                    </div>
-
-                    <!-- 快速提示範例 -->
-                    <div class="mb-4">
-                        <p class="text-xs font-bold text-slate-700 mb-2">💡 推薦生成提示 (點擊填入)：</p>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button onclick="fillPrompt('幫我寫一份「宣傳公關組」針對文青族群推廣詩歌音樂會的 IG 宣傳貼文草稿，包含 Hashtags')" class="bg-slate-100 hover:bg-bronze-100 text-slate-600 hover:text-bronze-800 text-[10px] px-2 py-1 rounded-md transition text-left">✍️ 宣傳組 IG 貼文</button>
-                            <button onclick="fillPrompt('幫我規劃「節目策劃組」在音樂會開始前一個月的詳細彩排時程表，包含樂團、歌手與主持人的時間控管')" class="bg-slate-100 hover:bg-bronze-100 text-slate-600 hover:text-bronze-800 text-[10px] px-2 py-1 rounded-md transition text-left">📅 彩排時程規劃</button>
-                            <button onclick="fillPrompt('草擬一封「票務行政組」發送給志工團隊的錄取通知信與第一次工作說明會邀請函')" class="bg-slate-100 hover:bg-bronze-100 text-slate-600 hover:text-bronze-800 text-[10px] px-2 py-1 rounded-md transition text-left">✉️ 志工錄取通知信</button>
-                        </div>
-                    </div>
-
-                    <!-- 對話與輸出 -->
-                    <div class="space-y-3 flex-grow">
-                        <textarea id="ai-prompt" rows="3" placeholder="例如：幫我草擬一份音樂會宣傳公關組的週計劃..." class="w-full p-3 border border-slate-200 rounded-xl text-xs focus:ring-1 focus:ring-bronze-600 focus:outline-none leading-relaxed"></textarea>
-                        
-                        <div class="flex space-x-2">
-                            <button onclick="generateAIPlanning()" id="btn-ai-submit" class="flex-grow py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center justify-center space-x-1.5">
-                                <i class="fa-solid fa-paper-plane"></i>
-                                <span>產生工作計劃</span>
-                            </button>
-                            <button onclick="copyToClipboard()" id="btn-copy-ai" class="hidden px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-800 rounded-xl text-xs transition flex items-center justify-center" title="複製到剪貼簿以貼到 Google 文件">
-                                <i class="fa-regular fa-copy"></i>
-                            </button>
-                        </div>
-
-                        <!-- 輸出載入狀態 & 內容 -->
-                        <div id="ai-response-box" class="hidden mt-3 p-3.5 bg-slate-50 border border-slate-100 rounded-xl text-xs space-y-2">
-                            <div class="flex items-center justify-between border-b border-slate-200/50 pb-1.5 text-slate-400 font-medium">
-                                <span><i class="fa-regular fa-lightbulb text-amber-500 mr-1"></i> AI 規劃建議</span>
-                                <span class="text-[10px]">可點擊右側複製貼至 Google 文件</span>
-                            </div>
-                            <div id="ai-response-content" class="text-slate-700 leading-relaxed max-h-[220px] overflow-y-auto custom-scrollbar"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- 頁尾聲明 -->
-    <footer class="bg-white border-t border-bronze-100 mt-12 py-6 text-center text-xs text-slate-400">
-        <div class="max-w-7xl mx-auto px-4">
-            <p>&copy; 2026 「25詩歌音樂會」籌備委員會 版權所有 | 由 GitHub Pages 免費安全託管</p>
-            <p class="mt-1">結合 Google Drive 雲端協同，打造無縫高效籌備體驗</p>
-        </div>
-    </footer>
-
-    <!-- 新增任務彈出視窗 -->
-    <div id="task-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-xl border border-slate-100 overflow-hidden transform transition">
-            <div class="p-6 space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h4 class="text-base font-bold font-serif text-slate-800 flex items-center space-x-1.5">
-                        <i class="fa-regular fa-square-plus text-bronze-700"></i>
-                        <span>新增籌備任務</span>
-                    </h4>
-                    <button onclick="closeAddTaskModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                
-                <div class="space-y-3 text-xs">
-                    <div class="space-y-1">
-                        <label class="font-semibold text-slate-600 block">負責工作小組</label>
-                        <select id="new-task-group" class="w-full p-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-bronze-600">
-                            <option value="總體協調組">總體協調組</option>
-                            <option value="節目策劃組">節目策劃組</option>
-                            <option value="宣傳公關組">宣傳公關組</option>
-                            <option value="票務行政組">票務行政組</option>
-                            <option value="舞台技術組">舞台技術組</option>
-                        </select>
-                    </div>
-
-                    <div class="space-y-1">
-                        <label class="font-semibold text-slate-600 block">任務名稱</label>
-                        <input type="text" id="new-task-name" placeholder="例如：確認樂器搬運外包與報價..." class="w-full p-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-bronze-600">
-                    </div>
-
-                    <div class="space-y-1">
-                        <label class="font-semibold text-slate-600 block">任務負責人</label>
-                        <input type="text" id="new-task-assignee" placeholder="例如：林總監、技術組" class="w-full p-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-bronze-600">
-                    </div>
-                </div>
-
-                <div class="flex space-x-3 pt-2">
-                    <button onclick="closeAddTaskModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold transition">取消</button>
-                    <button onclick="submitNewTask()" class="flex-1 py-2 bg-bronze-700 hover:bg-bronze-800 text-white rounded-xl text-xs font-semibold transition">確定新增</button>
-                </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-users-line"></i></div>
+                <h3>聖樂服事組</h3>
+                <p><strong>負責人：林月霞</strong><br>聯合詩班/樂團訓練、曲目選定、服裝規範（黑白配）佈達。</p>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- 網頁互動與 API 核心邏輯 -->
-    <script>
-        // 切換各工作小組分頁
-        function switchGroupTab(tabId, element) {
-            // 隱藏所有頁籤內容
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.add('hidden');
-                el.classList.remove('block');
-            });
-            // 顯示當前點擊的內容
-            const target = document.getElementById(tabId);
-            if (target) {
-                target.classList.remove('hidden');
-                target.classList.add('block');
-            }
-            // 重置所有按鈕樣式
-            const buttons = document.querySelectorAll('#group-tabs button');
-            buttons.forEach(btn => {
-                btn.classList.remove('border-bronze-700', 'text-bronze-800');
-                btn.classList.add('border-transparent', 'text-slate-500');
-            });
-            // 設定當前點擊按鈕樣式
-            element.classList.remove('border-transparent', 'text-slate-500');
-            element.classList.add('border-bronze-700', 'text-bronze-800');
-        }
+<!-- Slide 4: Tiled_Text_With_Icons (Group 5-7) -->
+<div class="slide-container" id="slide4">
+    <h2 class="slide-title">功能組規劃 (二)</h2>
+    <div class="content-area">
+        <div class="tiled-content" style="max-width: 900px;">
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-bullhorn"></i></div>
+                <h3>宣傳公關組</h3>
+                <p><strong>負責人：王鴻志</strong><br>主視覺海報、多媒體行銷(YouTube/IG)、當日側錄與新聞稿。</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-heart"></i></div>
+                <h3>接待關懷組</h3>
+                <p><strong>負責人：張勇光</strong><br>來賓報到、醫護站設置、哺乳室、座位分配、茶點供應。</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>安全總務組</h3>
+                <p><strong>負責人：鍾霖恩</strong><br>安全疏散計畫(2樓防墜)、交通指引、器材搬運與場地清潔。</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // 看板任務狀態移轉 (Todo -> Doing -> Done)
-        function moveTask(taskId, targetColumn) {
-            const taskCard = document.getElementById(taskId);
-            if (!taskCard) return;
+<!-- Slide 5: Bar_Chart_For_Comparisons (Budget) -->
+<div class="slide-container" id="slide5">
+    <h2 class="slide-title">預算分配總計：NT$ 150,000</h2>
+    <div class="content-area">
+        <div class="chart-container" style="max-width: 1000px;">
+            <div class="bar">
+                <div class="bar-label">影音錄影工程</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 45%;">35,000 (23%)</div></div>
+            </div>
+            <div class="bar">
+                <div class="bar-label">音響器材採購</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 25%;">12,000 (8%)</div></div>
+            </div>
+            <div class="bar">
+                <div class="bar-label">鋼琴/合唱台租借</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 30%;">12,600 (8%)</div></div>
+            </div>
+            <div class="bar">
+                <div class="bar-label">預備金與其餘雜項</div>
+                <div class="bar-bg"><div class="bar-fill" style="width: 60%;">90,400 (61%)</div></div>
+            </div>
+        </div>
+        <p style="margin-top: 40px; font-style: italic;">※ 預算由教區補助 12 萬，各小區分攤 3 萬，結餘款歸回教區聖樂基金。</p>
+    </div>
+</div>
 
-            const todoCol = document.getElementById('column-todo');
-            const doingCol = document.getElementById('column-doing');
-            const doneCol = document.getElementById('column-done');
+<!-- Slide 6: Timeline (Key Meetings) -->
+<div class="slide-container" id="slide6">
+    <h2 class="slide-title">籌備關鍵里程碑 (2026)</h2>
+    <div class="content-area">
+        <div class="timeline-layout">
+            <div class="timeline-line"></div>
+            <div class="timeline-item">
+                <div class="timeline-content"><h3>2/7 (大溪)</h3><p>啟動會議：確立分工</p></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content"><h3>4/11 (崎頂)</h3><p>企劃初核：曲目選定</p></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content"><h3>6/20 (三坑)</h3><p>進度審查：錄音錄影</p></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content"><h3>9月底</h3><p>詩班錄製：獻詩影片</p></div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content"><h3>12月底</h3><p>正式演出：中央大學</p></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            if (targetColumn === 'doing') {
-                // 移動到進行中
-                doingCol.appendChild(taskCard);
-                // 修改卡片描述與邊框樣式
-                taskCard.className = "bg-white p-3 rounded-lg shadow-xs border border-amber-100 space-y-2 hover:shadow-sm transition cursor-pointer";
-                const helperText = taskCard.querySelector('p:last-of-type span:last-of-type');
-                if (helperText) {
-                    helperText.innerText = "點擊移至完成 ✓";
-                    helperText.className = "text-emerald-600 font-medium";
-                }
-                // 重設點擊事件
-                taskCard.setAttribute('onclick', `moveTask('${taskId}', 'done')`);
-            } else if (targetColumn === 'done') {
-                // 移動到已完成
-                doneCol.appendChild(taskCard);
-                // 修改卡片樣式為結案樣式
-                taskCard.className = "bg-white p-3 rounded-lg shadow-xs border border-emerald-100 space-y-2 opacity-75 relative overflow-hidden";
-                taskCard.removeAttribute('onclick'); // 完成後不給點擊
-                
-                // 加上打勾標誌
-                const checkMark = document.createElement('div');
-                checkMark.className = "absolute right-2 top-2 text-emerald-500";
-                checkMark.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
-                taskCard.appendChild(checkMark);
+<!-- Slide 7: Table (Personnel) -->
+<div class="slide-container" id="slide7">
+    <h2 class="slide-title">籌備小組核心名單</h2>
+    <div class="content-area">
+        <div class="table-layout">
+            <table>
+                <thead>
+                    <tr>
+                        <th>職務 / 功能組</th>
+                        <th>姓名</th>
+                        <th>所屬小區</th>
+                        <th>核心聯繫雲端</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>大會主席 / 副主席</td><td>陳耀勳 / 簡銘輝</td><td>西區總會</td><td>00_專案管理</td>
+                    </tr>
+                    <tr><td>執行秘書 / 會計</td><td>張進才 / 黃金滿</td><td>西區行政</td><td>02_行政財務</td>
+                    </tr>
+                    <tr><td>節目企劃組長</td><td>陳齊揚</td><td>一小區</td><td>01_節目企劃</td>
+                    </tr>
+                    <tr><td>場地技術組長</td><td>黃彥綸</td><td>二小區</td><td>03_場地技術</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-                const helperText = taskCard.querySelector('p:last-of-type span:last-of-type');
-                if (helperText) {
-                    helperText.remove();
-                }
-            }
-            updateCounters();
-        }
+<!-- Slide 8: Bleed_Image_Right (Venue) -->
+<div class="slide-container bleed-image-layout" id="slide8">
+    <div class="content-container">
+        <h2 class="slide-title">演出場地：中央大學大禮堂</h2>
+        <div class="content-area">
+            <div style="padding-right: 40px;">
+                <h3 style="color: var(--bronze-accent);">場地規格與技術需求</h3>
+                <ul style="margin-top: 20px;">
+                    <li><strong>專業舞台：</strong> 需容納聯合詩班與樂團。</li>
+                    <li><strong>錄影配置：</strong> 四機作業，包含舞台兩側、觀眾席後方、鋼琴收音。</li>
+                    <li><strong>安全規範：</strong> 特別加強 2 樓防墜管制與出入口人流導引。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="image-container">
+        <img class="bleed-image-side" src="http://googleusercontent.com/image_collection/image_retrieval/1577501443870529540" alt="Musical sheets and baton">
+    </div>
+</div>
 
-        // 更新看板項目計數器
-        function updateCounters() {
-            document.getElementById('count-todo').innerText = document.getElementById('column-todo').children.length;
-            document.getElementById('count-doing').innerText = document.getElementById('column-doing').children.length;
-            document.getElementById('count-done').innerText = document.getElementById('column-done').children.length;
-        }
+<!-- Slide 9: Highlighted_Numbers -->
+<div class="slide-container" id="slide9">
+    <h2 class="slide-title">關鍵籌備指標</h2>
+    <div class="content-area">
+        <div style="display: flex; gap: 80px; align-items: center;">
+            <div style="text-align: center;">
+                <div style="font-size: 150px; font-weight: 700; color: var(--bronze-accent); font-family: 'Noto Serif TC';">16</div>
+                <div style="font-size: 24px; font-weight: bold;">參與詩班數量</div>
+            </div>
+            <div style="max-width: 600px;">
+                <h3 style="font-size: 40px;">合一事奉，傳揚百年</h3>
+                <p>本次音樂會動員西區四大區（1-4小區）共 16 個詩班，展現基督肢體合一的精神。宣傳與聖樂服事組將透過 YouTube 官網，讓全球同信同步感受傳台百年的喜悅。</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-        // 任務彈窗控制
-        function openAddTaskModal() {
-            document.getElementById('task-modal').classList.remove('hidden');
-        }
+<!-- Slide 10: Styled_Bullet_Points (Collaboration) -->
+<div class="slide-container" id="slide10">
+    <h2 class="slide-title">網站與 GitHub 協作規範</h2>
+    <div class="content-area">
+        <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+            <div style="background: var(--white); padding: 30px; border-radius: 16px; border-left: 10px solid #10b981;">
+                <h3>Google Drive 連結</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 15px;"><i class="fa-solid fa-cloud-arrow-up" style="color: #10b981; margin-right: 10px;"></i> 統一對接主目錄：1t3Yma...</li>
+                    <li><i class="fa-solid fa-file-pen" style="color: #10b981; margin-right: 10px;"></i> 預算、節目單採即時協同編輯。</li>
+                </ul>
+            </div>
+            <div style="background: var(--white); padding: 30px; border-radius: 16px; border-left: 10px solid #4f46e5;">
+                <h3>GitHub 倉庫分類</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 15px;"><i class="fa-brands fa-github" style="color: #4f46e5; margin-right: 10px;"></i> 分類對應 01-07 功能組目錄。</li>
+                    <li><i class="fa-solid fa-code" style="color: #4f46e5; margin-right: 10px;"></i> 代碼與靜態說明文件統一管理。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
-        function closeAddTaskModal() {
-            document.getElementById('task-modal').classList.add('hidden');
-            // 清空輸入
-            document.getElementById('new-task-name').value = '';
-            document.getElementById('new-task-assignee').value = '';
-        }
-
-        let taskCounter = 5; // 原本已有 5 個任務
-        function submitNewTask() {
-            const groupName = document.getElementById('new-task-group').value;
-            const taskName = document.getElementById('new-task-name').value.trim();
-            const assignee = document.getElementById('new-task-assignee').value.trim();
-
-            if (!taskName) {
-                alert("請填寫任務名稱");
-                return;
-            }
-
-            taskCounter++;
-            const newId = `task-${taskCounter}`;
-
-            // 對應小組的顏色
-            let colorClass = "bg-slate-100 text-slate-700";
-            if (groupName.includes("總體")) colorClass = "bg-bronze-100 text-bronze-800";
-            else if (groupName.includes("節目")) colorClass = "bg-purple-100 text-purple-700";
-            else if (groupName.includes("宣傳")) colorClass = "bg-orange-100 text-orange-700";
-            else if (groupName.includes("票務")) colorClass = "bg-blue-100 text-blue-700";
-            else if (groupName.includes("舞台")) colorClass = "bg-teal-100 text-teal-700";
-
-            // 建立卡片元素
-            const taskCard = document.createElement('div');
-            taskCard.id = newId;
-            taskCard.className = "bg-white p-3 rounded-lg shadow-xs border border-slate-100 space-y-2 hover:shadow-sm transition cursor-pointer";
-            taskCard.setAttribute('onclick', `moveTask('${newId}', 'doing')`);
-            
-            taskCard.innerHTML = `
-                <span class="px-2 py-0.5 ${colorClass} text-[10px] rounded-full font-medium">${groupName}</span>
-                <p class="text-xs font-semibold text-slate-800">${taskName}</p>
-                <p class="text-[10px] text-slate-400 flex justify-between"><span>負責：${assignee || '未指派'}</span> <span class="text-slate-500">點擊移至進行中 &rarr;</span></p>
-            `;
-
-            document.getElementById('column-todo').appendChild(taskCard);
-            updateCounters();
-            closeAddTaskModal();
-        }
-
-        // API Key 輸入顯示切換
-        function toggleApiKeyInput() {
-            const container = document.getElementById('api-key-container');
-            const icon = document.getElementById('api-key-toggle-icon');
-            if (container.classList.contains('hidden')) {
-                container.classList.remove('hidden');
-                icon.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
-            } else {
-                container.classList.add('hidden');
-                icon.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
-            }
-        }
-
-        // 點擊填入 AI 提示範本
-        function fillPrompt(text) {
-            document.getElementById('ai-prompt').value = text;
-        }
-
-        // 複製 AI 的生成建議
-        function copyToClipboard() {
-            const textToCopy = document.getElementById('ai-response-content').innerText;
-            // 由於 iframe 限制，我們使用更具兼容性的 execCommand 方式
-            const dummyTextArea = document.createElement("textarea");
-            document.body.appendChild(dummyTextArea);
-            dummyTextArea.value = textToCopy;
-            dummyTextArea.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummyTextArea);
-            
-            const btnCopy = document.getElementById('btn-copy-ai');
-            const originalHTML = btnCopy.innerHTML;
-            btnCopy.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i>';
-            setTimeout(() => {
-                btnCopy.innerHTML = originalHTML;
-            }, 2000);
-        }
-
-        // 發送 API 至 Gemini
-        async function generateAIPlanning() {
-            const apiKeyInput = document.getElementById('gemini-api-key').value.trim();
-            const promptText = document.getElementById('ai-prompt').value.trim();
-            const responseBox = document.getElementById('ai-response-box');
-            const responseContent = document.getElementById('ai-response-content');
-            const btnSubmit = document.getElementById('btn-ai-submit');
-            const btnCopy = document.getElementById('btn-copy-ai');
-
-            if (!promptText) {
-                alert("請填寫您想要產生的工作計劃或問題");
-                return;
-            }
-
-            responseBox.classList.remove('hidden');
-            responseContent.innerHTML = `
-                <div class="flex items-center space-x-2 text-slate-500 py-3">
-                    <i class="fa-solid fa-spinner animate-spin"></i>
-                    <span>AI 正在構思專案細節中... 請稍候</span>
+<!-- Slide 11: Tiled_Images -->
+<div class="slide-container" id="slide11">
+    <h2 class="slide-title">視覺意象與靈感參考</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div style="flex: 1; text-align: center;">
+                <div style="height: 300px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd;">
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/8922113221769913555" style="width: 100%; height: 100%; object-fit: cover;" alt="Choir">
                 </div>
-            `;
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>產生中...</span>`;
+                <p>聯合詩班：服裝與進場規範</p>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <div style="height: 300px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd;">
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/3169122602947742843" style="width: 100%; height: 100%; object-fit: cover;" alt="Meeting">
+                </div>
+                <p>籌備會議：決策與進度核銷</p>
+            </div>
+            <div style="flex: 1; text-align: center;">
+                <div style="height: 300px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd;">
+                    <img src="http://googleusercontent.com/image_collection/image_retrieval/8577740458478023710" style="width: 100%; height: 100%; object-fit: cover;" alt="Audio Console">
+                </div>
+                <p>錄音技術：四機作業收音規劃</p>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // 1. 如果使用者沒填寫 API Key，使用精緻的籌備會模擬機制，確保離線也能展示極佳效果
-            if (!apiKeyInput) {
-                setTimeout(() => {
-                    let simulatedMarkdown = "";
-                    if (promptText.includes("IG 宣傳貼文")) {
-                        simulatedMarkdown = `
-**📌 「25 詩歌音樂會」IG 宣傳貼文草稿**
+<!-- Slide 12: Q&A -->
+<div class="slide-container" id="slide12">
+    <div class="content-area" style="text-align: center;">
+        <h2 style="font-size: 64px; margin-bottom: 30px;">Q&A 討論與意見交流</h2>
+        <p style="font-size: 24px; color: var(--bronze-accent);">求主賜福帶領，讓這場音樂會成為福音的出口。</p>
+        <div style="margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 30px; color: #94a3b8;">
+            <p>技術支援：GitHub 專案管理團隊</p>
+        </div>
+    </div>
+</div>
 
-🎤 **當詩歌化為音符，當靈魂在旋律中甦醒——**
-在25歲的十字路口，我們用詩的格律記錄迷茫，用音樂的共振釋放渴望。這不僅僅是一場音樂會，而是一場文學與聲音的集體靈魂碰撞。
-
-🌟 **【精選演出亮點】**
-- ✍️ 當代青年詩人親臨朗誦：那些深夜撫慰你的文字，將由創作者親口道出。
-- 🎹 跨界弦樂室內樂團：古典、爵士與現代民謠的全新交織。
-- 🎟️ 限量文青前排票：贈送手感活版印刷紀念節目單！
-
-📅 **【演出資訊】**
-- 時間：2026 年 12 月底（詳細時間近期公布，請鎖定追蹤）
-- 地點：國家演奏廳 / 誠品表演廳 (待定)
-- 售票：預計 8 月中旬於 OPENTIX 正式開售
-
-👇 按下追蹤，搶先獲得「超早鳥限時優惠券」與第一手卡司資訊！
-
-#25詩歌音樂會 #文學跨界 #音樂會 #詩歌朗誦 #文青日常 #2026演出 #獨立音樂 #室內樂 #台北展演 #活動預告`;
-                    } else if (promptText.includes("彩排時程")) {
-                        simulatedMarkdown = `
-**📅 節目策劃組：音樂會前一個月彩排時程規劃（範本建議）**
-
-為確保節目進行流暢，建議規劃四個階段彩排：
-
-**👉 階段一：分部與自主排練（演出前 D-30 ~ D-20）**
-* **目標**：樂團、歌手與朗誦者各自完成 90% 以上的熟練度。
-* **執行內容**：
-    - 週六 10:00-14:00 樂團分部弦樂排練。
-    - 週日 14:00-17:00 歌手與鋼琴伴奏音準與呼吸核對。
-    - 朗誦者自主練習，並提供朗誦速度（BPM值）給指揮。
-
-**👉 階段二：首次合練（演出前 D-15 ~ D-10）**
-* **目標**：確保朗誦、歌唱與背景音樂不發生衝突，時間控制精準。
-* **執行內容**：
-    - 週六全天（10:00-18:00）：節目全流程對點合練，尤其是跨界合作曲目（詩人朗誦配搭弦樂背景）。
-
-**👉 階段三：技術彩排（演出前 D-3 ~ D-2）**
-* **地點**：租用排練室
-* **對象**：指揮、樂團、歌手、朗誦者、主持人、舞台監督。
-* **目標**：主持人串場點、燈光轉換點（Cue 點）與音效時機核對。
-
-**👉 階段四：現場總彩排（演出當天 D-Day）**
-* **時間**：13:30 - 16:30（晚場 19:30 演出）
-* **流程**：
-    - 13:30-14:30 舞台音響校正 (Sound Check)。
-    - 14:30-16:00 **完整走位彩排 (Dress Rehearsal)**，完全模擬正式演出時間與燈光。
-    - 16:00-16:30 主持人與導演最後確認微調。`;
-                    } else if (promptText.includes("志工錄取")) {
-                        simulatedMarkdown = `
-**✉️ 票務行政組：志工團隊錄取通知信與說明會邀請（範本）**
-
-主旨：【25 詩歌音樂會】大會志工團隊錄取通知信 暨 第一次工作說明會邀請
-
-親愛的志工夥伴，您好：
-
-非常高興通知您，您已正式錄取為「25 詩歌音樂會」大會籌備志工！感謝您願意貢獻熱情與寶貴時間，和我們一起共同編織這場文學與音樂的饗宴。
-
-**📌 您被分配的小組角色**：【前台引導與票務核銷組】
-
-為了讓大家熟悉彼此，並掌握活動當天的關鍵工作細節，我們將召開「第一次志工工作說明會」，請您務必撥冗出席。
-
-**【第一次工作說明會資訊】**
-* **時間**：2026 年 10 月 17 日（六）下午 14:00 - 16:00
-* **地點**：籌備會第二會議室（台北市新生南路三段...）
-* **會議內容**：
-    1. 籌備會核心成員與全體志工自我介紹。
-    2. 音樂會整體企劃與現場動線導覽。
-    3. 各小組（票務、接待、場內、物資）工作細節與 SOP 說明。
-    4. 現場 Q&A 交流。
-
-如有任何問題，請隨時回覆此信件，或加入志工大會專屬 LINE 群組（群組連結：https://line.me/...）。
-
-「25 詩歌音樂會」籌備委員會 票務行政組 敬啟`;
-                    } else {
-                        simulatedMarkdown = `
-**💡 詩歌音樂會籌備規劃建議**
-
-方針：針對您的請求「${promptText}」，建議結合大會雲端硬碟中的「1. 音樂會整體企劃書」與「2. 籌備預算表」進行撰寫。
-
-**主要考量方向：**
-1. **跨組別協同**：任何變更均須同步通知「總體協調組」，以便登錄在最新行事曆。
-2. **存檔路徑**：建議將此生成的文檔複製，並在 Google Drive `1t3YmaZt6aOYyIl98jSsOjr6FN_1NDwgL` 底下的「工作記錄」目錄新建一份 Google Doc 貼上儲存，供所有成員檢視。
-
-*(備註：如需產出更深度、貼合實際背景的內容，可在右上角「金鑰設定」中填入您的 Gemini API Key 後重新發送。)*`;
-                    }
-
-                    // 渲染模擬的 Markdown 為 HTML 簡單格式
-                    responseContent.innerHTML = simulatedMarkdown.replace(/\n/g, '<br>');
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>產生工作計劃</span>`;
-                    btnCopy.classList.remove('hidden');
-                }, 1000);
-                return;
-            }
-
-            // 2. 如果有輸入 API key，調用標準的 Gemini API (採用 gemini-2.5-flash-preview-09-2025 模型)
-            try {
-                // 指數退避 (Exponential Backoff) 函數
-                const fetchWithRetry = async (url, options, retries = 5, delay = 1000) => {
-                    try {
-                        const response = await fetch(url, options);
-                        if (!response.ok) {
-                            if (response.status === 429 && retries > 0) {
-                                await new Promise(resolve => setTimeout(resolve, delay));
-                                return fetchWithRetry(url, options, retries - 1, delay * 2);
-                            }
-                            throw new Error(`API HTTP Error: ${response.status}`);
-                        }
-                        return response;
-                    } catch (error) {
-                        if (retries > 0) {
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                            return fetchWithRetry(url, options, retries - 1, delay * 2);
-                        }
-                        throw error;
-                    }
-                };
-
-                const systemPrompt = "你是一位精通文化藝術、古典樂與詩歌跨界藝術季策劃的「25詩歌音樂會」首席專案管理專家。請用繁體中文（台灣標準語彙）產出極具美感、條理清晰、且可以直接落實的籌備工作計劃，內容要詳實。";
-                
-                const response = await fetchWithRetry(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKeyInput}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: promptText }] }],
-                            systemInstruction: { parts: [{ text: systemPrompt }] }
-                        })
-                    }
-                );
-
-                const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                
-                if (text) {
-                    // 格式化輸出
-                    responseContent.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                    btnCopy.classList.remove('hidden');
-                } else {
-                    responseContent.innerText = "抱歉，無法從 AI 獲得有效回應。請確認 Prompt 是否合規。";
-                }
-
-            } catch (err) {
-                responseContent.innerHTML = `
-                    <div class="text-red-500 font-semibold">
-                        <i class="fa-solid fa-circle-exclamation mr-1"></i> API 連線出錯：
-                    </div>
-                    <p class="text-[11px] text-slate-500 mt-1">${err.message}</p>
-                    <p class="text-[11px] text-slate-500">請確認您的 API 金鑰是否正確且有效，或稍後再試。此環境不支援 Streaming。</p>
-                `;
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>產生工作計劃</span>`;
-            }
-        }
-    </script>
 </body>
 </html>
+
