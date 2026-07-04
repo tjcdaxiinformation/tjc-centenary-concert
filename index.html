@@ -13,15 +13,8 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        bronze: '#a3704c',
-                        navy: '#1e293b',
-                        gold: '#b8860b'
-                    },
-                    fontFamily: {
-                        serif: ['Noto Serif TC', 'serif'],
-                        sans: ['Noto Sans TC', 'sans-serif'],
-                    }
+                    colors: { bronze: '#a3704c', navy: '#1e293b', gold: '#b8860b' },
+                    fontFamily: { serif: ['Noto Serif TC', 'serif'], sans: ['Noto Sans TC', 'sans-serif'], }
                 }
             }
         }
@@ -29,21 +22,19 @@
 </head>
 <body class="bg-stone-50 font-sans text-slate-800 antialiased">
 
-    <!-- 導航列 -->
+    <!-- 頂部導航 -->
     <nav class="bg-navy text-white py-4 shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-music text-gold text-2xl"></i>
                 <span class="font-serif text-xl tracking-widest font-bold">115音樂會 籌備中心</span>
             </div>
-            <div class="flex items-center space-x-3">
-                <!-- 大會主雲端 -->
-                <a href="https://drive.google.com/drive/folders/1t3YmaZt6aOYyIl98jSsOjr6FN_1NDwgL" target="_blank" class="hidden md:flex items-center space-x-2 px-4 py-2 border border-white/20 rounded-md text-xs hover:bg-white/10 transition">
+            <div class="flex items-center space-x-3 text-xs font-bold">
+                <a href="https://drive.google.com/drive/folders/1t3YmaZt6aOYyIl98jSsOjr6FN_1NDwgL" target="_blank" class="hidden md:flex items-center space-x-2 px-4 py-2 border border-white/20 rounded-md hover:bg-white/10 transition">
                     <i class="fa-brands fa-google-drive"></i>
                     <span>大會主雲端</span>
                 </a>
-                <!-- 上傳工作報告 -->
-                <a href="https://drive.google.com/drive/folders/1eYGN_A5EiHTPr4fCE_FW03L52mPce8Bf?usp=sharing" target="_blank" class="bg-bronze px-4 py-2 rounded-md text-xs font-bold hover:bg-gold transition shadow-md">
+                <a href="https://drive.google.com/drive/folders/1eYGN_A5EiHTPr4fCE_FW03L52mPce8Bf?usp=sharing" target="_blank" class="bg-bronze px-4 py-2 rounded-md hover:bg-gold transition shadow-md">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                     <span>上傳工作報告</span>
                 </a>
@@ -51,155 +42,95 @@
         </div>
     </nav>
 
-    <!-- 執行長核心指示橫幅 -->
-    <header class="bg-navy relative overflow-hidden text-white py-16 px-6 border-b-8 border-gold">
+    <!-- 執行長黃孟平弟兄 工作指示橫幅 -->
+    <header class="bg-navy relative overflow-hidden text-white py-20 px-6 border-b-8 border-gold">
         <div class="max-w-4xl mx-auto relative z-10">
-            <div class="flex items-center space-x-2 text-gold text-xs font-bold tracking-widest mb-4 uppercase">
-                <i class="fa-solid fa-bullhorn"></i>
+            <div class="flex items-center space-x-2 text-gold text-xs font-bold tracking-widest mb-6 uppercase">
+                <i class="fa-solid fa-bullhorn animate-pulse"></i>
                 <span>Executive Director Instructions</span>
             </div>
+            <h2 class="text-xl text-gold font-serif mb-4 italic">執行長 黃孟平 弟兄：</h2>
             <p class="text-2xl md:text-3xl font-serif font-bold italic leading-relaxed text-stone-100">
                 「以聖樂獻詩、福音分享見證為核心，榮耀真神、見證福音，回顧在台傳教百年恩典，兼顧屬靈內涵與活動執行品質；預算管控以『節儉適用、優先屬靈服務』為原則，由復興小區工作小組統籌把關與核定，場地相關執行依已完成合約規劃穩健推進，請各組依規劃逐步完成進度。」
             </p>
         </div>
-        <div class="absolute right-0 bottom-0 opacity-10">
-            <i class="fa-solid fa-music text-[300px]"></i>
-        </div>
+        <i class="fa-solid fa-cross absolute right-0 bottom-0 opacity-5 text-[300px]"></i>
     </header>
 
-    <!-- 快速工具與會議紀錄 -->
-    <section class="max-w-7xl mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- 重要總項工作進程 -->
-            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-stone-200 p-8">
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-2xl font-serif font-bold text-navy flex items-center">
-                        <i class="fa-solid fa-chart-line mr-3 text-bronze"></i>
-                        重要總項工作進程
-                    </h2>
-                </div>
-                <div class="space-y-6">
-                    <div>
-                        <div class="flex justify-between text-xs font-bold text-stone-500 mb-2 uppercase tracking-widest">
-                            <span>01 節目企劃</span>
-                            <span>45%</span>
-                        </div>
-                        <div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-bronze h-full" style="width: 45%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs font-bold text-stone-500 mb-2 uppercase tracking-widest">
-                            <span>02 行政財務</span>
-                            <span>65%</span>
-                        </div>
-                        <div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-emerald-600 h-full" style="width: 65%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs font-bold text-stone-500 mb-2 uppercase tracking-widest">
-                            <span>03 場地技術</span>
-                            <span>90%</span>
-                        </div>
-                        <div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
-                            <div class="bg-gold h-full" style="width: 90%"></div>
-                        </div>
-                    </div>
-                </div>
+    <!-- 總進度與會議紀錄 -->
+    <section class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- 進程看板 -->
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-stone-200 p-8">
+            <h2 class="text-2xl font-serif font-bold text-navy flex items-center mb-8 border-b pb-4">
+                <i class="fa-solid fa-chart-line mr-3 text-bronze"></i>
+                總項執行指標
+            </h2>
+            <div class="space-y-8">
+                <div><div class="flex justify-between text-xs font-bold text-stone-500 mb-2 uppercase">01 節目企劃</div><div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden"><div class="bg-bronze h-full" style="width: 45%"></div></div></div>
+                <div><div class="flex justify-between text-xs font-bold text-stone-500 mb-2 uppercase">02 行政財務</div><div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden"><div class="bg-emerald-600 h-full" style="width: 65%"></div></div></div>
+                <div><div class="flex justify-between text-xs font-bold text-stone-500 mb-2 uppercase">03 場地技術</div><div class="w-full bg-stone-100 h-2 rounded-full overflow-hidden"><div class="bg-gold h-full" style="width: 90%"></div></div></div>
             </div>
-
-            <!-- 籌備會議紀錄區 -->
-            <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-8 flex flex-col">
-                <h2 class="text-2xl font-serif font-bold text-navy flex items-center mb-6">
-                    <i class="fa-solid fa-file-signature mr-3 text-bronze"></i>
-                    籌備會議紀錄
-                </h2>
-                <div class="flex-grow space-y-4">
-                    <p class="text-sm text-stone-500 leading-relaxed">紀錄大會所有決策過程與執行進度，請各組定期查閱並落實相關決議。</p>
-                    <a href="https://docs.google.com/document/d/138gsDvv6_6MTOqn5OyiiS30jCff-pu-PXafU8fLwNYU/edit?usp=drive_link" target="_blank" class="block bg-stone-100 hover:bg-stone-200 p-4 rounded-lg border border-stone-200 transition group">
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-navy text-sm">開啟會議紀錄全文</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-stone-400 group-hover:text-bronze"></i>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
         </div>
 
-        <!-- 七大功能組連結入口 -->
-        <div class="mt-12">
-            <h2 class="text-2xl font-serif font-bold text-navy flex items-center mb-8">
-                <i class="fa-solid fa-folder-tree mr-3 text-bronze"></i>
-                七大功能組工作入口
+        <!-- 會議紀錄入口 -->
+        <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-8">
+            <h2 class="text-2xl font-serif font-bold text-navy flex items-center mb-6">
+                <i class="fa-solid fa-file-signature mr-3 text-bronze"></i>
+                籌備會議紀錄
             </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                
-                <!-- 01 節目企劃 -->
-                <a href="https://drive.google.com/drive/folders/1clXLMuRrvif3D6AoPlIug-n3p1_EeUf3?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-music"></i></div>
-                        <div><h4 class="font-bold text-sm">01 節目企劃組</h4><p class="text-[10px] text-stone-400">陳齊揚 組長</p></div>
-                    </div>
+            <div class="space-y-4">
+                <p class="text-sm text-stone-500 leading-relaxed italic">紀錄大會所有核心決策與執行進度。請各組長於會後 24 小時內查閱並落實相關決議。</p>
+                <a href="https://docs.google.com/document/d/138gsDvv6_6MTOqn5OyiiS30jCff-pu-PXafU8fLwNYU/edit?usp=drive_link" target="_blank" class="block bg-stone-100 hover:bg-stone-200 p-6 rounded-lg border border-stone-200 transition text-center group">
+                    <span class="font-bold text-navy text-sm group-hover:text-bronze">開啟 Google Docs 會議紀錄全文</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square ml-2 text-stone-400"></i>
                 </a>
-
-                <!-- 02 行政財務 -->
-                <a href="https://docs.google.com/spreadsheets/d/1iUeyx1tt-7j6BArqPIICSwyRI71SyJ2GRnJFMEkMja8/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-calculator"></i></div>
-                        <div><h4 class="font-bold text-sm">02 行政財務組</h4><p class="text-[10px] text-stone-400">李永賢 組長</p></div>
-                    </div>
-                </a>
-
-                <!-- 03 場地技術 -->
-                <a href="https://drive.google.com/drive/folders/1P0ZBu9HdoL2cxVyCncjKo-jjVxq7WrUs?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-sliders"></i></div>
-                        <div><h4 class="font-bold text-sm">03 場地技術組</h4><p class="text-[10px] text-stone-400">黃彥綸 組長</p></div>
-                    </div>
-                </a>
-
-                <!-- 04 聖樂小組 -->
-                <a href="https://docs.google.com/spreadsheets/d/1zA1jePqrB8v2DZz_2XzXP_aCZ7ry6kUkbA8syFPRVSg/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-microphone"></i></div>
-                        <div><h4 class="font-bold text-sm">04 聖樂服事組</h4><p class="text-[10px] text-stone-400">林月霞 組長</p></div>
-                    </div>
-                </a>
-
-                <!-- 05 宣傳公關 -->
-                <a href="https://drive.google.com/drive/folders/1-iftXxSryf3mrjpt2902i117iPMJPwjV?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-bullhorn"></i></div>
-                        <div><h4 class="font-bold text-sm">05 宣傳公關組</h4><p class="text-[10px] text-stone-400">王鴻志 組長</p></div>
-                    </div>
-                </a>
-
-                <!-- 06 接待關懷 -->
-                <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-heart-pulse"></i></div>
-                        <div><h4 class="font-bold text-sm">06 接待關懷組</h4><p class="text-[10px] text-stone-400">張勇光 組長</p></div>
-                    </div>
-                </a>
-
-                <!-- 07 安全總務 -->
-                <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
-                    <div class="flex items-center space-x-4">
-                        <div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-shield-halved"></i></div>
-                        <div><h4 class="font-bold text-sm">07 安全總務組</h4><p class="text-[10px] text-stone-400">鍾霖恩 組長</p></div>
-                    </div>
-                </a>
-
             </div>
+        </div>
+
+    </section>
+
+    <!-- 七大組入口 -->
+    <section class="max-w-7xl mx-auto px-6 py-12 border-t border-stone-200">
+        <h2 class="text-2xl font-serif font-bold text-navy flex items-center mb-8">
+            <i class="fa-solid fa-folder-tree mr-3 text-bronze"></i>
+            七大功能組工作入口 (跨組雲端連動)
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 01 節目企劃 -->
+            <a href="https://drive.google.com/drive/folders/1clXLMuRrvif3D6AoPlIug-n3p1_EeUf3?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
+                <div class="flex items-center space-x-4"><div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-music"></i></div><div><h4 class="font-bold text-sm">01 節目企劃組</h4><p class="text-[10px] text-stone-400">陳齊揚 組長</p></div></div>
+            </a>
+            <!-- 02 行政財務 -->
+            <a href="https://docs.google.com/spreadsheets/d/1iUeyx1tt-7j6BArqPIICSwyRI71SyJ2GRnJFMEkMja8/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
+                <div class="flex items-center space-x-4"><div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-calculator"></i></div><div><h4 class="font-bold text-sm">02 行政財務組</h4><p class="text-[10px] text-stone-400">李永賢 組長</p></div></div>
+            </a>
+            <!-- 03 場地技術 -->
+            <a href="https://drive.google.com/drive/folders/1P0ZBu9HdoL2cxVyCncjKo-jjVxq7WrUs?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
+                <div class="flex items-center space-x-4"><div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-sliders"></i></div><div><h4 class="font-bold text-sm">03 場地技術組</h4><p class="text-[10px] text-stone-400">黃彥綸 組長</p></div></div>
+            </a>
+            <!-- 04 聖樂服事 -->
+            <a href="https://docs.google.com/spreadsheets/d/1zA1jePqrB8v2DZz_2XzXP_aCZ7ry6kUkbA8syFPRVSg/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
+                <div class="flex items-center space-x-4"><div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-microphone"></i></div><div><h4 class="font-bold text-sm">04 聖樂服事組</h4><p class="text-[10px] text-stone-400">林月霞 組長</p></div></div>
+            </a>
+            <!-- 05 宣傳公關 -->
+            <a href="https://drive.google.com/drive/folders/1-iftXxSryf3mrjpt2902i117iPMJPwjV?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
+                <div class="flex items-center space-x-4"><div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-bullhorn"></i></div><div><h4 class="font-bold text-sm">05 宣傳公關組</h4><p class="text-[10px] text-stone-400">王鴻志 組長</p></div></div>
+            </a>
+            <!-- 06 接待關懷 -->
+            <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
+                <div class="flex items-center space-x-4"><div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-heart-pulse"></i></div><div><h4 class="font-bold text-sm">06 接待關懷組</h4><p class="text-[10px] text-stone-400">張勇光 組長</p></div></div>
+            </a>
+            <!-- 07 安全總務 -->
+            <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="bg-white p-5 rounded-xl border border-stone-200 hover:border-bronze hover:shadow-md transition group">
+                <div class="flex items-center space-x-4"><div class="bg-stone-100 p-3 rounded-lg text-bronze group-hover:bg-bronze group-hover:text-white transition"><i class="fa-solid fa-shield-halved"></i></div><div><h4 class="font-bold text-sm">07 安全總務組</h4><p class="text-[10px] text-stone-400">鍾霖恩 組長</p></div></div>
+            </a>
         </div>
     </section>
 
     <footer class="bg-navy text-stone-400 py-12 px-6 text-center border-t border-gold/20">
         <p class="text-xs tracking-widest font-bold">真耶穌教會 傳台百年西區 115音樂會籌備委員會</p>
-        <p class="text-[10px] mt-2 opacity-50 uppercase tracking-widest">Glorifying God through Sacred Music • Celebrating 100 Years of Grace</p>
+        <p class="text-[10px] mt-2 opacity-50 uppercase tracking-widest italic">"For from him and through him and to him are all things. To him be glory forever."</p>
     </footer>
 
 </body>
