@@ -4,501 +4,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TJC傳台百年西區詩歌音樂會籌備規劃</title>
+    <title>115音樂會 入口網站籌備規劃</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- 使用 Noto Serif TC 與 Noto Sans TC 展現雅緻感 -->
+    <!-- 引用具有人文氣息與專業感的字體 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-/* 1. 基礎設定與配色 (暖調聖樂風格) */
-:root {
-    --bg-cream: #fdfaf6;
-    --bronze-accent: #a3704c;
-    --slate-text: #334155;
-    --gold-line: #d4af37;
-    --white: #ffffff;
-}
-
+/* 1. 全局樣式設定：管理諮詢風格 (McKinsey/BCG) */
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #e5e7eb;
-    display: grid;
-    gap: 40px;
-    grid-template-columns: 1fr;
-    margin: 0;
-    min-height: 100vh;
-    padding: 40px 0;
-    place-items: center;
+  background-color: #f1f5f9;
+  display: grid;
+  gap: 25px;
+  grid-template-columns: 1fr;
+  margin: 0;
+  min-height: 100vh;
+  padding: 40px 0;
+  place-items: center;
 }
 
 .slide-container {
-    align-items: center;
-    background-color: var(--bg-cream);
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    display: flex;
-    flex-direction: column;
-    font-family: 'Noto Sans TC', sans-serif;
-    height: 720px;
-    justify-content: center;
-    overflow: hidden;
-    padding: 60px;
-    position: relative;
-    width: 1280px;
+  align-items: center;
+  background-color: #FAF9F6; /* 採用暖白色調，呈現聖樂的莊重感 */
+  border-radius: 4px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Noto Sans TC', sans-serif;
+  height: 720px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 60px;
+  position: relative;
+  width: 1280px;
 }
 
-/* 2. 字體與標題 */
+/* 2. 標題與文字系統 */
 .slide-container h1, .slide-container h2, .slide-container h3 {
-    color: var(--slate-text);
-    font-family: 'Noto Serif TC', serif;
-    margin: 0;
-}
-
-.slide-container h1 {
-    font-size: 80px;
-    letter-spacing: 2px;
+  color: #2C3E50;
+  font-family: 'Noto Serif TC', serif;
+  margin: 0;
 }
 
 .slide-container .slide-title {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 40px;
-    text-align: left;
-    width: 100%;
-    border-left: 8px solid var(--bronze-accent);
-    padding-left: 20px;
+  font-size: 44px;
+  font-weight: 700;
+  margin-bottom: 35px;
+  text-align: left;
+  width: 100%;
+  border-left: 10px solid #7F5539;
+  padding-left: 20px;
 }
 
 .slide-container p, .slide-container li {
-    color: #475569;
-    font-size: 20px;
-    line-height: 1.6;
+  color: #1E293B;
+  font-size: 20px;
+  line-height: 1.6;
 }
 
 .content-area {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: center;
-    width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  width: 100%;
 }
 
-/* 3. 佈局樣式 */
+/* 3. 版面佈局定義 */
 
-/* Title Slide 背景 */
-.title-bg-overlay {
+/* 標題頁佈局 */
+.title-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    height: 100%;
+    left: 0;
     position: absolute;
     top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(253, 250, 246, 0.8) 0%, rgba(253, 250, 246, 0.2) 100%);
     z-index: 1;
 }
 
-/* Tiled Icons 佈局 */
+/* Tiled Icons */
 .tiled-content {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    justify-content: center;
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  width: 100%;
 }
 
 .tile {
-    background-color: var(--white);
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    flex: 1;
-    padding: 30px;
-    text-align: center;
-    transition: transform 0.3s ease;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  flex: 1;
+  padding: 25px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
 }
 
 .tile .icon {
-    color: var(--bronze-accent);
-    font-size: 48px;
-    margin-bottom: 20px;
+  color: #7F5539;
+  font-size: 42px;
+  margin-bottom: 15px;
 }
 
 .tile h3 {
-    font-size: 24px;
-    margin-bottom: 10px;
+  font-size: 22px;
+  margin-bottom: 12px;
 }
 
-.tile p {
-    font-size: 16px;
-}
-
-/* 4. 圖表與表格 */
-.table-layout {
-    width: 100%;
-}
-
+/* 4. 圖表與表格樣式 */
 .table-layout table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 
 .table-layout th {
-    background-color: var(--bronze-accent);
-    color: white;
-    font-family: 'Noto Serif TC', serif;
-    padding: 15px;
-    text-align: left;
+  background-color: #2C3E50;
+  color: #fff;
+  font-weight: 700;
+  padding: 15px;
+  text-align: left;
 }
 
 .table-layout td {
-    border-bottom: 1px solid #e2e8f0;
-    padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 15px;
+}
+
+/* Bar Chart */
+.chart-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.bar-label {
+  width: 220px;
+  text-align: right;
+  font-weight: 700;
+}
+
+.bar-track {
+  background: #e2e8f0;
+  flex-grow: 1;
+  height: 35px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  background: #7F5539;
+  height: 100%;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+  font-weight: bold;
 }
 
 /* Timeline */
 .timeline-layout {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    width: 100%;
-    height: 300px;
-    margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
 }
 
 .timeline-line {
-    background-color: #cbd5e1;
-    height: 4px;
-    left: 0;
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    z-index: 0;
+  background-color: #7F5539;
+  height: 3px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  width: 100%;
 }
 
 .timeline-item {
-    position: relative;
-    width: 18%;
-    text-align: center;
-    z-index: 1;
+  position: relative;
+  width: 18%;
+  text-align: center;
+  background: #FAF9F6;
+  padding: 10px;
+  z-index: 2;
 }
 
-.timeline-item::after {
-    content: '';
-    width: 20px;
-    height: 20px;
-    background-color: var(--bronze-accent);
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 4px solid var(--white);
+.timeline-item h3 { font-size: 18px; color: #7F5539; }
+
+/* Image Layouts */
+.image-wrapper {
+  border-radius: 4px;
+  overflow: hidden;
+  height: 400px;
 }
 
-.timeline-content {
-    position: absolute;
-    width: 100%;
+.image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.timeline-item:nth-child(odd) .timeline-content { bottom: 60%; }
-.timeline-item:nth-child(even) .timeline-content { top: 60%; }
-
-/* Chart */
-.chart-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  width: 100%;
 }
 
-.bar {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.bar-label {
-    width: 200px;
-    text-align: right;
-    font-weight: 700;
-}
-
-.bar-bg {
-    background-color: #f1f5f9;
-    flex-grow: 1;
-    height: 40px;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.bar-fill {
-    background: linear-gradient(90deg, var(--bronze-accent), #c08552);
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding-left: 20px;
-    color: white;
-    font-weight: bold;
-}
-
-/* Bleed Image Layout */
+/* Bleed Image Right */
 .slide-container.bleed-image-layout {
     align-items: start;
     display: grid;
-    gap: 50px;
+    gap: 0;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 0;
 }
 
 .slide-container.bleed-image-layout > .content-container {
-    padding: 60px 0 60px 60px;
+    padding: 60px;
 }
 
-.slide-container.bleed-image-layout img.bleed-image-side {
+.slide-container.bleed-image-layout .image-side {
     height: 720px;
     object-fit: cover;
     width: 100%;
 }
+
+/* Q&A */
+.qa-layout h2 { font-size: 100px; margin-bottom: 20px; color: #7F5539; }
     </style>
 </head>
 <body>
 
 <!-- Slide 1: Title_Slide -->
-<div class="slide-container" id="slide1" style="background-image: url('http://googleusercontent.com/image_collection/image_retrieval/4498747759605228912'); background-size: cover;">
-    <div class="title-bg-overlay"></div>
-    <div class="content-area" style="position: relative; z-index: 2; text-align: center;">
-        <h3 style="color: var(--bronze-accent); letter-spacing: 5px; font-weight: 700; margin-bottom: 20px;">115年傳台百年</h3>
-        <h1>西區詩歌音樂會<br>籌備工作規劃</h1>
-        <p style="font-size: 24px; margin-top: 30px;">全功能協作網站與 GitHub 目錄規範</p>
+<div class="slide-container" id="slide1" style="background-image: url('http://googleusercontent.com/image_collection/image_retrieval/16031634172204602055'); background-size: cover; background-position: center;">
+    <div class="title-overlay"></div>
+    <div class="content-area" style="position: relative; z-index: 2; color: #fff;">
+        <h3 style="color: #D4AF37; letter-spacing: 5px; margin-bottom: 10px;">TJC 傳台百年西區</h3>
+        <h1 style="color: #fff; font-size: 85px;">115音樂會 數位門戶</h1>
+        <p style="font-size: 28px; opacity: 0.9; margin-top: 20px;">跨平台籌備入口與數位整合規劃</p>
     </div>
 </div>
 
 <!-- Slide 2: Section_Title -->
 <div class="slide-container" id="slide2">
-    <div class="content-area">
-        <hr style="width: 100px; border: 3px solid var(--bronze-accent); margin-bottom: 30px;">
-        <h2 style="font-size: 64px;">組織體系：七大功能組</h2>
-        <p style="max-width: 800px; text-align: center;">依據「115年音樂會組織與工作分工辦法」，大會下設七大核心組別，負責人涵蓋西區四大區優秀同工。</p>
+    <div class="content-area" style="text-align: center;">
+        <hr style="width: 80px; border: 3px solid #7F5539; margin-bottom: 40px;">
+        <h2 style="font-size: 60px;">核心宗旨與組織體系</h2>
+        <p style="max-width: 850px; margin-top: 30px; font-size: 24px;">本入口網站旨在整合「115音樂會」七大功能組之數位資源，建立無縫溝通橋樑，推動傳台百年之聖工傳承。</p>
     </div>
 </div>
 
-<!-- Slide 3: Tiled_Text_With_Icons (Group 1-4) -->
+<!-- Slide 3: Tiled_Text_With_Icons (Groups 1-4) -->
 <div class="slide-container" id="slide3">
-    <h2 class="slide-title">功能組規劃 (一)</h2>
+    <h2 class="slide-title">七大功能組職掌概覽 (I)</h2>
     <div class="content-area">
         <div class="tiled-content">
             <div class="tile">
+                <div class="icon"><i class="fa-solid fa-file-signature"></i></div>
+                <h3>01 節目企劃組</h3>
+                <p>流程總控、信仰審核<br>及司儀文案撰寫</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-coins"></i></div>
+                <h3>02 行政財務組</h3>
+                <p>預算控管 (15萬)、<br>會議管理與保險事務</p>
+            </div>
+            <div class="tile">
+                <div class="icon"><i class="fa-solid fa-microphone-lines"></i></div>
+                <h3>03 場地技術組</h3>
+                <p>影音收音錄影、<br>合唱台與舞台工程</p>
+            </div>
+            <div class="tile">
                 <div class="icon"><i class="fa-solid fa-music"></i></div>
-                <h3>節目企劃組</h3>
-                <p><strong>負責人：陳齊揚</strong><br>專案總企劃、聖樂信仰正確性審核、司儀串詞撰寫、播放 PPT 製作。</p>
-            </div>
-            <div class="tile">
-                <div class="icon"><i class="fa-solid fa-calculator"></i></div>
-                <h3>行政財務組</h3>
-                <p><strong>負責人：李永賢</strong><br>會議管理、預算核銷(15萬)、保險事務、各小區參加人數統計。</p>
-            </div>
-            <div class="tile">
-                <div class="icon"><i class="fa-solid fa-sliders"></i></div>
-                <h3>場地技術組</h3>
-                <p><strong>負責人：黃彥綸</strong><br>鋼琴/合唱台租借、四機錄音錄影(預算3.5萬)、舞台動線規劃。</p>
-            </div>
-            <div class="tile">
-                <div class="icon"><i class="fa-solid fa-users-line"></i></div>
-                <h3>聖樂服事組</h3>
-                <p><strong>負責人：林月霞</strong><br>聯合詩班/樂團訓練、曲目選定、服裝規範（黑白配）佈達。</p>
+                <h3>04 聖樂服事組</h3>
+                <p>聯合詩班訓練、<br>曲目選定與服裝規範</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Slide 4: Tiled_Text_With_Icons (Group 5-7) -->
+<!-- Slide 4: Tiled_Text_With_Icons (Groups 5-7) -->
 <div class="slide-container" id="slide4">
-    <h2 class="slide-title">功能組規劃 (二)</h2>
+    <h2 class="slide-title">七大功能組職掌概覽 (II)</h2>
     <div class="content-area">
         <div class="tiled-content" style="max-width: 900px;">
             <div class="tile">
                 <div class="icon"><i class="fa-solid fa-bullhorn"></i></div>
-                <h3>宣傳公關組</h3>
-                <p><strong>負責人：王鴻志</strong><br>主視覺海報、多媒體行銷(YouTube/IG)、當日側錄與新聞稿。</p>
+                <h3>05 宣傳公關組</h3>
+                <p>主視覺設計、媒體行銷<br>及多媒體推廣</p>
             </div>
             <div class="tile">
-                <div class="icon"><i class="fa-solid fa-heart"></i></div>
-                <h3>接待關懷組</h3>
-                <p><strong>負責人：張勇光</strong><br>來賓報到、醫護站設置、哺乳室、座位分配、茶點供應。</p>
+                <div class="icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                <h3>06 接待關懷組</h3>
+                <p>來賓接待、座位分配<br>與醫護後勤支援</p>
             </div>
             <div class="tile">
                 <div class="icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3>安全總務組</h3>
-                <p><strong>負責人：鍾霖恩</strong><br>安全疏散計畫(2樓防墜)、交通指引、器材搬運與場地清潔。</p>
+                <h3>07 安全總務組</h3>
+                <p>人流管控、交通指引<br>與場地復原管理</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Slide 5: Bar_Chart_For_Comparisons (Budget) -->
+<!-- Slide 5: Image_Right_Text_Left -->
 <div class="slide-container" id="slide5">
-    <h2 class="slide-title">預算分配總計：NT$ 150,000</h2>
+    <h2 class="slide-title">聖樂服事與節目靈魂</h2>
     <div class="content-area">
-        <div class="chart-container" style="max-width: 1000px;">
-            <div class="bar">
-                <div class="bar-label">影音錄影工程</div>
-                <div class="bar-bg"><div class="bar-fill" style="width: 45%;">35,000 (23%)</div></div>
+        <div class="two-column">
+            <div>
+                <h3 style="margin-bottom: 20px; color: #7F5539;">以詩歌頌揚 百年傳承</h3>
+                <ul>
+                    <li><strong>選曲原則：</strong> 結合大會主題，涵蓋百年聖詩之經典與現代創作。</li>
+                    <li><strong>規模編制：</strong> 西區 16 個詩班聯合服事，展現合一事奉。</li>
+                    <li><strong>數位支援：</strong> 入口網站提供「曲目下載區」與「示範音檔」，輔助各教會練習。</li>
+                    <li><strong>服裝統一：</strong> 數位手冊詳列黑白配規範，確保整體視覺端莊。</li>
+                </ul>
             </div>
-            <div class="bar">
-                <div class="bar-label">音響器材採購</div>
-                <div class="bar-bg"><div class="bar-fill" style="width: 25%;">12,000 (8%)</div></div>
-            </div>
-            <div class="bar">
-                <div class="bar-label">鋼琴/合唱台租借</div>
-                <div class="bar-bg"><div class="bar-fill" style="width: 30%;">12,600 (8%)</div></div>
-            </div>
-            <div class="bar">
-                <div class="bar-label">預備金與其餘雜項</div>
-                <div class="bar-bg"><div class="bar-fill" style="width: 60%;">90,400 (61%)</div></div>
+            <div class="image-wrapper">
+                <img src="http://googleusercontent.com/image_collection/image_retrieval/17208292427147411032" alt="Choir in grand hall">
             </div>
         </div>
-        <p style="margin-top: 40px; font-style: italic;">※ 預算由教區補助 12 萬，各小區分攤 3 萬，結餘款歸回教區聖樂基金。</p>
     </div>
 </div>
 
-<!-- Slide 6: Timeline (Key Meetings) -->
+<!-- Slide 6: Bar_Chart_For_Comparisons -->
 <div class="slide-container" id="slide6">
-    <h2 class="slide-title">籌備關鍵里程碑 (2026)</h2>
+    <h2 class="slide-title">財務預算執行規劃 (NT$ 150,000)</h2>
     <div class="content-area">
-        <div class="timeline-layout">
-            <div class="timeline-line"></div>
-            <div class="timeline-item">
-                <div class="timeline-content"><h3>2/7 (大溪)</h3><p>啟動會議：確立分工</p></div>
+        <div class="chart-container">
+            <div class="bar">
+                <div class="bar-label">影音錄影/技術工程</div>
+                <div class="bar-track"><div class="bar-fill" style="width: 35%;">NT$ 35,000 (23%)</div></div>
             </div>
-            <div class="timeline-item">
-                <div class="timeline-content"><h3>4/11 (崎頂)</h3><p>企劃初核：曲目選定</p></div>
+            <div class="bar">
+                <div class="bar-label">聖樂推廣與雜項</div>
+                <div class="bar-track"><div class="bar-fill" style="width: 25%;">NT$ 25,000 (17%)</div></div>
             </div>
-            <div class="timeline-item">
-                <div class="timeline-content"><h3>6/20 (三坑)</h3><p>進度審查：錄音錄影</p></div>
+            <div class="bar">
+                <div class="bar-label">場地租借與保險</div>
+                <div class="bar-track"><div class="bar-fill" style="width: 20%;">NT$ 20,000 (13%)</div></div>
             </div>
-            <div class="timeline-item">
-                <div class="timeline-content"><h3>9月底</h3><p>詩班錄製：獻詩影片</p></div>
+            <div class="bar">
+                <div class="bar-label">預備金與後勤</div>
+                <div class="bar-track"><div class="bar-fill" style="width: 20%;">NT$ 20,000 (13%)</div></div>
             </div>
-            <div class="timeline-item">
-                <div class="timeline-content"><h3>12月底</h3><p>正式演出：中央大學</p></div>
+        </div>
+        <p style="margin-top: 30px; font-style: italic;">* 資金來源：教區補助 12萬，各小區攤派 3萬。</p>
+    </div>
+</div>
+
+<!-- Slide 7: Bleed_Image_Right -->
+<div class="slide-container bleed-image-layout" id="slide7">
+    <div class="content-container">
+        <h2 class="slide-title">場地技術規範</h2>
+        <div class="content-area" style="align-items: flex-start;">
+            <h3 style="margin-bottom: 20px;">中央大學大禮堂</h3>
+            <p>本次音樂會場地具備專業音場效果。技術組需針對以下要點進行數位化紀錄：</p>
+            <ul>
+                <li><strong>四機錄影方案：</strong> 確保全場視角覆蓋。</li>
+                <li><strong>音響收音系統：</strong> 專業合唱收音，預算 1.2 萬。</li>
+                <li><strong>合唱台配置：</strong> 三階合唱台租借與架設。</li>
+                <li><strong>安全防墜：</strong> 二樓看台之嚴格管制與標示。</li>
+            </ul>
+        </div>
+    </div>
+    <img src="http://googleusercontent.com/image_collection/image_retrieval/12542794113176700508" class="image-side" alt="Professional video camera">
+</div>
+
+<!-- Slide 8: Tiled_Images -->
+<div class="slide-container" id="slide8">
+    <h2 class="slide-title">宣傳公關與視覺意象</h2>
+    <div class="content-area">
+        <div class="tiled-content">
+            <div class="tile" style="padding: 0; overflow: hidden;">
+                <div style="height: 250px;"><img src="http://googleusercontent.com/image_collection/image_retrieval/11654774510609758277" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="padding: 15px;"><h3>主視覺設計</h3><p>百年傳承與光輝意象</p></div>
+            </div>
+            <div class="tile" style="padding: 0; overflow: hidden;">
+                <div style="height: 250px;"><img src="http://googleusercontent.com/image_collection/image_retrieval/3133273274996165848" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="padding: 15px;"><h3>數位行銷</h3><p>YouTube / IG 影音擴散</p></div>
+            </div>
+            <div class="tile" style="padding: 0; overflow: hidden;">
+                <div style="height: 250px;"><img src="http://googleusercontent.com/image_collection/image_retrieval/9826319911202066182" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div style="padding: 15px;"><h3>公關聯繫</h3><p>跨區教會與慕道友引導</p></div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Slide 7: Table (Personnel) -->
-<div class="slide-container" id="slide7">
-    <h2 class="slide-title">籌備小組核心名單</h2>
+<!-- Slide 9: Table -->
+<div class="slide-container" id="slide9">
+    <h2 class="slide-title">核心負責人與分工體系</h2>
     <div class="content-area">
         <div class="table-layout">
             <table>
                 <thead>
                     <tr>
-                        <th>職務 / 功能組</th>
-                        <th>姓名</th>
+                        <th>功能組別</th>
+                        <th>核心組長</th>
                         <th>所屬小區</th>
-                        <th>核心聯繫雲端</th>
+                        <th>主要協作路徑</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>大會主席 / 副主席</td><td>陳耀勳 / 簡銘輝</td><td>西區總會</td><td>00_專案管理</td>
-                    </tr>
-                    <tr><td>執行秘書 / 會計</td><td>張進才 / 黃金滿</td><td>西區行政</td><td>02_行政財務</td>
-                    </tr>
-                    <tr><td>節目企劃組長</td><td>陳齊揚</td><td>一小區</td><td>01_節目企劃</td>
-                    </tr>
-                    <tr><td>場地技術組長</td><td>黃彥綸</td><td>二小區</td><td>03_場地技術</td>
-                    </tr>
+                    <tr><td>節目企劃組</td><td>陳齊揚</td><td>一小區</td><td>/01_program_planning</td></tr>
+                    <tr><td>行政財務組</td><td>李永賢</td><td>二小區</td><td>/02_admin_finance</td></tr>
+                    <tr><td>場地技術組</td><td>黃彥綸</td><td>二小區</td><td>/03_stage_technical</td></tr>
+                    <tr><td>聖樂服事組</td><td>林月霞</td><td>三小區</td><td>/04_sacred_music</td></tr>
+                    <tr><td>宣傳公關組</td><td>王鴻志</td><td>三小區</td><td>/05_pr_marketing</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- Slide 8: Bleed_Image_Right (Venue) -->
-<div class="slide-container bleed-image-layout" id="slide8">
-    <div class="content-container">
-        <h2 class="slide-title">演出場地：中央大學大禮堂</h2>
-        <div class="content-area">
-            <div style="padding-right: 40px;">
-                <h3 style="color: var(--bronze-accent);">場地規格與技術需求</h3>
-                <ul style="margin-top: 20px;">
-                    <li><strong>專業舞台：</strong> 需容納聯合詩班與樂團。</li>
-                    <li><strong>錄影配置：</strong> 四機作業，包含舞台兩側、觀眾席後方、鋼琴收音。</li>
-                    <li><strong>安全規範：</strong> 特別加強 2 樓防墜管制與出入口人流導引。</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="image-container">
-        <img class="bleed-image-side" src="http://googleusercontent.com/image_collection/image_retrieval/1577501443870529540" alt="Musical sheets and baton">
-    </div>
-</div>
-
-<!-- Slide 9: Highlighted_Numbers -->
-<div class="slide-container" id="slide9">
-    <h2 class="slide-title">關鍵籌備指標</h2>
-    <div class="content-area">
-        <div style="display: flex; gap: 80px; align-items: center;">
-            <div style="text-align: center;">
-                <div style="font-size: 150px; font-weight: 700; color: var(--bronze-accent); font-family: 'Noto Serif TC';">16</div>
-                <div style="font-size: 24px; font-weight: bold;">參與詩班數量</div>
-            </div>
-            <div style="max-width: 600px;">
-                <h3 style="font-size: 40px;">合一事奉，傳揚百年</h3>
-                <p>本次音樂會動員西區四大區（1-4小區）共 16 個詩班，展現基督肢體合一的精神。宣傳與聖樂服事組將透過 YouTube 官網，讓全球同信同步感受傳台百年的喜悅。</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Slide 10: Styled_Bullet_Points (Collaboration) -->
+<!-- Slide 10: Timeline -->
 <div class="slide-container" id="slide10">
-    <h2 class="slide-title">網站與 GitHub 協作規範</h2>
+    <h2 class="slide-title">2026 籌備關鍵里程碑</h2>
     <div class="content-area">
-        <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-            <div style="background: var(--white); padding: 30px; border-radius: 16px; border-left: 10px solid #10b981;">
-                <h3>Google Drive 連結</h3>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: 15px;"><i class="fa-solid fa-cloud-arrow-up" style="color: #10b981; margin-right: 10px;"></i> 統一對接主目錄：1t3Yma...</li>
-                    <li><i class="fa-solid fa-file-pen" style="color: #10b981; margin-right: 10px;"></i> 預算、節目單採即時協同編輯。</li>
-                </ul>
+        <div class="timeline-layout">
+            <div class="timeline-line"></div>
+            <div class="timeline-item">
+                <h3>02.07</h3>
+                <p>首籌會議<br>確立分工</p>
             </div>
-            <div style="background: var(--white); padding: 30px; border-radius: 16px; border-left: 10px solid #4f46e5;">
-                <h3>GitHub 倉庫分類</h3>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: 15px;"><i class="fa-brands fa-github" style="color: #4f46e5; margin-right: 10px;"></i> 分類對應 01-07 功能組目錄。</li>
-                    <li><i class="fa-solid fa-code" style="color: #4f46e5; margin-right: 10px;"></i> 代碼與靜態說明文件統一管理。</li>
-                </ul>
+            <div class="timeline-item">
+                <h3>04.11</h3>
+                <p>二籌會議<br>企劃核定</p>
+            </div>
+            <div class="timeline-item">
+                <h3>06.20</h3>
+                <p>三籌會議<br>錄影簽約</p>
+            </div>
+            <div class="timeline-item">
+                <h3>09月底</h3>
+                <p>詩班影片<br>錄製完成</p>
+            </div>
+            <div class="timeline-item" style="background: #7F5539;">
+                <h3 style="color:#fff;">12.27</h3>
+                <p style="color:#fff;">正式演出<br>中央大學</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Slide 11: Tiled_Images -->
+<!-- Slide 11: Styled_Bullet_Points -->
 <div class="slide-container" id="slide11">
-    <h2 class="slide-title">視覺意象與靈感參考</h2>
+    <h2 class="slide-title">數位協作與檔案規範</h2>
     <div class="content-area">
-        <div class="tiled-content">
-            <div style="flex: 1; text-align: center;">
-                <div style="height: 300px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd;">
-                    <img src="http://googleusercontent.com/image_collection/image_retrieval/8922113221769913555" style="width: 100%; height: 100%; object-fit: cover;" alt="Choir">
-                </div>
-                <p>聯合詩班：服裝與進場規範</p>
+        <div class="two-column" style="align-items: center;">
+            <div class="image-wrapper" style="height: 350px;">
+                <img src="http://googleusercontent.com/image_collection/image_retrieval/10341758883551524881" alt="Digital collaboration icons">
             </div>
-            <div style="flex: 1; text-align: center;">
-                <div style="height: 300px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd;">
-                    <img src="http://googleusercontent.com/image_collection/image_retrieval/3169122602947742843" style="width: 100%; height: 100%; object-fit: cover;" alt="Meeting">
-                </div>
-                <p>籌備會議：決策與進度核銷</p>
-            </div>
-            <div style="flex: 1; text-align: center;">
-                <div style="height: 300px; border-radius: 16px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd;">
-                    <img src="http://googleusercontent.com/image_collection/image_retrieval/8577740458478023710" style="width: 100%; height: 100%; object-fit: cover;" alt="Audio Console">
-                </div>
-                <p>錄音技術：四機作業收音規劃</p>
+            <div style="background: #fff; padding: 30px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 20px;"><i class="fa-brands fa-google-drive" style="color: #4285F4; margin-right: 10px;"></i> <strong>Google Drive:</strong> 存放即時草稿、預算表與合唱影音，支援多人同步編輯。</li>
+                    <li style="margin-bottom: 20px;"><i class="fa-brands fa-github" style="color: #181717; margin-right: 10px;"></i> <strong>GitHub Repo:</strong> 分類存放各組定案計畫 (README) 與入口網站程式碼，實現版本控制。</li>
+                    <li><i class="fa-solid fa-shield-check" style="color: #10b981; margin-right: 10px;"></i> <strong>命名規範:</strong> 採 <code>snake_case</code> 與 <code>YYYYMMDD</code> 日期格式，確保存檔有序。</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -506,12 +482,11 @@ body {
 
 <!-- Slide 12: Q&A -->
 <div class="slide-container" id="slide12">
-    <div class="content-area" style="text-align: center;">
-        <h2 style="font-size: 64px; margin-bottom: 30px;">Q&A 討論與意見交流</h2>
-        <p style="font-size: 24px; color: var(--bronze-accent);">求主賜福帶領，讓這場音樂會成為福音的出口。</p>
-        <div style="margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 30px; color: #94a3b8;">
-            <p>技術支援：GitHub 專案管理團隊</p>
-        </div>
+    <div class="qa-layout" style="text-align: center;">
+        <h3 style="color: #7F5539; font-weight: bold; margin-bottom: 10px;">願主帶領</h3>
+        <h2>合一事奉</h2>
+        <p style="font-size: 24px; color: #64748b; margin-top: 30px;">TJC 傳台百年西區「115音樂會」籌備委員會</p>
+        <p style="font-size: 18px; margin-top: 50px; opacity: 0.7;">入口網站現正建置中，請隨時關注 GitHub 更新</p>
     </div>
 </div>
 
