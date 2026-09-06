@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>115音樂會 | 籌備 App</title>
+    <title>115音樂會 | 籌備 APP 首頁</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts for elegant typography -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@700&display=swap" rel="stylesheet">
@@ -32,6 +32,7 @@
             }
         }
     </script>
+    
     <style>
         body { font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
         .app-serif { font-family: 'Noto Serif TC', serif; }
@@ -42,9 +43,9 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 預算圓環圖 - 精確比例 (149625) */
+        /* 預算圓環圖 - 精確比例 ($149,625) */
         .chart-pie {
-            width: 140px; height: 140px; border-radius: 50%;
+            width: 130px; height: 130px; border-radius: 50%;
             background: conic-gradient(
                 #8a5e3c 0% 27.7%,      /* 膳食: 41.5k (27.7%) */
                 #0f172a 27.7% 51.1%,   /* 攝錄: 35.0k (23.4%) */
@@ -60,8 +61,8 @@
         .chart-pie::after {
             content: '$149,625';
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100px; height: 100px; background: white; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;
+            width: 90px; height: 90px; background: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;
             color: #0f172a;
         }
 
@@ -111,10 +112,24 @@
                     <span>執行長 黃孟平 弟兄 指示</span>
                 </div>
                 <blockquote class="text-xs leading-relaxed font-light text-slate-100 italic border-l-2 border-church-gold/50 pl-2.5">
-                    「以聖樂獻詩、福音分享見證為核心，榮耀真神、見證福音，回顧在台傳教百年恩典，兼顧屬靈內涵與活動執行品質；預算管控以『節儉適用、優先屬靈服務』為原則，由復興小區工作小組統籌把關與核定，場地相關執行依已完成合約規劃穩健推進，請各組一規劃逐步完成進度。」
+                    「以聖樂獻詩、福音分享見證為核心，榮耀真神、見證福音，回顧在台傳教百年恩典，兼顧屬靈內涵與活動執行品質；預算管控以『節儉適用、優先屬靈服務』為原則，由復興小區工作小組統籌把關與核定，場地相關執行依已完成合約規劃穩健推進，請各組依規劃逐步完成進度。」
                 </blockquote>
+
+                <!-- 召集人重點工作指示 (Featured Banner) -->
+        <section class="bg-church-navy text-white rounded-2xl p-5 shadow-lg relative overflow-hidden border border-church-gold/20">
+            <div class="absolute right-0 bottom-0 opacity-5 pointer-events-none transform translate-x-6 translate-y-6">
+                <i class="fa-solid fa-church text-[180px]"></i>
+            </div>
+            <div class="relative z-10 space-y-3">
+                <div class="flex items-center space-x-1.5 text-church-gold text-[10px] font-bold tracking-wider uppercase">
+                    <i class="fa-solid fa-crown text-xs"></i>
+                    <span>召集人 卓建新 弟兄 提醒</span>
+                </div>
+                <blockquote class="text-xs leading-relaxed font-light text-slate-100 italic border-l-2 border-church-gold/50 pl-2.5">
+                    「復興小區工作小組為執行單位，請務必各盡其職，並實際統籌把關與核定，場地相關執行依已完成合約規劃穩健推進，各組依規劃逐步完成進度。」
+                </blockquote>       
                 
-                <!-- 新增：每月會議與推進目標之聯動快捷鍵 -->
+                <!-- 每月會議與推進目標之聯動快捷鍵 -->
                 <div class="pt-2 border-t border-white/10 flex justify-between items-center">
                     <span class="text-[8px] text-slate-400">115年西區計畫官方方針</span>
                     <button onclick="scrollToMonthlyTimeline()" class="card-active bg-church-gold/20 hover:bg-church-gold/30 border border-church-gold/50 text-church-gold text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1">
@@ -125,12 +140,12 @@
             </div>
         </section>
 
-        <!-- 快速連結專區：籌備會議紀錄與傳教史上傳進度表 -->
-        <section class="grid grid-cols-1 gap-3">
-            <a href="https://docs.google.com/document/d/138gsDvv6_6MTOqn5OyiiS30jCff-pu-PXafU8fLwNYU/edit?usp=drive_link" target="_blank" class="card-active bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
+        <!-- 快速連結專區：籌備會議紀錄、傳教史上傳進度表、詩班影音看板 -->
+        <section class="grid grid-cols-1 gap-2.5">
+            <a href="https://docs.google.com/document/d/138gsDvv6_6MTOqn5OyiiS30jCff-pu-PXafU8fLwNYU/edit?usp=drive_link" target="_blank" class="card-active bg-white rounded-2xl border border-slate-200 p-3.5 shadow-sm flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-amber-50 text-amber-700 w-10 h-10 rounded-xl flex items-center justify-center shadow-inner">
-                        <i class="fa-regular fa-file-lines text-lg"></i>
+                    <div class="bg-amber-50 text-amber-700 w-9 h-9 rounded-xl flex items-center justify-center shadow-inner shrink-0">
+                        <i class="fa-regular fa-file-lines text-base"></i>
                     </div>
                     <div>
                         <h3 class="text-xs font-bold text-slate-800">籌備會議紀錄</h3>
@@ -143,11 +158,28 @@
                 </div>
             </a>
 
-            <!-- 新增：傳教史上傳進度表 -->
-            <a href="https://tjcdaxiinformation.github.io/TJC-West-History/index.html#districts" target="_blank" class="card-active bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between">
+            <!-- 16大詩班影音看板 -->
+            <a href="https://tjcdaxiinformation.github.io/TJC-West-Choir-Portal/" target="_blank" class="card-active bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 rounded-2xl p-3.5 shadow-sm flex items-center justify-between border border-amber-400/50">
                 <div class="flex items-center space-x-3">
-                    <div class="bg-blue-50 text-blue-700 w-10 h-10 rounded-xl flex items-center justify-center shadow-inner">
-                        <i class="fa-solid fa-scroll text-lg"></i>
+                    <div class="bg-slate-950/20 text-amber-950 w-9 h-9 rounded-xl flex items-center justify-center shadow-inner shrink-0">
+                        <i class="fa-solid fa-music text-base"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-black text-slate-950">16大詩班影音上傳看板 ↗</h3>
+                        <p class="text-[9px] text-slate-900/80 font-bold">16大獻詩單位影音與幹部統計</p>
+                    </div>
+                </div>
+                <div class="text-slate-950 text-xs flex items-center">
+                    <span class="text-[9px] mr-1 bg-slate-950 text-amber-300 font-black px-1.5 py-0.5 rounded">Live</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </div>
+            </a>
+
+            <!-- 傳教史上傳進度表 -->
+            <a href="https://tjcdaxiinformation.github.io/TJC-West-History/index.html#districts" target="_blank" class="card-active bg-white rounded-2xl border border-slate-200 p-3.5 shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-blue-50 text-blue-700 w-9 h-9 rounded-xl flex items-center justify-center shadow-inner shrink-0">
+                        <i class="fa-solid fa-scroll text-base"></i>
                     </div>
                     <div>
                         <h3 class="text-xs font-bold text-slate-800">傳教史上傳進度表</h3>
@@ -161,49 +193,126 @@
             </a>
         </section>
 
+        <!-- 籌備時間軸與會議推進 (Interactive Gantt & Monthly Section) -->
+        <section id="timeline-section" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                <div class="flex items-center space-x-1.5">
+                    <i class="fa-solid fa-timeline text-church-bronze"></i>
+                    <h3 class="text-xs font-bold text-slate-700">大會進度與會議推進</h3>
+                </div>
+                <!-- 視圖切換分頁 -->
+                <div class="flex bg-slate-100 p-0.5 rounded-lg text-[9px] font-bold">
+                    <button id="tab-gantt-btn" onclick="switchTimelineTab('gantt')" class="px-2.5 py-1 rounded-md bg-white text-church-navy shadow-xs transition-all">六大階段</button>
+                    <button id="tab-monthly-btn" onclick="switchTimelineTab('monthly')" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition-all">每月推進</button>
+                </div>
+            </div>
+
+            <!-- 視圖一：大會六大階段甘特圖條目 -->
+            <div id="timeline-gantt-view" class="space-y-2">
+                <p class="text-[9px] text-slate-400 font-medium">點擊階段查看核心任務與預算重點：</p>
+                <div class="grid grid-cols-2 gap-2 text-[9px] font-bold">
+                    <button id="gantt-1" onclick="selectGantt(1)" class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-left transition-all hover:bg-amber-50/50">
+                        <span class="text-church-bronze block font-black">1. 啟動期 (02/07)</span>
+                        <span class="text-slate-500 text-[8px]">組織建置與合約</span>
+                    </button>
+                    <button id="gantt-2" onclick="selectGantt(2)" class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-left transition-all hover:bg-amber-50/50">
+                        <span class="text-church-bronze block font-black">2. 企劃期 (03-05月)</span>
+                        <span class="text-slate-500 text-[8px]">流程與預算核定</span>
+                    </button>
+                    <button id="gantt-3" onclick="selectGantt(3)" class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-left transition-all hover:bg-amber-50/50">
+                        <span class="text-church-bronze block font-black">3. 執行期 (06-08月)</span>
+                        <span class="text-slate-500 text-[8px]">詩班合排與器材</span>
+                    </button>
+                    <button id="gantt-4" onclick="selectGantt(4)" class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-left transition-all hover:bg-amber-50/50">
+                        <span class="text-church-bronze block font-black">4. 衝刺期 (09-10月)</span>
+                        <span class="text-slate-500 text-[8px]">總綵排與 10/31 場佈</span>
+                    </button>
+                    <button id="gantt-5" onclick="selectGantt(5)" class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-left transition-all hover:bg-amber-50/50">
+                        <span class="text-church-gold block font-black">5. 執行日 (11/01)</span>
+                        <span class="text-slate-500 text-[8px]">中央大學大禮堂正式演出</span>
+                    </button>
+                    <button id="gantt-6" onclick="selectGantt(6)" class="p-2 rounded-xl bg-slate-50 border border-slate-200 text-left transition-all hover:bg-amber-50/50">
+                        <span class="text-church-navy block font-black">6. 結案期 (11-12月)</span>
+                        <span class="text-slate-500 text-[8px]">財務結算與感謝作業</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 視圖二：每月推進目標橫向選單 -->
+            <div id="timeline-monthly-view" class="hidden space-y-2">
+                <p class="text-[9px] text-slate-400 font-medium">左右滑動選擇月份查看目標：</p>
+                <div id="monthly-badge-container" class="flex space-x-2 overflow-x-auto no-scrollbar py-1">
+                    <button id="m-2026_02" onclick="selectMonth('2026.02')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.02</button>
+                    <button id="m-2026_03" onclick="selectMonth('2026.03')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.03</button>
+                    <button id="m-2026_04" onclick="selectMonth('2026.04')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.04</button>
+                    <button id="m-2026_05" onclick="selectMonth('2026.05')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.05</button>
+                    <button id="m-2026_06" onclick="selectMonth('2026.06')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.06</button>
+                    <button id="m-2026_07" onclick="selectMonth('2026.07')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.07</button>
+                    <button id="m-2026_08" onclick="selectMonth('2026.08')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.08</button>
+                    <button id="m-2026_09" onclick="selectMonth('2026.09')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.09</button>
+                    <button id="m-2026_10" onclick="selectMonth('2026.10')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.10</button>
+                    <button id="m-2026_11" onclick="selectMonth('2026.11')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.11</button>
+                    <button id="m-2026_12" onclick="selectMonth('2026.12')" class="flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold border border-slate-200 bg-slate-50 text-slate-600 transition-all">2026.12</button>
+                </div>
+            </div>
+
+            <!-- 詳細資訊展演卡片 -->
+            <div id="detail-card" class="bg-amber-50/60 rounded-xl p-3.5 border border-amber-200 space-y-2">
+                <div class="flex justify-between items-center">
+                    <h4 id="detail-title" class="text-xs font-black text-church-navy">啟動期</h4>
+                    <span id="detail-subtitle" class="text-[9px] font-bold text-amber-800 bg-amber-200/60 px-2 py-0.5 rounded-full">2026/02/07</span>
+                </div>
+                <div class="space-y-1 text-[10px] text-slate-700 leading-relaxed">
+                    <p><strong id="label-field-1" class="text-church-navy"><i class="fa-solid fa-star mr-1"></i>核心工作：</strong><span id="detail-field-1">首次會議、組織建置...</span></p>
+                    <p><strong id="label-field-2" class="text-church-navy"><i class="fa-solid fa-wallet mr-1"></i>預算重點：</strong><span id="detail-field-2">提醒各組提出預算需求...</span></p>
+                    <p id="detail-field-3-container"><strong id="label-field-3" class="text-church-navy"><i class="fa-solid fa-users mr-1"></i>負責單位：</strong><span id="detail-field-3">執行長、復興小區工作小組</span></p>
+                </div>
+            </div>
+        </section>
+
         <!-- 財務預算分配圖表 (Duo-Chart Section) -->
-        <section class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-5">
+        <section class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-4">
             <div class="flex items-center space-x-1.5">
                 <i class="fa-solid fa-wallet text-church-bronze"></i>
                 <h3 class="text-xs font-bold text-slate-700">大會預算數據概覽 ($149,625)</h3>
             </div>
 
             <!-- 圖表 1: 各工作小組預算分配 -->
-            <div class="space-y-3 border-b border-slate-100 pb-4">
+            <div class="space-y-2.5 border-b border-slate-100 pb-3.5">
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">一、各工作小組預算分配</p>
                 <div class="space-y-2">
                     <!-- 場地技術 -->
                     <div>
                         <div class="flex justify-between text-[8px] font-bold text-slate-500"><span>03 場地與舞台技術組</span><span>$59,600 (39.8%)</span></div>
-                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-0.5"><div class="bg-church-navy h-full" style="width: 100%"></div></div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-0.5"><div class="bg-church-navy h-full" style="width: 100%"></div></div>
                     </div>
                     <!-- 行政財務 -->
                     <div>
                         <div class="flex justify-between text-[8px] font-bold text-slate-500"><span>02 行政與財務組</span><span>$44,000 (29.4%)</span></div>
-                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-0.5"><div class="bg-church-bronze h-full" style="width: 74%"></div></div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-0.5"><div class="bg-church-bronze h-full" style="width: 74%"></div></div>
                     </div>
                     <!-- 宣傳公關 -->
                     <div>
                         <div class="flex justify-between text-[8px] font-bold text-slate-500"><span>05 宣傳與公關組</span><span>$35,095 (23.5%)</span></div>
-                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-0.5"><div class="bg-church-gold h-full" style="width: 59%"></div></div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-0.5"><div class="bg-church-gold h-full" style="width: 59%"></div></div>
                     </div>
                     <!-- 安全總務 -->
                     <div>
                         <div class="flex justify-between text-[8px] font-bold text-slate-500"><span>07 安全與總務後勤組</span><span>$7,930 (5.3%)</span></div>
-                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-0.5"><div class="bg-slate-500 h-full" style="width: 13%"></div></div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-0.5"><div class="bg-slate-500 h-full" style="width: 13%"></div></div>
                     </div>
                     <!-- 接待關懷 -->
                     <div>
                         <div class="flex justify-between text-[8px] font-bold text-slate-500"><span>06 接待與關懷組</span><span>$3,000 (2.0%)</span></div>
-                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-0.5"><div class="bg-slate-400 h-full" style="width: 5%"></div></div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-0.5"><div class="bg-slate-400 h-full" style="width: 5%"></div></div>
                     </div>
                 </div>
             </div>
 
             <!-- 圖表 2: 預算項目分配表 -->
-            <div class="space-y-3">
+            <div class="space-y-2.5">
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">二、預算項目分配比例表</p>
-                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl gap-4">
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl gap-3">
                     <div class="chart-pie flex-shrink-0 scale-90"></div>
                     <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[8px] font-bold text-slate-600 flex-grow">
                         <div class="flex items-center"><span class="w-2 h-2 bg-church-bronze mr-1 rounded-sm"></span> 膳食: 41.5k</div>
@@ -224,65 +333,65 @@
                 <i class="fa-solid fa-folder-tree mr-2 text-church-bronze"></i>各組工作雲端門戶 (點擊連動)
             </h3>
             
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2.5">
                 <!-- 01 節目企劃 -->
-                <a href="https://drive.google.com/drive/folders/1clXLMuRrvif3D6AoPlIug-n3p1_EeUf3?usp=drive_link" target="_blank" class="card-active bg-white p-4 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
-                    <div class="bg-blue-50 text-blue-600 w-11 h-11 rounded-2xl flex items-center justify-center mb-2 shadow-inner">
-                        <i class="fa-solid fa-music text-lg"></i>
+                <a href="https://drive.google.com/drive/folders/1clXLMuRrvif3D6AoPlIug-n3p1_EeUf3?usp=drive_link" target="_blank" class="card-active bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                    <div class="bg-blue-50 text-blue-600 w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 shadow-inner">
+                        <i class="fa-solid fa-music text-base"></i>
                     </div>
                     <span class="text-xs font-bold">01 節目企劃</span>
                     <span class="text-[9px] text-slate-400 mt-0.5">陳齊揚 組長</span>
                 </a>
 
                 <!-- 02 行政財務 -->
-                <a href="https://docs.google.com/spreadsheets/d/1iUeyx1tt-7j6BArqPIICSwyRI71SyJ2GRnJFMEkMja8/edit?usp=drive_link" target="_blank" class="card-active bg-white p-4 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
-                    <div class="bg-emerald-50 text-emerald-600 w-11 h-11 rounded-2xl flex items-center justify-center mb-2 shadow-inner">
-                        <i class="fa-solid fa-calculator text-lg"></i>
+                <a href="https://docs.google.com/spreadsheets/d/1iUeyx1tt-7j6BArqPIICSwyRI71SyJ2GRnJFMEkMja8/edit?usp=drive_link" target="_blank" class="card-active bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                    <div class="bg-emerald-50 text-emerald-600 w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 shadow-inner">
+                        <i class="fa-solid fa-calculator text-base"></i>
                     </div>
                     <span class="text-xs font-bold">02 行政財務</span>
                     <span class="text-[9px] text-slate-400 mt-0.5">李永賢 組長</span>
                 </a>
 
                 <!-- 03 場地技術 -->
-                <a href="https://drive.google.com/drive/folders/1P0ZBu9HdoL2cxVyCncjKo-jjVxq7WrUs?usp=drive_link" target="_blank" class="card-active bg-white p-4 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
-                    <div class="bg-orange-50 text-orange-600 w-11 h-11 rounded-2xl flex items-center justify-center mb-2 shadow-inner">
-                        <i class="fa-solid fa-sliders text-lg"></i>
+                <a href="https://drive.google.com/drive/folders/1P0ZBu9HdoL2cxVyCncjKo-jjVxq7WrUs?usp=drive_link" target="_blank" class="card-active bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                    <div class="bg-orange-50 text-orange-600 w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 shadow-inner">
+                        <i class="fa-solid fa-sliders text-base"></i>
                     </div>
                     <span class="text-xs font-bold">03 場地技術</span>
                     <span class="text-[9px] text-slate-400 mt-0.5">黃彥綸 組長</span>
                 </a>
 
                 <!-- 04 聖樂服事 -->
-                <a href="https://docs.google.com/spreadsheets/d/1zA1jePqrB8v2DZz_2XzXP_aCZ7ry6kUkbA8syFPRVSg/edit?usp=drive_link" target="_blank" class="card-active bg-white p-4 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
-                    <div class="bg-purple-50 text-purple-600 w-11 h-11 rounded-2xl flex items-center justify-center mb-2 shadow-inner">
-                        <i class="fa-solid fa-microphone text-lg"></i>
+                <a href="https://docs.google.com/spreadsheets/d/1zA1jePqrB8v2DZz_2XzXP_aCZ7ry6kUkbA8syFPRVSg/edit?usp=drive_link" target="_blank" class="card-active bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                    <div class="bg-purple-50 text-purple-600 w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 shadow-inner">
+                        <i class="fa-solid fa-microphone text-base"></i>
                     </div>
                     <span class="text-xs font-bold">04 聖樂服事</span>
                     <span class="text-[9px] text-slate-400 mt-0.5">林月霞 組長</span>
                 </a>
 
                 <!-- 05 宣傳公關 -->
-                <a href="https://drive.google.com/drive/folders/1-iftXxSryf3mrjpt2902i117iPMJPwjV?usp=drive_link" target="_blank" class="card-active bg-white p-4 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
-                    <div class="bg-rose-50 text-rose-600 w-11 h-11 rounded-2xl flex items-center justify-center mb-2 shadow-inner">
-                        <i class="fa-solid fa-bullhorn text-lg"></i>
+                <a href="https://drive.google.com/drive/folders/1-iftXxSryf3mrjpt2902i117iPMJPwjV?usp=drive_link" target="_blank" class="card-active bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                    <div class="bg-rose-50 text-rose-600 w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 shadow-inner">
+                        <i class="fa-solid fa-bullhorn text-base"></i>
                     </div>
                     <span class="text-xs font-bold">05 宣傳公關</span>
                     <span class="text-[9px] text-slate-400 mt-0.5">王鴻志 組長</span>
                 </a>
 
                 <!-- 06 接待關懷 -->
-                <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="card-active bg-white p-4 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
-                    <div class="bg-indigo-50 text-indigo-600 w-11 h-11 rounded-2xl flex items-center justify-center mb-2 shadow-inner">
-                        <i class="fa-solid fa-handshake-angle text-lg"></i>
+                <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="card-active bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center text-center shadow-sm">
+                    <div class="bg-indigo-50 text-indigo-600 w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 shadow-inner">
+                        <i class="fa-solid fa-handshake-angle text-base"></i>
                     </div>
                     <span class="text-xs font-bold">06 接待關懷</span>
                     <span class="text-[9px] text-slate-400 mt-0.5">張勇光 組長</span>
                 </a>
 
                 <!-- 07 安全總務 -->
-                <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="card-active bg-white p-4 rounded-2xl border border-slate-200 flex flex-col items-center text-center col-span-2 shadow-sm py-4">
-                    <div class="bg-stone-100 text-stone-700 w-11 h-11 rounded-2xl flex items-center justify-center mb-2 shadow-inner">
-                        <i class="fa-solid fa-shield-halved text-lg"></i>
+                <a href="https://docs.google.com/document/d/1-XzLxP2esp_a6ecmtYhU-Kg4SnPiAG3riN3VfLAJ3JQ/edit?usp=drive_link" target="_blank" class="card-active bg-white p-3.5 rounded-2xl border border-slate-200 flex flex-col items-center text-center col-span-2 shadow-sm py-3.5">
+                    <div class="bg-stone-100 text-stone-700 w-10 h-10 rounded-2xl flex items-center justify-center mb-1.5 shadow-inner">
+                        <i class="fa-solid fa-shield-halved text-base"></i>
                     </div>
                     <span class="text-xs font-bold">07 安全與總務後勤</span>
                     <span class="text-[9px] text-slate-400 mt-0.5">鍾霖恩 組長</span>
@@ -292,7 +401,7 @@
 
     </main>
 
-    <!-- 頁尾宣告與基本聯絡方式 -->
+    <!-- 頁尾宣告 -->
     <footer class="text-center py-6 text-[10px] text-slate-400 max-w-md mx-auto px-4">
         <p>© 2026 真耶穌教會「115音樂會」西區籌備委員會</p>
         <p class="mt-0.5">GitHub Pages 完全適配安全託管版</p>
@@ -468,7 +577,7 @@
                 monthlyView.classList.remove('hidden');
                 ganttView.classList.add('hidden');
                 
-                // 預設高亮 2026.07 (目前7月推進要務)
+                // 預設高亮當前或推薦月份
                 selectMonth('2026.07');
             }
         }
@@ -492,7 +601,6 @@
                 document.getElementById('detail-title').innerText = data.phase;
                 document.getElementById('detail-subtitle').innerText = data.date;
                 
-                // 標題名補正
                 document.getElementById('label-field-1').innerHTML = '<i class="fa-solid fa-star mr-1"></i>核心工作：';
                 document.getElementById('label-field-2').innerHTML = '<i class="fa-solid fa-wallet mr-1"></i>預算關鍵工作：';
                 document.getElementById('detail-field-3-container').classList.remove('hidden');
@@ -516,7 +624,6 @@
             const activeBtn = document.getElementById(activeId);
             if (activeBtn) {
                 activeBtn.className = "flex-shrink-0 px-3 py-1.5 rounded-full text-[10px] font-bold bg-church-navy text-church-gold border border-church-gold/30 shadow-md transition-all";
-                // 滾動使選中的月份置中，方便手機端體驗
                 activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
 
@@ -534,7 +641,7 @@
                 document.getElementById('detail-field-2').innerText = data.target;
                 
                 if (data.note) {
-                    document.getElementById('label-field-3').innerText = "備註：";
+                    document.getElementById('label-field-3').innerHTML = '<i class="fa-solid fa-info-circle mr-1"></i>備註：';
                     document.getElementById('detail-field-3').innerText = data.note;
                 } else {
                     document.getElementById('detail-field-3-container').classList.add('hidden');
@@ -547,12 +654,11 @@
             const section = document.getElementById('timeline-section');
             if (section) {
                 section.scrollIntoView({ behavior: 'smooth' });
-                // 強制切換至推進目標分頁
                 switchTimelineTab('monthly');
             }
         }
 
-        // 頁面加載完成後，預設初始化甘特圖
+        // 頁面加載完成後預設初始化
         window.onload = function() {
             selectGantt(1);
         }
