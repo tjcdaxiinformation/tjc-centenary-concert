@@ -154,6 +154,17 @@
                 </h2>
 
                 <div class="space-y-4">
+                    <!-- Logo File Uploader -->
+                    <div class="p-3 bg-[#081120] border border-amber-500/40 rounded-xl space-y-1.5">
+                        <label class="block text-xs uppercase font-bold text-amber-300 flex items-center gap-1.5">
+                            <span>🖼️</span> 上傳官方牆垣 Logo 圖片 (.png / .jpg)
+                        </label>
+                        <input type="file" id="inputLogoFile" accept="image/png, image/jpeg" class="w-full bg-[#0c1b33] border border-blue-900/80 text-xs text-gray-200 rounded-lg p-1.5 cursor-pointer file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 transition">
+                        <p class="text-[11px] text-gray-400 leading-tight">
+                            請選取本機的 <code class="text-amber-300 font-mono">牆垣logo_2.png</code>，系統將自動去黑底並轉為質感金黃色！
+                        </p>
+                    </div>
+
                     <div>
                         <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">系列副標題 / 類別</label>
                         <input type="text" id="inputSubtitle" value="獻詩詩班介紹 01" class="w-full bg-[#081120] border border-blue-900/60 rounded-xl px-4 py-2.5 text-sm text-gray-200 focus:outline-none focus:border-amber-400 transition" placeholder="例如：聯合詩班介紹 / 青年詩班介紹">
@@ -202,8 +213,8 @@
 
                     <!-- Top Section -->
                     <div class="relative z-10 flex justify-between items-start animate-fade-in animate-delay-1">
-                        <!-- Official Wall Logo (Static, Transparent Background) -->
-                        <div class="w-20 h-20 wall-logo-container p-1">
+                        <!-- Official Wall Logo Container -->
+                        <div id="wallLogoContainer" class="w-24 h-24 wall-logo-container p-1 flex items-center justify-center">
                             <svg viewBox="0 0 200 170" class="w-full h-full" fill="#d4af37">
                                 <g>
                                     <!-- Crenellations / Battlement blocks at top edge -->
@@ -517,65 +528,60 @@
 
     <script>
         // DOM Elements
+        const inputLogoFile = document.getElementById('inputLogoFile');
+        const wallLogoContainer = document.getElementById('wallLogoContainer');
         const inputSubtitle = document.getElementById('inputSubtitle');
         const inputChoirName = document.getElementById('inputChoirName');
-        const inputSong1 = document.getElementById('inputSong1');
-        const inputSong2 = document.getElementById('inputSong2');
-        const inputOutroCallout = document.getElementById('inputOutroCallout');
 
-        const outSubtitle = document.getElementById('outSubtitle');
-        const outChoirName = document.getElementById('outChoirName');
-        const outSong1 = document.getElementById('outSong1');
-        const outSong2 = document.getElementById('outSong2');
-        const outOutroCallout = document.getElementById('outOutroCallout');
+        // Automatic image processing for uploaded PNG/JPG
+        if (inputLogoFile) {
+            inputLogoFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
 
-        const previewFrameIntro = document.getElementById('previewFrameIntro');
-        const previewFrameOutro = document.getElementById('previewFrameOutro');
-        const toast = document.getElementById('toast');
-        const promoTextarea = document.getElementById('promoTextarea');
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Create processing canvas
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
 
-        // Target Date: 2026/11/01 00:00:00 Taiwan Time
-        const targetDate = new Date('2026-11-01T00:00:00+08:00');
+                        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const data = imgData.data;
 
-        // Real-time text bindings
-        inputSubtitle.addEventListener('input', (e) => {
-            outSubtitle.textContent = e.target.value || '詩班介紹';
-            updatePromoText();
-        });
+                        // Loop through pixels: strip black background & colorize white lines to Gold (#d4af37)
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i];
+                            const g = data[i+1];
+                            const b = data[i+2];
+                            const brightness = (r + g + b) / 3;
 
-        inputChoirName.addEventListener('input', (e) => {
-            outChoirName.textContent = e.target.value || '請輸入詩班名稱';
-            updatePromoText();
-        });
+                            if (brightness < 45) {
+                                // Black background -> transparent
+                                data[i + 3] = 0;
+                            } else {
+                                // White logo lines -> Gold #d4af37 (RGB: 212, 175, 55)
+                                data[i] = 212;
+                                data[i+1] = 175;
+                                data[i+2] = 55;
+                                data[i+3] = Math.min(255, brightness * 1.2);
+                            }
+                        }
 
-        inputSong1.addEventListener('input', (e) => {
-            outSong1.textContent = e.target.value ? `${e.target.value}` : '';
-            updatePromoText();
-        });
+                        ctx.putImageData(imgData, 0, 0);
+                        const goldLogoUrl = canvas.toDataURL();
 
-        inputSong2.addEventListener('input', (e) => {
-            outSong2.textContent = e.target.value ? `${e.target.value}` : '';
-            updatePromoText();
-        });
-
-        inputOutroCallout.addEventListener('input', (e) => {
-            outOutroCallout.textContent = e.target.value || '追蹤官方 IG';
-        });
-
-        // Tab Switching Logic
-        function switchTab(tab) {
-            const tabs = ['intro', 'outro', 'countdown'];
-            tabs.forEach(t => {
-                const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-                const panel = document.getElementById('panel' + t.charAt(0).toUpperCase() + t.slice(1));
-                
-                if (t === tab) {
-                    btn.className = "flex-1 py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold transition bg-amber-500 text-slate-950 shadow-md";
-                    panel.classList.remove('hidden');
-                } else {
-                    btn.className = "flex-1 py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold transition text-gray-300 hover:text-white";
-                    panel.classList.add('hidden');
-                }
+                        // Replace logo with processed pixel-perfect image
+                        wallLogoContainer.innerHTML = `<img src="${goldLogoUrl}" class="w-full h-full object-contain filter drop-shadow(0 2px 8px rgba(212,175,55,0.4))" alt="官方牆垣Logo">`;
+                        showToast('已成功載入並套用官方牆垣 Logo！');
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
             });
         }
 
