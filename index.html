@@ -76,7 +76,7 @@
 <body class="bg-slate-50 min-h-screen pb-24">
 
     <!-- 頂部高質感導覽列 -->
-    <nav class="glass-header text-white sticky top-0 z-50 px-4 py-3.5 shadow-md border-b border-church-gold/30">
+    <nav class="glass-header text-white sticky top-0 z-50 px-4 py-3 shadow-md border-b border-church-gold/30">
         <div class="max-w-md mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-2">
                 <i class="fa-solid fa-music text-church-gold text-lg"></i>
@@ -85,28 +85,39 @@
                     <p class="text-[9px] text-slate-400 font-light">台灣傳教100週年 · 西區門戶</p>
                 </div>
             </div>
-            <!-- 右側核心功能按鈕 -->
-            <div class="flex space-x-1.5">
-                <a href="https://drive.google.com/drive/folders/1t3YmaZt6aOYyIl98jSsOjr6FN_1NDwgL?usp=drive_link" target="_blank" class="card-active bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1.5 rounded-full text-[10px] font-bold flex items-center space-x-1 border border-slate-700">
-                    <i class="fa-brands fa-google-drive text-amber-400"></i>
-                    <span>大會雲端</span>
-                </a>
-                <a href="https://drive.google.com/drive/folders/1eYGN_A5EiHTPr4fCE_FW03L52mPce8Bf?usp=sharing" target="_blank" class="card-active bg-church-bronze hover:bg-church-bronze/90 text-white px-2.5 py-1.5 rounded-full text-[10px] font-bold flex items-center space-x-1 shadow-md shadow-black/20">
-                    <i class="fa-solid fa-cloud-arrow-up text-church-gold"></i>
-                    <span>上傳報告</span>
-                </a>
+            
+            <!-- 右側核心功能按鈕與右上角自動倒數標籤 -->
+            <div class="flex flex-col items-end space-y-1">
+                <!-- 右上角角落小巧倒數天數標籤 -->
+                <div class="bg-slate-800/90 text-amber-300 text-[9px] font-bold px-2 py-0.5 rounded-full border border-church-gold/40 flex items-center space-x-1 shadow-xs">
+                    <i class="fa-solid fa-hourglass-half text-[8px] text-church-gold animate-pulse"></i>
+                    <span>倒數 <strong id="navCountdownDays" class="text-amber-200 font-extrabold text-[10px]">--</strong> 天</span>
+                </div>
+                
+                <div class="flex space-x-1.5">
+                    <a href="https://drive.google.com/drive/folders/1t3YmaZt6aOYyIl98jSsOjr6FN_1NDwgL?usp=drive_link" target="_blank" class="card-active bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1.5 rounded-full text-[10px] font-bold flex items-center space-x-1 border border-slate-700">
+                        <i class="fa-brands fa-google-drive text-amber-400"></i>
+                        <span>大會雲端</span>
+                    </a>
+                    <a href="https://drive.google.com/drive/folders/1eYGN_A5EiHTPr4fCE_FW03L52mPce8Bf?usp=sharing" target="_blank" class="card-active bg-church-bronze hover:bg-church-bronze/90 text-white px-2.5 py-1.5 rounded-full text-[10px] font-bold flex items-center space-x-1 shadow-md shadow-black/20">
+                        <i class="fa-solid fa-cloud-arrow-up text-church-gold"></i>
+                        <span>上傳報告</span>
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
     <main class="max-w-md mx-auto px-4 pt-4 space-y-5">
 
-        <!-- 執行長重點工作指示 (Featured Banner) -->
-        <section class="bg-church-navy text-white rounded-2xl p-5 shadow-lg relative overflow-hidden border border-church-gold/20">
+        <!-- 執行長與召集人重點工作指示 (Featured Banner) -->
+        <section class="bg-church-navy text-white rounded-2xl p-5 shadow-lg relative overflow-hidden border border-church-gold/20 space-y-4">
             <div class="absolute right-0 bottom-0 opacity-5 pointer-events-none transform translate-x-6 translate-y-6">
                 <i class="fa-solid fa-church text-[180px]"></i>
             </div>
-            <div class="relative z-10 space-y-3">
+            
+            <!-- 執行長指示 -->
+            <div class="relative z-10 space-y-2">
                 <div class="flex items-center space-x-1.5 text-church-gold text-[10px] font-bold tracking-wider uppercase">
                     <i class="fa-solid fa-crown text-xs"></i>
                     <span>執行長 黃孟平 弟兄 指示</span>
@@ -114,13 +125,10 @@
                 <blockquote class="text-xs leading-relaxed font-light text-slate-100 italic border-l-2 border-church-gold/50 pl-2.5">
                     「以聖樂獻詩、福音分享見證為核心，榮耀真神、見證福音，回顧在台傳教百年恩典，兼顧屬靈內涵與活動執行品質；預算管控以『節儉適用、優先屬靈服務』為原則，由復興小區工作小組統籌把關與核定，場地相關執行依已完成合約規劃穩健推進，請各組依規劃逐步完成進度。」
                 </blockquote>
-
-                <!-- 召集人重點工作指示 (Featured Banner) -->
-        <section class="bg-church-navy text-white rounded-2xl p-5 shadow-lg relative overflow-hidden border border-church-gold/20">
-            <div class="absolute right-0 bottom-0 opacity-5 pointer-events-none transform translate-x-6 translate-y-6">
-                <i class="fa-solid fa-church text-[180px]"></i>
             </div>
-            <div class="relative z-10 space-y-3">
+
+            <!-- 召集人提醒 -->
+            <div class="relative z-10 space-y-2 pt-2 border-t border-white/10">
                 <div class="flex items-center space-x-1.5 text-church-gold text-[10px] font-bold tracking-wider uppercase">
                     <i class="fa-solid fa-crown text-xs"></i>
                     <span>召集人 卓建新 弟兄 提醒</span>
@@ -130,7 +138,7 @@
                 </blockquote>       
                 
                 <!-- 每月會議與推進目標之聯動快捷鍵 -->
-                <div class="pt-2 border-t border-white/10 flex justify-between items-center">
+                <div class="pt-2 flex justify-between items-center">
                     <span class="text-[8px] text-slate-400">115年西區計畫官方方針</span>
                     <button onclick="scrollToMonthlyTimeline()" class="card-active bg-church-gold/20 hover:bg-church-gold/30 border border-church-gold/50 text-church-gold text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1">
                         <i class="fa-solid fa-calendar-check animate-pulse"></i>
@@ -425,6 +433,18 @@
 
     <!-- 互動甘特圖與每月會議數據邏輯 -->
     <script>
+        // 自動計算距離音樂會 (2026/11/01) 的倒數天數
+        function updateNavCountdown() {
+            const targetDate = new Date('2026-11-01T00:00:00+08:00');
+            const now = new Date();
+            const diffTime = targetDate - now;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const el = document.getElementById('navCountdownDays');
+            if (el) {
+                el.innerText = diffDays > 0 ? diffDays : 0;
+            }
+        }
+
         // 1. 籌備會大會六大階段甘特圖數據
         const ganttData = {
             1: {
@@ -661,6 +681,7 @@
         // 頁面加載完成後預設初始化
         window.onload = function() {
             selectGantt(1);
+            updateNavCountdown(); // 計算並更新右上角倒數天數
         }
     </script>
 </body>
