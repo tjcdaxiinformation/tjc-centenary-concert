@@ -155,13 +155,13 @@
 
                 <div class="space-y-4">
                     <!-- Logo File Uploader -->
-                    <div class="p-3 bg-[#081120] border border-amber-500/40 rounded-xl space-y-1.5">
+                    <div class="p-3.5 bg-[#081120] border border-amber-500/40 rounded-xl space-y-1.5 shadow-inner">
                         <label class="block text-xs uppercase font-bold text-amber-300 flex items-center gap-1.5">
                             <span>🖼️</span> 上傳官方牆垣 Logo 圖片 (.png / .jpg)
                         </label>
                         <input type="file" id="inputLogoFile" accept="image/png, image/jpeg" class="w-full bg-[#0c1b33] border border-blue-900/80 text-xs text-gray-200 rounded-lg p-1.5 cursor-pointer file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 transition">
                         <p class="text-[11px] text-gray-400 leading-tight">
-                            請選取本機的 <code class="text-amber-300 font-mono">牆垣logo_2.png</code>，系統將自動去黑底並轉為質感金黃色！
+                            請點選並上傳您本機的 <code class="text-amber-300 font-mono">牆垣logo_2.png</code>，系統將自動去黑底並轉換為金色主視覺標誌！
                         </p>
                     </div>
 
@@ -199,7 +199,7 @@
                 <div class="mt-6 pt-4 border-t border-blue-900/40 text-xs text-gray-400 space-y-1">
                     <p>💡 **使用建議：**</p>
                     <p>1. 可直接使用手機或電腦螢幕錄影軟體錄製右側 9:16 直式預覽畫面。</p>
-                    <p>2. 左上角已採用官方百週年牆垣標誌（去除背景與旋轉），展現深厚傳承意象。</p>
+                    <p>2. 上傳牆垣圖騰後，即可呈現像素級精確的官方標誌，展現深厚傳承意象。</p>
                 </div>
             </div>
 
@@ -486,7 +486,7 @@
                     <textarea id="promoTextarea" readonly class="w-full h-40 bg-[#081120] border border-blue-900/60 rounded-xl p-3 text-xs text-gray-200 font-sans focus:outline-none leading-relaxed select-all"></textarea>
                     
                     <button onclick="copyPromoText()" class="w-full bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-3 rounded-xl border border-blue-800 transition text-sm flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
                         複製轉發文案
                     </button>
                 </div>
@@ -532,6 +532,23 @@
         const wallLogoContainer = document.getElementById('wallLogoContainer');
         const inputSubtitle = document.getElementById('inputSubtitle');
         const inputChoirName = document.getElementById('inputChoirName');
+        const inputSong1 = document.getElementById('inputSong1');
+        const inputSong2 = document.getElementById('inputSong2');
+        const inputOutroCallout = document.getElementById('inputOutroCallout');
+
+        const outSubtitle = document.getElementById('outSubtitle');
+        const outChoirName = document.getElementById('outChoirName');
+        const outSong1 = document.getElementById('outSong1');
+        const outSong2 = document.getElementById('outSong2');
+        const outOutroCallout = document.getElementById('outOutroCallout');
+
+        const previewFrameIntro = document.getElementById('previewFrameIntro');
+        const previewFrameOutro = document.getElementById('previewFrameOutro');
+        const toast = document.getElementById('toast');
+        const promoTextarea = document.getElementById('promoTextarea');
+
+        // Target Date: 2026/11/01 00:00:00 Taiwan Time
+        const targetDate = new Date('2026-11-01T00:00:00+08:00');
 
         // Automatic image processing for uploaded PNG/JPG
         if (inputLogoFile) {
@@ -585,6 +602,60 @@
             });
         }
 
+        // Real-time text bindings
+        if (inputSubtitle) {
+            inputSubtitle.addEventListener('input', (e) => {
+                if (outSubtitle) outSubtitle.textContent = e.target.value || '詩班介紹';
+                updatePromoText();
+            });
+        }
+
+        if (inputChoirName) {
+            inputChoirName.addEventListener('input', (e) => {
+                if (outChoirName) outChoirName.textContent = e.target.value || '請輸入詩班名稱';
+                updatePromoText();
+            });
+        }
+
+        if (inputSong1) {
+            inputSong1.addEventListener('input', (e) => {
+                if (outSong1) outSong1.textContent = e.target.value ? `${e.target.value}` : '';
+                updatePromoText();
+            });
+        }
+
+        if (inputSong2) {
+            inputSong2.addEventListener('input', (e) => {
+                if (outSong2) outSong2.textContent = e.target.value ? `${e.target.value}` : '';
+                updatePromoText();
+            });
+        }
+
+        if (inputOutroCallout) {
+            inputOutroCallout.addEventListener('input', (e) => {
+                if (outOutroCallout) outOutroCallout.textContent = e.target.value || '追蹤官方 IG';
+            });
+        }
+
+        // Tab Switching Logic
+        function switchTab(tab) {
+            const tabs = ['intro', 'outro', 'countdown'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+                const panel = document.getElementById('panel' + t.charAt(0).toUpperCase() + t.slice(1));
+                
+                if (btn && panel) {
+                    if (t === tab) {
+                        btn.className = "flex-1 py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold transition bg-amber-500 text-slate-950 shadow-md";
+                        panel.classList.remove('hidden');
+                    } else {
+                        btn.className = "flex-1 py-2.5 px-3 rounded-xl text-xs md:text-sm font-bold transition text-gray-300 hover:text-white";
+                        panel.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
         // Live Countdown Calculation
         function updateCountdown() {
             const now = new Date();
@@ -615,23 +686,27 @@
             document.getElementById('bannerSecs').textContent = formatSecs;
 
             // Hub Elements
-            document.getElementById('hubDays').textContent = formatDays;
-            document.getElementById('hubHours').textContent = formatHours;
-            document.getElementById('hubMins').textContent = formatMins;
-            document.getElementById('hubSecs').textContent = formatSecs;
+            const hubDays = document.getElementById('hubDays');
+            if (hubDays) {
+                document.getElementById('hubDays').textContent = formatDays;
+                document.getElementById('hubHours').textContent = formatHours;
+                document.getElementById('hubMins').textContent = formatMins;
+                document.getElementById('hubSecs').textContent = formatSecs;
+            }
 
             updatePromoText(days);
         }
 
         // Update Share Promo Textarea
         function updatePromoText(daysLeft = null) {
+            if (!promoTextarea) return;
             const days = daysLeft !== null ? daysLeft : document.getElementById('bannerDays').textContent;
             const text = `【真耶穌教會臺灣傳教百週年 ‧ 西區詩歌音樂會】\n` +
                          `✨ 距離 2026/11/01 音樂會舉開倒數：剩餘 ${days} 天！\n\n` +
-                         `🎬 影片主題：${inputSubtitle.value}\n` +
-                         `🎶 本集介紹詩班：${inputChoirName.value}\n` +
-                         `${inputSong1.value ? inputSong1.value + '\n' : ''}` +
-                         `${inputSong2.value ? inputSong2.value + '\n' : ''}\n` +
+                         `🎬 影片主題：${inputSubtitle ? inputSubtitle.value : ''}\n` +
+                         `🎶 本集介紹詩班：${inputChoirName ? inputChoirName.value : ''}\n` +
+                         `${inputSong1 && inputSong1.value ? inputSong1.value + '\n' : ''}` +
+                         `${inputSong2 && inputSong2.value ? inputSong2.value + '\n' : ''}\n` +
                          `📲 觀看更多「西區各教會傳教史短影音」與最新消息：\n` +
                          `👉 官方 IG： https://www.instagram.com/tjc100_west_concert/`;
             promoTextarea.value = text;
@@ -689,7 +764,8 @@
         let hypeCount = 1926;
         function addHypeCount() {
             hypeCount++;
-            document.getElementById('hypeCountDisplay').textContent = hypeCount.toLocaleString();
+            const display = document.getElementById('hypeCountDisplay');
+            if (display) display.textContent = hypeCount.toLocaleString();
             showToast('🙌 感謝您的祈禱與期待 (+1 集氣成功)！');
         }
 
