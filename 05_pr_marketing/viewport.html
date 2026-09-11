@@ -154,14 +154,14 @@
                 </h2>
 
                 <div class="space-y-4">
-                    <!-- Logo File Uploader -->
+                    <!-- Main Visual Background File Uploader -->
                     <div class="p-3.5 bg-[#081120] border border-amber-500/40 rounded-xl space-y-1.5 shadow-inner">
                         <label class="block text-xs uppercase font-bold text-amber-300 flex items-center gap-1.5">
-                            <span>🖼️</span> 上傳官方牆垣 Logo 圖片 (.png / .jpg)
+                            <span>🖼️</span> 主視覺背景圖（已預設：直版主視覺.jpg）
                         </label>
-                        <input type="file" id="inputLogoFile" accept="image/png, image/jpeg" class="w-full bg-[#0c1b33] border border-blue-900/80 text-xs text-gray-200 rounded-lg p-1.5 cursor-pointer file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 transition">
+                        <input type="file" id="inputBgFile" accept="image/png, image/jpeg" class="w-full bg-[#0c1b33] border border-blue-900/80 text-xs text-gray-200 rounded-lg p-1.5 cursor-pointer file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 transition">
                         <p class="text-[11px] text-gray-400 leading-tight">
-                            請點選並上傳您本機的 <code class="text-amber-300 font-mono">牆垣logo_2.png</code>，系統將自動去黑底並轉換為金色主視覺標誌！
+                            預設載入音樂會「直版主視覺.jpg」作為 9:16 影片背景，您亦可隨時點選上傳自訂背景。
                         </p>
                     </div>
 
@@ -207,86 +207,16 @@
             <div class="lg:col-span-7 flex flex-col items-center">
                 <div class="text-xs uppercase tracking-widest text-amber-400/80 mb-2 font-mono">9:16 Reels / Shorts 公版片頭預覽</div>
                 
-                <div id="previewFrameIntro" class="relative w-full max-w-[340px] aspect-[9/16] bg-tjc-navy border-4 border-amber-500/40 rounded-3xl shadow-2xl glow-box overflow-hidden flex flex-col justify-between p-6">
+                <div id="previewFrameIntro" class="relative w-full max-w-[340px] aspect-[9/16] bg-cover bg-center border-4 border-amber-500/40 rounded-3xl shadow-2xl glow-box overflow-hidden flex flex-col justify-between p-6" style="background-image: url('直版主視覺.jpg');">
                     
-                    <div class="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    <!-- Dark overlay gradient for readability over bright main visual -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/65 to-slate-950/90 pointer-events-none"></div>
 
-                    <!-- Top Section -->
-                    <div class="relative z-10 flex justify-between items-start animate-fade-in animate-delay-1">
-                        <!-- Official Wall Logo Container -->
-                        <div id="wallLogoContainer" class="w-24 h-24 wall-logo-container p-1 flex items-center justify-center">
-                            <svg viewBox="0 0 200 170" class="w-full h-full" fill="#d4af37">
-                                <g>
-                                    <!-- Crenellations / Battlement blocks at top edge -->
-                                    <polygon points="40,15 55,12 55,20 40,23" />
-                                    <polygon points="70,10 85,8 85,16 70,18" />
-                                    <polygon points="100,6 115,4 115,12 100,14" />
-                                    <polygon points="130,2 145,0 145,8 130,10" />
-                                    <polygon points="160,-2 175,-4 175,4 160,6" />
-
-                                    <!-- Wall horizontal bars with arch cutouts -->
-                                    <polygon points="35,25 185,3 185,9 30,31" />
-                                    <polygon points="28,34 185,12 185,17 23,39" />
-                                    <polygon points="20,42 185,20 185,25 16,47" />
-                                    <polygon points="14,50 185,28 185,33 10,55" />
-                                    <polygon points="8,58 185,36 185,41 5,63" />
-
-                                    <!-- Arch 1 & Arch 2 Row Cutouts -->
-                                    <polygon points="4,66 48,60 48,64 2,70" />
-                                    <polygon points="108,52 125,50 125,54 108,56" />
-                                    <polygon points="168,44 185,42 185,47 168,49" />
-
-                                    <polygon points="2,73 44,68 44,72 0,77" />
-                                    <polygon points="110,60 123,58 123,62 110,64" />
-                                    <polygon points="170,52 185,50 185,55 170,57" />
-
-                                    <polygon points="0,80 42,75 42,79 0,84" />
-                                    <polygon points="112,68 122,66 122,70 112,72" />
-                                    <polygon points="171,60 185,58 185,63 171,65" />
-
-                                    <polygon points="0,87 40,82 40,86 0,91" />
-                                    <polygon points="114,75 121,74 121,78 114,79" />
-                                    <polygon points="172,68 185,66 185,71 172,73" />
-
-                                    <polygon points="0,94 40,89 40,93 0,98" />
-                                    <polygon points="114,82 121,81 121,85 114,86" />
-                                    <polygon points="172,75 185,73 185,78 172,80" />
-
-                                    <polygon points="0,101 40,96 40,100 0,105" />
-                                    <polygon points="114,89 121,88 121,92 114,93" />
-                                    <polygon points="172,82 185,80 185,85 172,87" />
-
-                                    <polygon points="0,108 40,103 40,107 0,112" />
-                                    <polygon points="114,96 121,95 121,99 114,100" />
-                                    <polygon points="172,89 185,87 185,92 172,94" />
-
-                                    <polygon points="0,115 40,110 40,114 0,119" />
-                                    <polygon points="114,103 121,102 121,106 114,107" />
-                                    <polygon points="172,96 185,94 185,99 172,101" />
-
-                                    <polygon points="0,122 40,117 40,121 0,126" />
-                                    <polygon points="114,110 121,109 121,113 114,114" />
-                                    <polygon points="172,103 185,101 185,106 172,108" />
-
-                                    <polygon points="0,129 40,124 40,128 0,133" />
-                                    <polygon points="114,117 121,116 121,120 114,121" />
-                                    <polygon points="172,110 185,108 185,113 172,115" />
-
-                                    <polygon points="0,136 40,131 40,135 0,140" />
-                                    <polygon points="114,124 121,123 121,127 114,128" />
-                                    <polygon points="172,117 185,115 185,120 172,122" />
-
-                                    <!-- Bottom Base Beams -->
-                                    <polygon points="0,143 185,122 185,128 0,150" />
-                                    <polygon points="0,153 185,130 185,138 0,162" />
-                                </g>
-                            </svg>
-                        </div>
-                        <div class="text-right">
-                            <span id="outSubtitle" class="inline-block text-[11px] tracking-widest text-amber-300 bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-500/30 font-medium">
-                                獻詩詩班介紹 01
-                            </span>
-                        </div>
+                    <!-- Top Section (Centered, No Logo) -->
+                    <div class="relative z-10 flex justify-center items-center text-center animate-fade-in animate-delay-1">
+                        <span id="outSubtitle" class="inline-block text-[11px] tracking-widest text-amber-300 bg-amber-500/30 backdrop-blur-md px-3.5 py-1 rounded-full border border-amber-500/50 font-bold shadow-md">
+                            獻詩詩班介紹 01
+                        </span>
                     </div>
 
                     <!-- Middle Section -->
@@ -364,13 +294,14 @@
             <div class="lg:col-span-7 flex flex-col items-center">
                 <div class="text-xs uppercase tracking-widest text-amber-400/80 mb-2 font-mono">9:16 Reels / Shorts 片尾 Call-to-Action 預覽</div>
                 
-                <div id="previewFrameOutro" class="relative w-full max-w-[340px] aspect-[9/16] bg-tjc-navy border-4 border-amber-500/40 rounded-3xl shadow-2xl glow-box overflow-hidden flex flex-col justify-between p-6">
+                <div id="previewFrameOutro" class="relative w-full max-w-[340px] aspect-[9/16] bg-cover bg-center border-4 border-amber-500/40 rounded-3xl shadow-2xl glow-box overflow-hidden flex flex-col justify-between p-6" style="background-image: url('直版主視覺.jpg');">
                     
-                    <div class="absolute inset-0 opacity-5 pointer-events-none bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                    <!-- Dark overlay gradient for readability over bright main visual -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/85 via-slate-950/65 to-slate-950/90 pointer-events-none"></div>
 
                     <!-- Top Banner -->
                     <div class="relative z-10 text-center animate-fade-in animate-delay-1">
-                        <span class="inline-block text-[10px] tracking-widest text-amber-300 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-500/30 uppercase font-semibold">
+                        <span class="inline-block text-[10px] tracking-widest text-amber-300 bg-amber-500/30 backdrop-blur-md px-3 py-1 rounded-full border border-amber-500/50 uppercase font-bold shadow-md">
                             感謝您的收看 ‧ 精彩持續延伸
                         </span>
                     </div>
@@ -528,8 +459,7 @@
 
     <script>
         // DOM Elements
-        const inputLogoFile = document.getElementById('inputLogoFile');
-        const wallLogoContainer = document.getElementById('wallLogoContainer');
+        const inputBgFile = document.getElementById('inputBgFile');
         const inputSubtitle = document.getElementById('inputSubtitle');
         const inputChoirName = document.getElementById('inputChoirName');
         const inputSong1 = document.getElementById('inputSong1');
@@ -550,53 +480,18 @@
         // Target Date: 2026/11/01 00:00:00 Taiwan Time
         const targetDate = new Date('2026-11-01T00:00:00+08:00');
 
-        // Automatic image processing for uploaded PNG/JPG
-        if (inputLogoFile) {
-            inputLogoFile.addEventListener('change', function(e) {
+        // Automatic image processing for background image
+        if (inputBgFile) {
+            inputBgFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (!file) return;
 
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    const img = new Image();
-                    img.onload = function() {
-                        // Create processing canvas
-                        const canvas = document.createElement('canvas');
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0);
-
-                        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const data = imgData.data;
-
-                        // Loop through pixels: strip black background & colorize white lines to Gold (#d4af37)
-                        for (let i = 0; i < data.length; i += 4) {
-                            const r = data[i];
-                            const g = data[i+1];
-                            const b = data[i+2];
-                            const brightness = (r + g + b) / 3;
-
-                            if (brightness < 45) {
-                                // Black background -> transparent
-                                data[i + 3] = 0;
-                            } else {
-                                // White logo lines -> Gold #d4af37 (RGB: 212, 175, 55)
-                                data[i] = 212;
-                                data[i+1] = 175;
-                                data[i+2] = 55;
-                                data[i+3] = Math.min(255, brightness * 1.2);
-                            }
-                        }
-
-                        ctx.putImageData(imgData, 0, 0);
-                        const goldLogoUrl = canvas.toDataURL();
-
-                        // Replace logo with processed pixel-perfect image
-                        wallLogoContainer.innerHTML = `<img src="${goldLogoUrl}" class="w-full h-full object-contain filter drop-shadow(0 2px 8px rgba(212,175,55,0.4))" alt="官方牆垣Logo">`;
-                        showToast('已成功載入並套用官方牆垣 Logo！');
-                    };
-                    img.src = event.target.result;
+                    const bgUrl = event.target.result;
+                    if (previewFrameIntro) previewFrameIntro.style.backgroundImage = `url('${bgUrl}')`;
+                    if (previewFrameOutro) previewFrameOutro.style.backgroundImage = `url('${bgUrl}')`;
+                    showToast('已成功更新影片主視覺背景圖片！');
                 };
                 reader.readAsDataURL(file);
             });
