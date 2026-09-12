@@ -55,13 +55,13 @@
                 </div>
                 <div>
                     <h1 class="font-serif font-bold text-base sm:text-lg tracking-wide text-amber-100">115音樂會 門票座位統計與廠商套印系統</h1>
-                    <p class="text-[10px] text-slate-400">專為中央大學大禮堂（上下層座位）印刷廠商格式轉換與 Excel 匯入設計</p>
+                    <p class="text-[10px] text-slate-400">專為中央大學大禮堂（列數/座位數自動擴充）印刷格式轉換設計</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
                 <button onclick="loadSampleData()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-400/30 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <span>載入大禮堂預設檔</span>
+                    <span>載入大禮堂排數預設檔</span>
                 </button>
                 <button onclick="exportCSV()" class="px-3.5 py-1.5 bg-church-gold hover:bg-amber-600 text-slate-950 font-bold rounded-lg text-xs shadow transition flex items-center space-x-1">
                     <i class="fa-solid fa-file-csv"></i>
@@ -81,54 +81,79 @@
         </div>
 
         <!-- 檔案載入與解析卡片 -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-5">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-5">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
                 <div>
                     <h2 class="text-base font-bold text-slate-900 font-serif flex items-center space-x-2">
                         <i class="fa-solid fa-file-excel text-emerald-600"></i>
-                        <span>匯入 `座椅編號_2.xlsx` 或貼上數據</span>
+                        <span>匯入 `座椅編號_2.xlsx` 或使用「排別 + 列數」批次產生</span>
                     </h2>
-                    <p class="text-xs text-slate-500 mt-1">支援 Excel (.xlsx / .xls) 檔案直接讀取，亦可解析 `下層、A排、1號` 等帶頓號格式文字。</p>
+                    <p class="text-xs text-slate-500 mt-1">💡 系統已升級：若 Excel 包含 <code class="bg-amber-100 text-amber-900 px-1 rounded font-bold">排別: A, 列數: 27</code> 欄位，自動擴充生成 A排 1號～27號！</p>
                 </div>
                 <div class="flex items-center space-x-3 w-full md:w-auto">
                     <label class="cursor-pointer bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center justify-center space-x-2 w-full md:w-auto">
                         <i class="fa-solid fa-upload"></i>
-                        <span>選擇 Excel (.xlsx) 檔案</span>
+                        <span>選擇 Excel 檔案</span>
                         <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileSelect(event)">
                     </label>
                 </div>
             </div>
 
-            <!-- 拖曳投遞區與貼上區 -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div id="drop-zone" class="border-2 border-dashed border-slate-300 hover:border-church-gold rounded-xl p-6 text-center bg-slate-50/50 hover:bg-amber-50/30 transition cursor-pointer flex flex-col items-center justify-center min-h-[160px]">
+            <!-- 拖曳投遞區與快捷排數輸入 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <!-- 拖曳區 -->
+                <div id="drop-zone" class="border-2 border-dashed border-slate-300 hover:border-church-gold rounded-xl p-5 text-center bg-slate-50/50 hover:bg-amber-50/30 transition cursor-pointer flex flex-col items-center justify-center min-h-[160px]">
                     <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-400 mb-2"></i>
                     <p class="text-xs font-bold text-slate-700">拖曳 `座椅編號_2.xlsx` 到此處</p>
-                    <p class="text-[10px] text-slate-400 mt-1">支援 .xlsx, .xls, .csv 檔案自動解析</p>
+                    <p class="text-[10px] text-slate-400 mt-1">支援讀取「層別」、「排別」、「列數(座位數)」欄位並自動建票</p>
                     <span id="file-name-display" class="text-[11px] font-bold text-church-gold mt-2 hidden"></span>
                 </div>
 
-                <div class="flex flex-col space-y-2">
-                    <label class="text-xs font-bold text-slate-600 flex justify-between">
-                        <span>快速複製貼上文字區：</span>
-                        <span class="text-[10px] text-church-gold font-bold">★ 支援「下層、A排、1號」與「A排共26個位子」格式</span>
-                    </label>
-                    <textarea id="paste-input" rows="6" placeholder="可輸入單筆或統計摘要格式..." class="w-full p-2.5 border border-slate-200 rounded-xl text-xs font-mono focus:ring-1 focus:ring-church-gold focus:outline-none custom-scrollbar">下層、A排、1號
-下層、A排、2號
-下層、A排、3號
-下層、B排、1~10號
+                <!-- 快捷排別與列數批次產生器 (免手動打單筆) -->
+                <div class="bg-amber-50/50 border border-amber-200/70 rounded-xl p-4 flex flex-col space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-church-navy flex items-center space-x-1.5">
+                            <i class="fa-solid fa-list-check text-church-gold"></i>
+                            <span>快速新增排別與列數 (不用逐號打字)</span>
+                        </label>
+                        <span class="text-[10px] bg-amber-200/70 text-amber-900 px-2 py-0.5 rounded font-bold">列數 ＝ 座位總張數</span>
+                    </div>
 
-下層：
-A排共26個位子
-B排共32個位子
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <span class="text-[10px] text-slate-500 font-bold block mb-1">層別</span>
+                            <select id="quick-floor" class="w-full text-xs p-2 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-church-gold">
+                                <option value="下層">下層 (1樓)</option>
+                                <option value="上層">上層 (2樓)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 font-bold block mb-1">排別 (例如 A)</span>
+                            <input type="text" id="quick-row" placeholder="例: A" value="A" class="w-full text-xs p-2 border border-slate-200 rounded-lg bg-white uppercase font-bold text-center focus:outline-none focus:ring-1 focus:ring-church-gold">
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-500 font-bold block mb-1">列數 (號碼個數)</span>
+                            <input type="number" id="quick-count" placeholder="例: 27" value="27" min="1" max="200" class="w-full text-xs p-2 border border-slate-200 rounded-lg bg-white font-bold text-center focus:outline-none focus:ring-1 focus:ring-church-gold">
+                        </div>
+                    </div>
 
-上層 A區：
-A排 1~20號</textarea>
-                    <button onclick="parseRawText()" class="py-2 bg-church-navy hover:bg-slate-800 text-amber-300 rounded-lg text-xs font-bold shadow transition flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-bolt"></i>
-                        <span>自動解析並擴充座位列表</span>
+                    <button onclick="addBatchRowFromUI()" class="py-2 bg-church-gold hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-bold shadow transition flex items-center justify-center space-x-1">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>加入該排 (自動產生 1～指定列數 號)</span>
                     </button>
                 </div>
+            </div>
+
+            <!-- 快速貼上區（備用） -->
+            <div class="flex flex-col space-y-1.5 pt-2 border-t border-slate-100">
+                <label class="text-xs font-bold text-slate-600 flex justify-between">
+                    <span>或批次貼上文字區 (支援「下層 排別:A 列數:27」語法)：</span>
+                    <button onclick="parseRawText()" class="text-xs text-church-gold hover:underline font-bold">重新解析下方文字 ➔</button>
+                </label>
+                <textarea id="paste-input" rows="4" placeholder="輸入格式說明：" class="w-full p-2.5 border border-slate-200 rounded-xl text-xs font-mono focus:ring-1 focus:ring-church-gold focus:outline-none custom-scrollbar">下層 排別:A 列數:27
+下層 排別:B 列數:32
+下層 排別:C 列數:32
+上層 排別:A 列數:20</textarea>
             </div>
         </div>
 
@@ -199,14 +224,21 @@ A排 1~20號</textarea>
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400"></i>
                         <input type="text" id="search-input" onkeyup="renderTable()" placeholder="搜尋排號或座號..." class="w-full pl-8 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-church-gold focus:outline-none">
                     </div>
-                    <div class="flex items-center space-x-2 text-[11px] text-slate-500 shrink-0">
-                        <span>套印模板：</span>
-                        <select id="template-select" onchange="renderTable(); updateTicketPreview();" class="border border-slate-200 rounded px-2 py-1 text-xs focus:outline-none">
-                            <option value="standard">標準：[層別] [區別] [排號]排 [座號]號</option>
-                            <option value="punctuated" selected>頓號：[層別]、[排號]排、[座號]號</option>
-                            <option value="compact">簡潔：[層別]-[排號]排-[座號]號</option>
-                            <option value="vendor">印刷專用：[層別] / [排號]排[座號]號</option>
-                        </select>
+                    <div class="flex items-center space-x-3 text-[11px] text-slate-500 shrink-0">
+                        <label class="flex items-center space-x-1 cursor-pointer">
+                            <input type="checkbox" id="pad-zero-toggle" onchange="renderTable(); updateTicketPreview();" checked class="rounded border-slate-300 text-church-gold focus:ring-church-gold">
+                            <span>座號補零 (例如 01號)</span>
+                        </label>
+
+                        <div class="flex items-center space-x-1">
+                            <span>模板：</span>
+                            <select id="template-select" onchange="renderTable(); updateTicketPreview();" class="border border-slate-200 rounded px-2 py-1 text-xs focus:outline-none">
+                                <option value="punctuated" selected>頓號：[層別]、[排號]排、[座號]號</option>
+                                <option value="standard">標準：[層別] [排號]排 [座號]號</option>
+                                <option value="compact">簡潔：[層別]-[排號]排-[座號]號</option>
+                                <option value="vendor">印刷專用：[層別] / [排號]排[座號]號</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -264,7 +296,7 @@ A排 1~20號</textarea>
                         <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/15 text-center space-y-1">
                             <span class="text-[9px] text-amber-300 uppercase tracking-widest font-semibold block">印刷廠變動印製區 (Printed Seat)</span>
                             <div id="preview-ticket-seat" class="text-xl font-black font-serif text-amber-400 tracking-wide">
-                                下層、A排、1號
+                                下層、A排、01號
                             </div>
                             <span class="text-[9px] text-slate-300 block">國立中央大學大禮堂 (NCU Auditorium)</span>
                         </div>
@@ -289,12 +321,11 @@ A排 1~20號</textarea>
                 <div class="bg-amber-50/60 rounded-2xl border border-amber-200/80 p-4 text-xs space-y-2">
                     <h4 class="font-bold text-amber-950 flex items-center space-x-1.5">
                         <i class="fa-solid fa-circle-info text-church-gold"></i>
-                        <span>提供給印刷廠商注意事項：</span>
+                        <span>列數解析說明：</span>
                     </h4>
                     <ul class="list-disc list-inside space-y-1 text-slate-700 text-[11px] leading-relaxed">
-                        <li>檔案匯出為 **UTF-8 格式 CSV**，相容 Illustrator 變動資料 (VDP) 讀取。</li>
-                        <li>已支援 `下層、A排、1號` 頓號隔開與空格隔開多種解析格式。</li>
-                        <li>印製前請廠商務必先核對導出之 CSV 筆數與總張數是否一致。</li>
+                        <li><strong>「列數：27」</strong> 系統會自動為該排創建 <strong>01號 到 27號</strong> 的門票。</li>
+                        <li>檔案匯出為 **UTF-8 格式 CSV**，直接交由印刷廠於 AI / InDesign 進行變動資料套印。</li>
                     </ul>
                 </div>
             </div>
@@ -325,73 +356,45 @@ A排 1~20號</textarea>
             }, 3000);
         }
 
-        // 0. 全角字元轉半角字元處理 (例如：全角「Ｄ排」自動轉為半角「D排」，全角「１號」轉「1號」)
+        // 0. 全角字元轉半角字元處理
         function normalizeText(str) {
             if (!str) return '';
-            return str.replace(/[\uFF01-\uFF5E]/g, function(ch) {
+            return String(str).replace(/[\uFF01-\uFF5E]/g, function(ch) {
                 return String.fromCharCode(ch.charCodeAt(0) - 0xfee0);
             }).replace(/\u3000/g, ' ');
         }
 
-        // 1. 解析單行文字提取：層別、區域、排號、座號 (支援「下層、A排、1號」、「下層 A排 1號」)
-        function extractSeatDetails(str, fallbackFloor = '下層', fallbackZone = '') {
-            if (!str || typeof str !== 'string') return null;
-            str = normalizeText(str.trim());
-            if (!str) return null;
+        // 1. 手動快捷增加某排及列數 (座位數)
+        function addBatchRowFromUI() {
+            const floor = document.getElementById('quick-floor').value;
+            const rowStr = document.getElementById('quick-row').value.trim().toUpperCase();
+            const count = parseInt(document.getElementById('quick-count').value, 10);
 
-            // 將頓號 (、)、逗號 (,)、斜線 (/) 替換為空格，方便統一解析
-            let cleanStr = str.replace(/[、、,;\/]/g, ' ');
-
-            let floor = fallbackFloor;
-            if (cleanStr.includes('上層') || cleanStr.includes('2樓') || cleanStr.includes('2F')) {
-                floor = '上層';
-            } else if (cleanStr.includes('下層') || cleanStr.includes('1樓') || cleanStr.includes('1F')) {
-                floor = '下層';
+            if (!rowStr) {
+                alert("請填寫排別（例如：A）");
+                return;
+            }
+            if (isNaN(count) || count <= 0) {
+                alert("請填寫正確的列數（座位個數）");
+                return;
             }
 
-            let zone = fallbackZone;
-            const zoneMatch = cleanStr.match(/([A-Za-z]|左|中|右|紅|黃|藍)區/);
-            if (zoneMatch) {
-                zone = zoneMatch[0];
-            }
-
-            // 提取排數：字母(如 A, B, AA, D) 或 數字(如 1, 15) 後帶「排」或獨占單詞
-            let rowNum = '';
-            const rowMatch = cleanStr.match(/([A-Za-z]{1,2}|\d+)\s*排/);
-            if (rowMatch) {
-                rowNum = rowMatch[1].toUpperCase();
-            }
-
-            // 提取座號：帶「號」或數字
-            let seatNum = '';
-            const seatMatch = cleanStr.match(/(\d+)\s*號/);
-            if (seatMatch) {
-                seatNum = seatMatch[1];
-            }
-
-            // 如果沒有匹配到「排」或「號」，進行分詞備用匹配
-            if (!rowNum || !seatNum) {
-                const parts = cleanStr.split(/\s+/);
-                parts.forEach(p => {
-                    const rM = p.match(/^([A-Za-z]{1,2})$/i);
-                    if (rM && !rowNum) rowNum = rM[1].toUpperCase();
-                    const sM = p.match(/^(\d+)$/);
-                    if (sM && !seatNum) seatNum = sM[1];
+            // 生成該排 1 ~ count 號門票
+            for (let s = 1; s <= count; s++) {
+                seatData.push({
+                    floor: floor,
+                    zone: '',
+                    row: rowStr,
+                    seat: s.toString(),
+                    raw: `${floor} ${rowStr}排 ${s}號`
                 });
             }
 
-            if (!rowNum && !seatNum) return null;
-
-            return {
-                floor: floor,
-                zone: zone,
-                row: rowNum || 'A',
-                seat: seatNum || '1',
-                raw: str
-            };
+            updateAllViews();
+            showNotification(`已新增 ${floor} ${rowStr}排 共 ${count} 張門票！`);
         }
 
-        // 2. 解析純文字輸入框（支援「下層、A排、1號」、「下層、B排、1~10號」、「A排共26個位子」）
+        // 2. 解析純文字輸入框 (支援「下層 排別:A 列數:27」與「下層、A排、1~27號」語法)
         function parseRawText() {
             const rawText = document.getElementById('paste-input').value;
             const lines = rawText.split('\n');
@@ -404,20 +407,34 @@ A排 1~20號</textarea>
                 let str = normalizeText(line.trim());
                 if (!str) return;
 
-                // 檢查層別區塊標題
                 if (str.includes('上層') || str.includes('2樓') || str.includes('2F')) {
                     currentFloor = '上層';
                 } else if (str.includes('下層') || str.includes('1樓') || str.includes('1F')) {
                     currentFloor = '下層';
                 }
 
-                // 檢查區域標題 (例如：A區, B區)
-                const zoneMatch = str.match(/([A-Za-z]|左|中|右|黃|藍|紅)區/);
-                if (zoneMatch) {
-                    currentZone = zoneMatch[0];
+                // 語法一：匹配「排別:A 列數:27」或「A排 27列」或「A排 27個」
+                const countMatch = str.match(/([A-Za-z]{1,2}|\d+)\s*排?[::：\s]*[列座位個張數總量]{1,4}[::：\s]*(\d+)/i) || 
+                                   str.match(/([A-Za-z]{1,2})\s*排\s*(\d+)\s*[列個張位]/i);
+
+                if (countMatch) {
+                    const rowStr = countMatch[1].toUpperCase();
+                    const totalSeats = parseInt(countMatch[2], 10);
+                    if (!isNaN(totalSeats) && totalSeats > 0 && totalSeats <= 300) {
+                        for (let s = 1; s <= totalSeats; s++) {
+                            seatData.push({
+                                floor: currentFloor,
+                                zone: currentZone,
+                                row: rowStr,
+                                seat: s.toString(),
+                                raw: `${currentFloor} ${rowStr}排 ${s}號`
+                            });
+                        }
+                        return;
+                    }
                 }
 
-                // 匹配範圍語法，如："下層、B排、1~10號" 或 "A排 1~20號"
+                // 語法二：匹配範圍語法，如："下層、B排、1~10號"
                 const rangeMatch = str.match(/([A-Za-z]{1,2}|\d+)\s*排?[、、,\s]*(\d+)\s*[-~到]\s*(\d+)\s*號?/i);
                 if (rangeMatch) {
                     const rowStr = rangeMatch[1].toUpperCase();
@@ -431,40 +448,24 @@ A排 1~20號</textarea>
                                 zone: currentZone,
                                 row: rowStr,
                                 seat: s.toString(),
-                                raw: `${currentFloor} ${currentZone ? currentZone + ' ' : ''}${rowStr}排 ${s}號`
+                                raw: `${currentFloor} ${rowStr}排 ${s}號`
                             });
                         }
                         return;
                     }
                 }
 
-                // 匹配摘要語法，如："A排共26個位子"、"Ｄ排共34個位子"
-                const summaryMatch = str.match(/([A-Za-z]{1,2}|\d+)\s*排?\s*(?:共|到|~|-)?\s*(\d+)\s*(?:個位子|個座位|個|位|號)?/i);
-                const isSummaryFormat = str.includes('共') || str.includes('個') || str.includes('位');
-
-                if (summaryMatch && isSummaryFormat && !str.includes('1號')) {
-                    const rowStr = summaryMatch[1].toUpperCase();
-                    let startSeat = 1;
-                    let endSeat = parseInt(summaryMatch[2], 10);
-
-                    if (!isNaN(endSeat) && endSeat >= startSeat && endSeat <= 300) {
-                        for (let s = startSeat; s <= endSeat; s++) {
-                            seatData.push({
-                                floor: currentFloor,
-                                zone: currentZone,
-                                row: rowStr,
-                                seat: s.toString(),
-                                raw: `${currentFloor} ${currentZone ? currentZone + ' ' : ''}${rowStr}排 ${s}號`
-                            });
-                        }
-                        return;
-                    }
-                }
-
-                // 單筆座位解析 (包含「下層、A排、1號」)
-                const parsed = extractSeatDetails(str, currentFloor, currentZone);
-                if (parsed) {
-                    seatData.push(parsed);
+                // 語法三：單筆座位（如 下層、A排、1號）
+                const rowMatch = str.match(/([A-Za-z]{1,2}|\d+)\s*排/);
+                const seatMatch = str.match(/(\d+)\s*號/);
+                if (rowMatch && seatMatch) {
+                    seatData.push({
+                        floor: currentFloor,
+                        zone: currentZone,
+                        row: rowMatch[1].toUpperCase(),
+                        seat: seatMatch[1],
+                        raw: str
+                    });
                 }
             });
 
@@ -499,19 +500,20 @@ A排 1~20號</textarea>
 
                     seatData = [];
                     let headerRowIndex = -1;
-                    let colMap = { floor: -1, zone: -1, row: -1, seat: -1, full: -1 };
+                    let colMap = { floor: -1, zone: -1, row: -1, seat: -1, count: -1, full: -1 };
 
-                    // 尋找表頭欄位
+                    // 尋找表頭欄位（特別支援：列數、座位數、張數）
                     for (let i = 0; i < Math.min(jsonRows.length, 5); i++) {
-                        const row = jsonRows[i].map(c => String(c || '').trim());
+                        const row = jsonRows[i].map(c => normalizeText(String(c || '')).trim());
                         row.forEach((cell, colIdx) => {
                             if (/層別|樓層|層/.test(cell)) colMap.floor = colIdx;
                             if (/區域|區別|區/.test(cell)) colMap.zone = colIdx;
-                            if (/排號|排/.test(cell)) colMap.row = colIdx;
-                            if (/座號|號|座位/.test(cell)) colMap.seat = colIdx;
-                            if (/座椅編號|座位編號|門票編號|套印|編號/.test(cell)) colMap.full = colIdx;
+                            if (/排別|排號|排/.test(cell)) colMap.row = colIdx;
+                            if (/座號|號碼|座/.test(cell)) colMap.seat = colIdx;
+                            if (/列數|座位數|張數|個數|總數|數量|席數/.test(cell)) colMap.count = colIdx;
+                            if (/座椅編號|座位編號|門票編號|套印/.test(cell)) colMap.full = colIdx;
                         });
-                        if (colMap.row !== -1 || colMap.seat !== -1 || colMap.full !== -1) {
+                        if (colMap.row !== -1 || colMap.seat !== -1 || colMap.count !== -1 || colMap.full !== -1) {
                             headerRowIndex = i;
                             break;
                         }
@@ -522,44 +524,41 @@ A排 1~20號</textarea>
                         const row = jsonRows[i];
                         if (!row || row.length === 0) continue;
 
-                        // 嘗試直接讀取完整字串欄
-                        if (colMap.full !== -1 && row[colMap.full]) {
-                            const parsed = extractSeatDetails(String(row[colMap.full]));
-                            if (parsed) {
-                                seatData.push(parsed);
-                                continue;
+                        let fl = colMap.floor !== -1 ? normalizeText(String(row[colMap.floor] || '')) : '下層';
+                        let zn = colMap.zone !== -1 ? normalizeText(String(row[colMap.zone] || '')) : '';
+                        let rw = colMap.row !== -1 ? normalizeText(String(row[colMap.row] || '')).replace(/排/g, '').toUpperCase() : '';
+                        
+                        // 處理「列數/個數」欄位（如 排別: A, 列數: 27）
+                        let countVal = colMap.count !== -1 ? parseInt(row[colMap.count], 10) : NaN;
+
+                        if (rw && !isNaN(countVal) && countVal > 0) {
+                            for (let s = 1; s <= countVal; s++) {
+                                seatData.push({
+                                    floor: fl.includes('上層') ? '上層' : '下層',
+                                    zone: zn,
+                                    row: rw,
+                                    seat: s.toString(),
+                                    raw: `${fl} ${rw}排 ${s}號`
+                                });
                             }
+                            continue;
                         }
 
-                        let fl = colMap.floor !== -1 ? String(row[colMap.floor] || '') : '下層';
-                        let zn = colMap.zone !== -1 ? String(row[colMap.zone] || '') : '';
-                        let rw = colMap.row !== -1 ? String(row[colMap.row] || '').replace(/排/g, '') : '';
-                        let st = colMap.seat !== -1 ? String(row[colMap.seat] || '').replace(/號/g, '') : '';
-
-                        const combinedStr = `${fl} ${zn} ${rw}排 ${st}號`;
-                        const parsedCombined = extractSeatDetails(combinedStr, fl || '下層', zn);
-
-                        if (parsedCombined) {
-                            if (rw) parsedCombined.row = rw.toUpperCase();
-                            if (st) parsedCombined.seat = st;
-                            seatData.push(parsedCombined);
-                        } else {
-                            // 嘗試拿該行第一個非空字串解析
-                            for (let c = 0; c < row.length; c++) {
-                                const val = String(row[c] || '').trim();
-                                if (val) {
-                                    const p = extractSeatDetails(val);
-                                    if (p) {
-                                        seatData.push(p);
-                                        break;
-                                    }
-                                }
-                            }
+                        // 如果沒有列數，讀取單號（座號）
+                        let st = colMap.seat !== -1 ? normalizeText(String(row[colMap.seat] || '')).replace(/號/g, '') : '';
+                        if (rw && st) {
+                            seatData.push({
+                                floor: fl.includes('上層') ? '上層' : '下層',
+                                zone: zn,
+                                row: rw,
+                                seat: st,
+                                raw: `${fl} ${rw}排 ${st}號`
+                            });
                         }
                     }
 
                     updateAllViews();
-                    showNotification(`成功匯入 ${seatData.length} 筆座位資料！`);
+                    showNotification(`成功解析並擴充產生 ${seatData.length} 筆座位門票！`);
                 } catch (err) {
                     console.error(err);
                     alert("讀取 Excel 檔案失敗，請確定檔案是否為有效的 .xlsx / .csv。");
@@ -568,19 +567,17 @@ A排 1~20號</textarea>
             reader.readAsArrayBuffer(file);
         }
 
-        // 拖曳投遞區事件綁定
+        // 4. 拖曳投遞區事件綁定
         const dropZone = document.getElementById('drop-zone');
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, (e) => {
                 e.preventDefault();
-                e.stopPropagation();
                 dropZone.classList.add('drag-active');
             }, false);
         });
         ['dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, (e) => {
                 e.preventDefault();
-                e.stopPropagation();
                 dropZone.classList.remove('drag-active');
             }, false);
         });
@@ -592,19 +589,28 @@ A排 1~20號</textarea>
             }
         });
 
-        // 4. 載入預設範例資料
+        // 5. 載入大禮堂排數預設範例
         function loadSampleData() {
-            document.getElementById('file-name-display').innerText = '已載入大禮堂預設檔範例';
+            document.getElementById('file-name-display').innerText = '已載入中央大學大禮堂排數檔';
             document.getElementById('file-name-display').classList.remove('hidden');
+
+            document.getElementById('paste-input').value = `下層 排別:A 列數:27
+下層 排別:B 列數:32
+下層 排別:C 列數:32
+下層 排別:D 列數:34
+下層 排別:E 列數:34
+下層 排別:F 列數:34
+上層 排別:A 列數:20
+上層 排別:B 列數:24`;
+
             parseRawText();
         }
 
-        // 5. 更新所有統計與檢視 UI
+        // 6. 更新統計視圖
         function updateAllViews() {
             const total = seatData.length;
             const lowerCount = seatData.filter(s => s.floor === '下層').length;
             const upperCount = seatData.filter(s => s.floor === '上層').length;
-            
             const rowsSet = new Set(seatData.map(s => `${s.floor}-${s.zone}-${s.row}`));
 
             document.getElementById('stat-total').innerText = total;
@@ -621,24 +627,25 @@ A排 1~20號</textarea>
             updateTicketPreview();
         }
 
-        // 6. 格式化輸出字樣
+        // 7. 格式化輸出字樣（支援座號補零，如 01號）
         function getFormattedSeatText(item) {
             const template = document.getElementById('template-select').value;
+            const padZero = document.getElementById('pad-zero-toggle').checked;
+            
+            const seatDisplay = padZero ? item.seat.padStart(2, '0') : item.seat;
             const zoneText = item.zone ? item.zone + ' ' : '';
 
             if (template === 'punctuated') {
-                // 支援 「下層、A排、1號」格式
-                return `${item.floor}、${item.row}排、${item.seat}號`;
+                return `${item.floor}、${item.row}排、${seatDisplay}號`;
             } else if (template === 'compact') {
-                return `${item.floor}-${zoneText}${item.row}排-${item.seat}號`;
+                return `${item.floor}-${zoneText}${item.row}排-${seatDisplay}號`;
             } else if (template === 'vendor') {
-                return `${item.floor} / ${zoneText}${item.row}排${item.seat}號`;
+                return `${item.floor} / ${zoneText}${item.row}排${seatDisplay}號`;
             }
-            // 預設 standard: 下層 A排 1號
-            return `${item.floor} ${zoneText}${item.row}排 ${item.seat}號`;
+            return `${item.floor} ${zoneText}${item.row}排 ${seatDisplay}號`;
         }
 
-        // 7. 渲染列表表格
+        // 8. 渲染列表表格
         function renderTable() {
             const tbody = document.getElementById('seats-table-body');
             const searchKeyword = document.getElementById('search-input').value.trim();
@@ -653,33 +660,34 @@ A排 1~20號</textarea>
 
             if (searchKeyword) {
                 filtered = filtered.filter(s => 
-                    s.row.includes(searchKeyword) || 
+                    s.row.includes(searchKeyword.toUpperCase()) || 
                     s.seat.includes(searchKeyword) || 
-                    s.zone.includes(searchKeyword) ||
                     s.floor.includes(searchKeyword)
                 );
             }
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 italic">無符合條件的座位資料</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 italic">無座位資料，請選擇 Excel 或加入排別列數...</td></tr>`;
                 return;
             }
 
+            const padZero = document.getElementById('pad-zero-toggle').checked;
+
             tbody.innerHTML = filtered.map((item, idx) => `
-                <tr class="hover:bg-slate-50 transition">
+                <tr class="hover:bg-amber-50/40 transition">
                     <td class="py-2.5 px-3 font-mono text-[11px] text-slate-400">${(idx + 1).toString().padStart(4, '0')}</td>
                     <td class="py-2.5 px-3 font-bold ${item.floor === '上層' ? 'text-purple-700' : 'text-blue-700'}">
                         <span class="px-2 py-0.5 rounded-full text-[10px] ${item.floor === '上層' ? 'bg-purple-50' : 'bg-blue-50'}">${item.floor}</span>
                     </td>
                     <td class="py-2.5 px-3 text-slate-600">${item.zone || '-'}</td>
                     <td class="py-2.5 px-3 font-semibold text-slate-800">${item.row} 排</td>
-                    <td class="py-2.5 px-3 font-semibold text-slate-800">${item.seat} 號</td>
+                    <td class="py-2.5 px-3 font-semibold text-slate-800">${padZero ? item.seat.padStart(2, '0') : item.seat} 號</td>
                     <td class="py-2.5 px-3 font-mono font-bold text-church-navy">${getFormattedSeatText(item)}</td>
                 </tr>
             `).join('');
         }
 
-        // 8. 切換篩選
+        // 9. 篩選與預覽
         function filterSeats(type) {
             currentFilter = type;
             ['all', 'lower', 'upper'].forEach(t => {
@@ -693,7 +701,6 @@ A排 1~20號</textarea>
             renderTable();
         }
 
-        // 9. 實體票面模擬預覽控制
         function updateTicketPreview() {
             if (seatData.length === 0) {
                 document.getElementById('preview-ticket-seat').innerText = '未載入資料';
@@ -710,33 +717,30 @@ A排 1~20號</textarea>
         }
 
         function prevPreview() {
-            if (previewIndex > 0) {
-                previewIndex--;
-                updateTicketPreview();
-            }
+            if (previewIndex > 0) { previewIndex--; updateTicketPreview(); }
         }
 
         function nextPreview() {
-            if (previewIndex < seatData.length - 1) {
-                previewIndex++;
-                updateTicketPreview();
-            }
+            if (previewIndex < seatData.length - 1) { previewIndex++; updateTicketPreview(); }
         }
 
-        // 10. 導出 CSV 給印刷廠商 (帶有 BOM 表頭，防止 Excel 亂碼)
+        // 10. 導出 CSV
         function exportCSV() {
             if (seatData.length === 0) {
                 alert("請先載入或輸入座位資料再進行導出！");
                 return;
             }
 
-            let csvContent = "\uFEFF"; // UTF-8 BOM
+            let csvContent = "\uFEFF"; // UTF-8 BOM 避免亂碼
             csvContent += "流水號,層別,區域,排號,座號,印刷完整套印字樣\n";
+
+            const padZero = document.getElementById('pad-zero-toggle').checked;
 
             seatData.forEach((item, index) => {
                 const sn = (index + 1).toString().padStart(4, '0');
+                const seatDisplay = padZero ? item.seat.padStart(2, '0') : item.seat;
                 const printText = getFormattedSeatText(item);
-                csvContent += `"${sn}","${item.floor}","${item.zone}","${item.row}","${item.seat}","${printText}"\n`;
+                csvContent += `"${sn}","${item.floor}","${item.zone}","${item.row}","${seatDisplay}","${printText}"\n`;
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -750,7 +754,6 @@ A排 1~20號</textarea>
             document.body.removeChild(link);
         }
 
-        // 初始化預設載入範例資料
         window.onload = function() {
             loadSampleData();
         };
