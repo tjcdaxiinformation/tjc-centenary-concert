@@ -1,445 +1,45 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真耶穌教會臺灣傳教百年西區音樂會 - 官方宣傳海報</title>
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- FontAwesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts (Noto Serif TC, Noto Sans TC, JetBrains Mono) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;800&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        serif: ['"Noto Serif TC"', 'serif'],
-                        sans: ['"Noto Sans TC"', 'sans-serif'],
-                        mono: ['"JetBrains Mono"', 'monospace'],
-                    },
-                    colors: {
-                        church: {
-                            navy: '#0b132b',
-                            navyLight: '#1c2541',
-                            gold: '#c5a059',
-                            goldLight: '#e5c17c',
-                            bronze: '#8c5a3c',
-                            cream: '#fcfbf7',
-                            pastelSky: '#dbeafe'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #0f172a;
-            color: #1e293b;
-            min-height: 100vh;
-        }
-
-        .font-serif-title {
-            font-family: 'Noto Serif TC', serif;
-        }
-
-        /* 擬真海報陰影與質感 */
-        .poster-card {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(197, 160, 89, 0.15);
-            transition: all 0.3s ease;
+<!-- ... existing code ... -->
+        /* 將主視覺圖設為海報背景襯底 (含漸層優化對比) */
+        .poster-bg-visual {
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), url('主視覺.png'), url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         /* 金屬質感漸層文字 */
         .text-gold-gradient {
-            background: linear-gradient(135deg, #f3e7e1 0%, #c5a059 50%, #e5c17c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .border-gold-gradient {
-            border-image: linear-gradient(to right, #c5a059, #e5c17c, #c5a059) 1;
-        }
-
-        /* 隱藏滾動條 */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* A4 列印列印最佳化控制 */
-        @media print {
-            body {
-                background: white !important;
-                color: black !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .poster-container {
-                max-width: 100% !important;
-                width: 100% !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-                border: none !important;
-                border-radius: 0 !important;
-                page-break-after: always;
-            }
-            .poster-card {
-                box-shadow: none !important;
-            }
-        }
-    </style>
-</head>
-<body class="flex flex-col min-h-screen text-slate-800 antialiased selection:bg-amber-500 selection:text-white">
-
-    <!-- 頂部控制功能列 (列印不顯示) -->
-    <header class="no-print sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-amber-500/20 text-white px-4 py-3 shadow-lg">
-        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-slate-950 font-black shadow-md">
-                    <i class="fa-solid fa-compact-disc text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-serif font-bold text-sm sm:text-base text-amber-200">宣傳海報產生與發布系統</h1>
-                    <p class="text-[10px] sm:text-xs text-slate-400">臺灣傳教百年西區音樂會 · 官方視覺</p>
-                </div>
-            </div>
-
-            <!-- 右側操作按鈕區 -->
-            <div class="flex items-center space-x-2 text-xs">
-                <!-- 主題切換按鈕 -->
-                <div class="hidden sm:flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700 space-x-1">
-                    <button onclick="changeTheme('navy')" id="theme-btn-navy" class="px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition">深藍典雅</button>
-                    <button onclick="changeTheme('cream')" id="theme-btn-cream" class="px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition">米白雅致</button>
-                </div>
-
-                <!-- 索票資訊彈窗 -->
-                <button onclick="openTicketModal()" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-lg font-bold flex items-center space-x-1.5 transition active:scale-95">
-                    <i class="fa-solid fa-ticket"></i>
-                    <span>索票窗口</span>
-                </button>
-
-                <!-- 加到行事曆 -->
-                <button onclick="addToCalendar()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg font-bold flex items-center space-x-1.5 transition active:scale-95">
-                    <i class="fa-regular fa-calendar-plus text-amber-400"></i>
-                    <span class="hidden md:inline">加入行事曆</span>
-                </button>
-
-                <!-- 列印海報 -->
-                <button onclick="window.print()" class="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 rounded-lg font-extrabold flex items-center space-x-1.5 shadow-md transition active:scale-95">
-                    <i class="fa-solid fa-print"></i>
-                    <span>列印 / 導出 PDF</span>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- 倒數計時即時看板 (列印不顯示) -->
-    <div class="no-print bg-gradient-to-r from-slate-950 via-church-navy to-slate-950 border-b border-amber-500/10 text-white py-2.5 px-4">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
-            <div class="flex items-center space-x-2 text-xs">
-                <span class="flex h-2 w-2 relative">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-                </span>
-                <span class="text-slate-400">音樂會倒數計時：</span>
-                <span class="font-mono text-amber-300 font-bold" id="event-countdown-str">計算中...</span>
-            </div>
-            <div class="text-[11px] text-slate-400 flex items-center space-x-3">
-                <span><i class="fa-solid fa-location-dot text-amber-500 mr-1"></i>國立中央大學大禮堂</span>
-                <span><i class="fa-solid fa-clock text-amber-500 mr-1"></i>2026/11/01 (日) 09:00</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 主海報展示區域 -->
-    <main class="flex-grow flex items-center justify-center p-3 sm:p-6 lg:p-8">
-        
+<!-- ... existing code ... -->
         <!-- 海報本體 (預設 A4 比例擬真框架) -->
-        <div id="poster-frame" class="poster-container poster-card w-full max-w-[840px] bg-church-navy text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col">
+        <div id="poster-frame" class="poster-container poster-card poster-bg-visual w-full max-w-[840px] text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col">
             
             <!-- 海報頂部 Logo 與百年題詞 -->
-            <div class="relative z-10 px-6 sm:px-10 pt-6 sm:pt-8 pb-4 flex items-center justify-between border-b border-white/10 bg-gradient-to-b from-black/60 to-transparent">
-                <!-- 左側：TJC 標誌 -->
+            <div class="px-6 pt-6 pb-4 flex flex-col sm:flex-row items-center justify-between border-b border-amber-500/20 bg-slate-950/40 gap-4">
+                <!-- 左側：臺灣總會官方 Logo -->
                 <div class="flex items-center space-x-3">
-                    <img src="tjclogo.jpeg" alt="TJC Logo" class="h-10 sm:h-12 w-auto object-contain bg-white/90 p-1.5 rounded-xl shadow-md" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/tjclogo.jpeg';">
+                    <img id="tjc-logo-img" src="tjclogo.jpeg" alt="真耶穌教會Logo" class="w-12 h-12 rounded-full object-cover border-2 border-amber-400/60 shadow-md" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/tjclogo.jpeg';">
                     <div>
-                        <p class="text-[10px] sm:text-xs text-amber-300 font-bold tracking-widest uppercase">TRUE JESUS CHURCH</p>
-                        <h2 class="text-xs sm:text-sm font-bold text-slate-200 tracking-wider">真耶穌教會 臺灣總會</h2>
+                        <h3 class="text-xs font-bold text-amber-300 tracking-wider uppercase">真耶穌教會 臺灣總會 西區門戶</h3>
+                        <p class="text-[11px] text-slate-300 font-serif-title">台灣傳教 100 週年獻禮</p>
                     </div>
                 </div>
 
-                <!-- 右側：百週年紀念 Logo -->
-                <div class="flex items-center space-x-2">
-                    <img src="直幅百週年logo.png" alt="臺灣傳教100週年" class="h-14 sm:h-20 w-auto object-contain rounded-lg shadow-lg hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E7%9B%B4%E5%B9%85%E7%99%BE%E9%80%B1%E5%B9%B4logo.png';">
+                <!-- 右側：百週年橫幅白背景 Banner 展示 -->
+                <div class="h-10 sm:h-12 rounded-lg bg-white/90 p-1 flex items-center justify-center shadow-inner overflow-hidden border border-amber-300/40">
+                    <img id="centenary-banner-img" src="百週年橫幅白背景.png" alt="臺灣傳教百週年橫幅" class="h-full w-auto object-contain" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E7%99%BE%E9%80%B1%E5%B9%B4%E6%A9%AB%E5%B9%85%E7%99%BD%E8%83%8C%E6%99%AF.png';">
                 </div>
             </div>
 
             <!-- 海報主視覺圖畫 (插畫 Banner) -->
-            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-slate-900 flex items-center justify-center">
-                <!-- 載入使用者提供的「主視覺.png」，並支援 GitHub 儲存庫備援 -->
-                <img id="main-visual-img" src="主視覺.png" alt="真耶穌教會臺灣傳教百年主視覺" class="w-full h-full object-cover object-center transform hover:scale-105 transition duration-700" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png';">
+            <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-slate-950 flex items-center justify-center border-b border-amber-500/20 p-2">
+                <!-- 載入主視覺畫卷，object-contain 完整呈現白鴿、朝陽、河流與魚群 -->
+                <img id="main-visual-img" src="主視覺.png" alt="真耶穌教會臺灣傳教百年主視覺" class="w-full h-full object-contain object-center transform hover:scale-102 transition duration-700 drop-shadow-2xl" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png';">
                 
-                <!-- 圖片遮罩與聖光裝飾紋路 -->
-                <div class="absolute inset-0 bg-gradient-to-t from-church-navy via-transparent to-black/30 pointer-events-none"></div>
-                
-                <!-- 圖片上浮水印標語與橫幅 (flag_h_1.ai 支援與錦旗視覺) -->
-                <div class="absolute bottom-3 left-6 sm:left-10 z-10 flex flex-wrap items-center gap-2">
-                    <span class="bg-amber-500/90 text-slate-950 font-black text-[10px] sm:text-xs px-2.5 py-1 rounded-md tracking-widest uppercase shadow-md">
-                        1926 - 2026 臺灣傳教百年
-                    </span>
-                    
-                    <!-- 橫幅旗幟 (嘗試讀取 GitHub 儲存庫之 flag_h_1 檔，若無自動以精緻錦旗渲染) -->
-                    <div class="flex items-center space-x-1.5">
-                        <img id="flag-banner-img" src="flag_h_1.png" alt="重修牆垣橫幅" class="h-6 sm:h-8 w-auto object-contain hidden" onload="this.classList.remove('hidden')" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/flag_h_1.png';">
-                        <div class="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-slate-950 font-serif font-black text-[10px] sm:text-xs px-3 py-1 rounded-r-full shadow-lg border-l-2 border-amber-300 transform -skew-x-6 flex items-center">
-                            <i class="fa-solid fa-ribbon text-amber-950 mr-1.5 transform skew-x-6"></i>
-                            <span class="transform skew-x-6 tracking-widest">重修牆垣 · 開展境界</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- 圖片邊框漸層柔化 -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none"></div>
             </div>
-
-            <!-- 海報核心文案區 -->
-            <div class="px-6 sm:px-10 py-6 sm:py-8 space-y-6 flex-grow flex flex-col justify-between relative z-10">
-                
-                <!-- 主副標題區 -->
-                <div class="text-center space-y-3">
-                    <div class="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 text-amber-300 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold tracking-widest">
-                        <i class="fa-solid fa-music text-amber-400"></i>
-                        <span>西區門戶 聖樂特會</span>
-                    </div>
-
-                    <!-- 主標題 -->
-                    <h1 id="poster-title-text" class="text-2xl sm:text-4xl lg:text-5xl font-serif-title font-black text-gold-gradient tracking-tight leading-tight">
-                        真耶穌教會臺灣傳教百年<br class="hidden sm:inline">西區音樂會
-                    </h1>
-                    
-                    <p class="text-xs sm:text-base text-slate-300 font-light max-w-xl mx-auto leading-relaxed">
-                        歌頌百年恩典 · 共築信仰牆垣 · 誠摯邀請您同心共赴盛會
-                    </p>
-                </div>
-
-                <!-- 核心時間地點資訊卡 (2欄 Grid) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-2">
-                    
-                    <!-- 時間卡片 -->
-                    <div class="bg-white/5 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-amber-500/20 flex items-start space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-xl shrink-0 border border-amber-500/30">
-                            <i class="fa-solid fa-calendar-check"></i>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="text-[11px] font-bold text-amber-400 tracking-wider uppercase block">活動時間 Date & Time</span>
-                            <h3 class="text-lg sm:text-xl font-mono font-bold text-white tracking-wide">
-                                2026/11/01 <span class="text-xs font-sans text-amber-200 font-normal">(星期日)</span>
-                            </h3>
-                            <p class="text-xs text-slate-300 font-mono font-bold">
-                                09:00 ~ 12:00 <span class="text-[10px] text-slate-400 font-normal">(08:30開放報到入場)</span>
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- 地點卡片 -->
-                    <div class="bg-white/5 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-amber-500/20 flex items-start space-x-4">
-                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-xl shrink-0 border border-amber-500/30">
-                            <i class="fa-solid fa-building-columns"></i>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="text-[11px] font-bold text-amber-400 tracking-wider uppercase block">活動地點 Location</span>
-                            <h3 class="text-base sm:text-lg font-bold text-white tracking-wide">
-                                國立中央大學 大禮堂
-                            </h3>
-                            <p class="text-xs text-slate-300">
-                                桃園市中壢區中大路300號
-                            </p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- 索票與注意事項卡片 -->
-                <div class="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent p-4 rounded-2xl border border-amber-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div class="flex items-center space-x-3 text-center sm:text-left">
-                        <div class="w-10 h-10 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-lg font-black shrink-0 shadow">
-                            <i class="fa-solid fa-ticket-simple"></i>
-                        </div>
-                        <div>
-                            <span class="text-xs font-bold text-amber-300">索票方式 Ticket Request</span>
-                            <p class="text-sm font-black text-white">免費憑票入場 · 請洽各小區工作小組召集人</p>
-                        </div>
-                    </div>
-                    <button onclick="openTicketModal()" class="no-print shrink-0 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold shadow transition active:scale-95">
-                        查看各小區窗口 <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
-
-                <!-- 組織單位資訊 (指導/主辦/承辦) -->
-                <div class="pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-center sm:text-left text-xs">
-                    <div class="space-y-0.5">
-                        <span class="text-[10px] text-amber-400/80 font-bold block">指導單位 Supervisory Unit</span>
-                        <p class="font-bold text-slate-200">真耶穌教會臺灣總會</p>
-                    </div>
-                    <div class="space-y-0.5">
-                        <span class="text-[10px] text-amber-400/80 font-bold block">主辦單位 Organizer</span>
-                        <p class="font-bold text-slate-200">真耶穌教會西區辦事處<br>真耶穌教會西區聖樂推展小組</p>
-                    </div>
-                    <div class="space-y-0.5">
-                        <span class="text-[10px] text-amber-400/80 font-bold block">承辦單位 Executive Unit</span>
-                        <p class="font-bold text-slate-200">真耶穌教會西區復興小區</p>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- 海報底欄飾條 -->
-            <div class="bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700 h-2 w-full"></div>
-        </div>
-
-    </main>
-
-    <!-- 索票資訊彈窗 (Modal) -->
-    <div id="ticket-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-amber-500/30 text-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-fade-in">
-            <!-- Modal 標頭 -->
-            <div class="bg-slate-800/80 px-6 py-4 border-b border-slate-700 flex items-center justify-between">
-                <div class="flex items-center space-x-2 text-amber-400 font-bold">
-                    <i class="fa-solid fa-ticket text-lg"></i>
-                    <span>各小區索票窗口與召集人資訊</span>
-                </div>
-                <button onclick="closeTicketModal()" class="text-slate-400 hover:text-white transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <!-- Modal 內容 -->
-            <div class="p-6 space-y-4 text-xs">
-                <p class="text-slate-300 leading-relaxed">
-                    本場音樂會採 <strong class="text-amber-300">免費憑票入場</strong>。請各教會信徒與嘉賓向所在小區之工作小組召集人索取門票：
-                </p>
-
-                <div class="space-y-2.5">
-                    <!-- 一小區 -->
-                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
-                        <div>
-                            <span class="font-bold text-white text-sm block">一小區工作小組</span>
-                            <span class="text-slate-400 text-[11px]">包含桃園、中壢、內壢等教會</span>
-                        </div>
-                        <span class="bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-lg border border-amber-500/30">
-                            洽一小區召集人
-                        </span>
-                    </div>
-
-                    <!-- 二小區 -->
-                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
-                        <div>
-                            <span class="font-bold text-white text-sm block">二小區工作小組</span>
-                            <span class="text-slate-400 text-[11px]">包含新竹、竹東、關西等教會</span>
-                        </div>
-                        <span class="bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-lg border border-amber-500/30">
-                            洽二小區召集人
-                        </span>
-                    </div>
-
-                    <!-- 三小區 -->
-                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center justify-between">
-                        <div>
-                            <span class="font-bold text-white text-sm block">三小區工作小組</span>
-                            <span class="text-slate-400 text-[11px]">包含苗栗、頭份、後龍等教會</span>
-                        </div>
-                        <span class="bg-amber-500/20 text-amber-300 font-bold px-2.5 py-1 rounded-lg border border-amber-500/30">
-                            洽三小區召集人
-                        </span>
-                    </div>
-
-                    <!-- 復興小區 -->
-                    <div class="bg-amber-500/10 p-3 rounded-xl border border-amber-500/40 flex items-center justify-between">
-                        <div>
-                            <span class="font-bold text-amber-300 text-sm block">復興小區工作小組 (承辦單位)</span>
-                            <span class="text-slate-300 text-[11px]">大溪、三坑、奎輝、長興等教會</span>
-                        </div>
-                        <span class="bg-amber-500 text-slate-950 font-black px-2.5 py-1 rounded-lg shadow">
-                            洽復興小區召集人
-                        </span>
-                    </div>
-                </div>
-
-                <div class="bg-slate-800/50 p-3 rounded-xl text-[11px] text-slate-400 flex items-start space-x-2">
-                    <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
-                    <span>座位數量有限，請儘早向所屬小區登記索票，以利座位協調與點名統計。</span>
-                </div>
-            </div>
-
-            <!-- Modal 頁尾 -->
-            <div class="bg-slate-800/80 px-6 py-3 border-t border-slate-700 text-right">
-                <button onclick="closeTicketModal()" class="px-4 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs font-bold transition">
-                    關閉視窗
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 頁尾 (列印隱藏) -->
-    <footer class="no-print bg-slate-950 text-slate-500 text-[11px] text-center py-4 border-t border-slate-800 space-y-1">
-        <p>© 2026 真耶穌教會臺灣總會西區辦事處 · 115音樂會籌備委員會</p>
-        <p class="text-slate-600">臺灣傳教 100 周年紀念 (1926 - 2026)</p>
-    </footer>
-
-    <script>
-        // 1. 倒數計時器邏輯 (至 2026/11/01 09:00:00)
-        function updateCountdown() {
-            const eventDate = new Date('2026-11-01T09:00:00+08:00');
-            const now = new Date();
-            const diffMs = eventDate - now;
-
-            const countdownElem = document.getElementById('event-countdown-str');
-
-            if (diffMs <= 0) {
-                countdownElem.innerText = "盛大演出中 / 活動已圓滿落幕";
-                return;
-            }
-
-            const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
-
-            countdownElem.innerText = `${days} 天 ${hours} 小時 ${minutes} 分 ${seconds} 秒`;
-        }
-
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-
-        // 2. 索票 Modal 控制
-        function openTicketModal() {
-            document.getElementById('ticket-modal').classList.remove('hidden');
-        }
-
-        function closeTicketModal() {
-            document.getElementById('ticket-modal').classList.add('hidden');
-        }
-
-        // 3. 加入 Google 行事曆
-        function addToCalendar() {
-            const title = encodeURIComponent("真耶穌教會臺灣傳教百年西區音樂會");
-            const details = encodeURIComponent("索票方式：請洽各小區工作小組召集人。\n指導單位：真耶穌教會臺灣總會\n主辦單位：真耶穌教會西區辦事處、真耶穌教會西區聖樂推展小組\n承辦單位：真耶穌教會西區復興小區");
-            const location = encodeURIComponent("國立中央大學大禮堂 (桃園市中壢區中大路300號)");
-            const dates = "20261101T010000Z/20261101T040000Z";
-
-            const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}`;
-            window.open(googleCalUrl, '_blank');
-        }
-
-        // 4. 海報風格主題切換 (深藍 / 米白)
+<!-- ... existing code ... -->
+        // 4. 海報風格主題切換 (深藍典雅 / 米白雅致)
         function changeTheme(theme) {
             const frame = document.getElementById('poster-frame');
             const navyBtn = document.getElementById('theme-btn-navy');
@@ -447,11 +47,15 @@
 
             if (theme === 'cream') {
                 frame.className = "poster-container poster-card w-full max-w-[840px] bg-church-cream text-slate-900 rounded-3xl overflow-hidden border border-amber-600/30 relative flex flex-col";
+                frame.style.backgroundImage = "linear-gradient(to bottom, rgba(252, 251, 247, 0.92), rgba(248, 246, 238, 0.96)), url('主視覺.png'), url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png')";
+                frame.style.backgroundSize = "cover";
+                frame.style.backgroundPosition = "center";
                 
                 navyBtn.className = "px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition";
                 creamBtn.className = "px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition";
             } else {
-                frame.className = "poster-container poster-card w-full max-w-[840px] bg-church-navy text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col";
+                frame.className = "poster-container poster-card poster-bg-visual w-full max-w-[840px] text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col";
+                frame.style.backgroundImage = "";
                 
                 navyBtn.className = "px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition";
                 creamBtn.className = "px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition";
