@@ -35,9 +35,10 @@
     </script>
     
     <style>
-        /* 將主視覺圖設為海報背景襯底 (含漸層優化對比) */
-        .poster-bg-visual {
-            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), 
+        /* 將主視覺.jpg 設為整張海報的全版襯底背景 (搭配高質感漸層強化讀取對比) */
+        .poster-bg-full {
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.75) 40%, rgba(15, 23, 42, 0.95) 100%), 
+                              url('主視覺.jpg'), 
                               url('主視覺.png'), 
                               url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png');
             background-size: cover;
@@ -54,7 +55,7 @@
 
         /* 擬真海報陰影與框架 */
         .poster-card {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(184, 134, 11, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(184, 134, 11, 0.2);
         }
 
         /* 隱藏列印以外的控制介面 */
@@ -71,7 +72,7 @@
     <div class="no-print w-full max-w-[840px] mb-6 bg-slate-800/90 backdrop-blur p-4 rounded-2xl border border-amber-500/30 flex flex-wrap items-center justify-between gap-3 shadow-xl">
         <div class="flex items-center space-x-2">
             <span class="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></span>
-            <h1 class="text-sm font-bold text-amber-300">115音樂會 宣傳海報門戶</h1>
+            <h1 class="text-sm font-bold text-amber-300">115音樂會 宣傳海報產生器</h1>
         </div>
 
         <div class="flex items-center space-x-2 text-xs">
@@ -88,11 +89,11 @@
         </div>
     </div>
 
-    <!-- 海報本體 (預設 A4 比例擬真框架) -->
-    <div id="poster-frame" class="poster-container poster-card poster-bg-visual w-full max-w-[840px] text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col transition-all duration-500">
+    <!-- 海報本體 (預設 A4 比例擬真框架，套用主視覺全版底圖) -->
+    <div id="poster-frame" class="poster-container poster-card poster-bg-full w-full max-w-[840px] text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col transition-all duration-500 min-h-[1100px]">
         
         <!-- 海報頂部 Logo 與百年題詞 -->
-        <div class="px-6 pt-6 pb-4 flex flex-col sm:flex-row items-center justify-between border-b border-amber-500/20 bg-slate-950/40 gap-4">
+        <div class="px-6 pt-6 pb-4 flex flex-col sm:flex-row items-center justify-between border-b border-amber-500/20 bg-slate-950/60 backdrop-blur-md gap-4">
             <!-- 左側：臺灣總會官方 Logo -->
             <div class="flex items-center space-x-3">
                 <img id="tjc-logo-img" src="tjclogo.jpeg" alt="真耶穌教會Logo" class="w-12 h-12 rounded-full object-cover border-2 border-amber-400/60 shadow-md" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/tjclogo.jpeg';">
@@ -108,87 +109,102 @@
             </div>
         </div>
 
-        <!-- 海報主視覺圖畫 (插畫 Banner) -->
-        <div class="relative w-full aspect-[16/9] sm:aspect-[21/9] overflow-hidden bg-slate-950 flex items-center justify-center border-b border-amber-500/20 p-2">
-            <!-- 載入主視覺畫卷，object-contain 完整呈現白鴿、朝陽、河流與魚群 -->
-            <img id="main-visual-img" src="主視覺.png" alt="真耶穌教會臺灣傳教百年主視覺" class="w-full h-full object-contain object-center transform hover:scale-102 transition duration-700 drop-shadow-2xl" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png';">
-            
-            <!-- 圖片邊框漸層柔化 -->
-            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20 pointer-events-none"></div>
-        </div>
-
         <!-- 海報主要文字與節目資訊 -->
-        <div class="p-6 sm:p-10 space-y-8 flex-grow">
+        <div class="p-6 sm:p-10 space-y-8 flex-grow flex flex-col justify-between relative z-10">
+            
             <!-- 標題區 -->
-            <div class="text-center space-y-3">
-                <div class="inline-block px-4 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-xs tracking-widest uppercase font-bold">
+            <div class="text-center space-y-4 pt-4">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs tracking-widest uppercase font-bold shadow-lg backdrop-blur-sm">
                     百年重修牆垣 · 聖樂獻詩頌讚
                 </div>
-                <h1 class="text-3xl sm:text-5xl font-black font-serif-title tracking-tight text-gold-gradient leading-tight drop-shadow">
+                <h1 class="text-3xl sm:text-5xl font-black font-serif-title tracking-tight text-gold-gradient leading-tight drop-shadow-2xl">
                     115年傳台百年 西區詩歌音樂會
                 </h1>
-                <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto font-light leading-relaxed">
+                <p class="text-sm sm:text-base text-slate-200 max-w-xl mx-auto font-light leading-relaxed drop-shadow">
                     以聖樂獻詩、福音分享見證為核心，榮耀真神、見證福音，回顧在台傳教百年恩典。
                 </p>
             </div>
 
-            <!-- 資訊重點網格 -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto pt-2">
-                <div class="bg-slate-900/80 p-4 rounded-2xl border border-amber-500/20 flex items-center space-x-4 shadow-sm">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl shrink-0 border border-amber-500/30">
-                        <i class="fa-solid fa-calendar-check"></i>
+            <!-- 資訊重點網格 (日期、地點、對象) -->
+            <div class="space-y-4 max-w-2xl mx-auto w-full">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- 實施日期 -->
+                    <div class="bg-slate-950/75 backdrop-blur-md p-4 rounded-2xl border border-amber-500/30 flex items-center space-x-4 shadow-xl">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl shrink-0 border border-amber-500/40">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-amber-400 uppercase font-bold tracking-wider">實施日期 Date & Time</span>
+                            <h4 class="text-sm sm:text-base font-bold text-slate-100 font-mono">2026 年 11 月 1 日 (日)</h4>
+                            <p class="text-xs text-amber-300/90 font-mono font-bold">08:30 ～ 12:30</p>
+                        </div>
                     </div>
-                    <div>
-                        <span class="text-[10px] text-amber-400 uppercase font-bold tracking-wider">活動日期 Time</span>
-                        <h4 class="text-base font-bold text-slate-100 font-mono">2026 年 11 月 01 日 (日)</h4>
+
+                    <!-- 實施地點 -->
+                    <div class="bg-slate-950/75 backdrop-blur-md p-4 rounded-2xl border border-amber-500/30 flex items-center space-x-4 shadow-xl">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl shrink-0 border border-amber-500/40">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-amber-400 uppercase font-bold tracking-wider">實施地點 Location</span>
+                            <h4 class="text-sm sm:text-base font-bold text-slate-100">桃園市中央大學 大禮堂</h4>
+                            <p class="text-[11px] text-slate-300">桃園市中壢區雙連里中大路300號</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-slate-900/80 p-4 rounded-2xl border border-amber-500/20 flex items-center space-x-4 shadow-sm">
-                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl shrink-0 border border-amber-500/30">
-                        <i class="fa-solid fa-location-dot"></i>
+                <!-- 參加對象 -->
+                <div class="bg-slate-950/75 backdrop-blur-md p-4 rounded-2xl border border-amber-500/30 flex items-center space-x-4 shadow-xl">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-lg shrink-0 border border-amber-500/40">
+                        <i class="fa-solid fa-users"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] text-amber-400 uppercase font-bold tracking-wider">演出地點 Location</span>
-                        <h4 class="text-base font-bold text-slate-100">國立中央大學 大禮堂</h4>
+                        <span class="text-[10px] text-amber-400 uppercase font-bold tracking-wider">參加對象 Target Audience</span>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-100">西區教會聯合詩班及同靈（含慕道者）</h4>
                     </div>
                 </div>
             </div>
 
-            <!-- 獻詩陣容說明 -->
-            <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800 text-center space-y-2">
-                <h5 class="text-xs font-bold text-amber-300 tracking-wider">聯合獻詩陣容 · 西區四大小區 16 大詩班合一敬拜</h5>
-                <p class="text-xs text-slate-400 leading-relaxed max-w-lg mx-auto">
+            <!-- 獻詩陣容與節目說明 -->
+            <div class="bg-slate-950/70 backdrop-blur-md p-5 rounded-2xl border border-slate-700/60 text-center space-y-2 max-w-2xl mx-auto w-full shadow-lg">
+                <h5 class="text-xs font-bold text-amber-300 tracking-wider">參、實施方式 · 西區四大小區 16 大詩班合一敬拜</h5>
+                <p class="text-xs text-slate-300 leading-relaxed max-w-lg mx-auto font-light">
                     聯合詩班分部合排、15分鐘福音短講見證、音樂傳承歷史回顧特展
                 </p>
             </div>
         </div>
 
-        <!-- 海報底欄 -->
-        <div class="px-6 py-4 bg-slate-950 border-t border-amber-500/20 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-2">
-            <p>© 2026 真耶穌教會臺灣總會西區籌備委員會 敬邀</p>
-            <p class="font-mono text-amber-400/80">主辦單位：真耶穌教會西區復興小區工作小組</p>
+        <!-- 海報底欄：精確機構單位標示 -->
+        <div class="px-6 py-5 bg-slate-950/90 backdrop-blur-md border-t border-amber-500/30 flex flex-col md:flex-row items-center justify-between text-[11px] text-slate-300 gap-3">
+            <div class="space-y-1 text-center md:text-left">
+                <p><span class="text-amber-400 font-bold">指導單位：</span>真耶穌教會臺灣總會</p>
+                <p><span class="text-amber-400 font-bold">主辦單位：</span>真耶穌教會西區辦事處、真耶穌教會西區聖樂推展小組</p>
+            </div>
+            <div class="text-center md:text-right">
+                <p><span class="text-amber-400 font-bold">承辦單位：</span>真耶穌教會西區復興小區</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">© 2026 真耶穌教會傳台百年西區籌備委員會 敬邀</p>
+            </div>
         </div>
 
     </div>
 
     <script>
-        // 4. 海報風格主題切換 (深藍典雅 / 米白雅致)
+        // 海報風格主題切換 (深藍典雅 / 米白雅致)
         function changeTheme(theme) {
             const frame = document.getElementById('poster-frame');
             const navyBtn = document.getElementById('theme-btn-navy');
             const creamBtn = document.getElementById('theme-btn-cream');
 
             if (theme === 'cream') {
-                frame.className = "poster-container poster-card w-full max-w-[840px] bg-church-cream text-slate-900 rounded-3xl overflow-hidden border border-amber-600/30 relative flex flex-col transition-all duration-500";
-                frame.style.backgroundImage = "linear-gradient(to bottom, rgba(252, 251, 247, 0.92), rgba(248, 246, 238, 0.96)), url('主視覺.png'), url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png')";
+                frame.className = "poster-container poster-card w-full max-w-[840px] text-slate-900 rounded-3xl overflow-hidden border border-amber-600/30 relative flex flex-col transition-all duration-500 min-h-[1100px]";
+                frame.style.backgroundImage = "linear-gradient(to bottom, rgba(252, 251, 247, 0.92) 0%, rgba(248, 246, 238, 0.85) 40%, rgba(245, 240, 228, 0.96) 100%), url('主視覺.jpg'), url('主視覺.png'), url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png')";
                 frame.style.backgroundSize = "cover";
                 frame.style.backgroundPosition = "center";
                 
                 navyBtn.className = "px-2.5 py-1 rounded-md text-slate-300 hover:text-white transition";
                 creamBtn.className = "px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition";
             } else {
-                frame.className = "poster-container poster-card poster-bg-visual w-full max-w-[840px] text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col transition-all duration-500";
+                frame.className = "poster-container poster-card poster-bg-full w-full max-w-[840px] text-white rounded-3xl overflow-hidden border border-amber-500/30 relative flex flex-col transition-all duration-500 min-h-[1100px]";
                 frame.style.backgroundImage = "";
                 
                 navyBtn.className = "px-2.5 py-1 rounded-md bg-amber-500 text-slate-950 font-bold transition";
