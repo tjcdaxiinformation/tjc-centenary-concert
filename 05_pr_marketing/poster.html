@@ -35,12 +35,12 @@
     </script>
     
     <style>
-        /* 將主視覺.jpg 設為整張海報的全版襯底背景 (搭配高質感漸層強化讀取對比) */
+        /* 將主視覺.png 設為整張海報的全版襯底背景 (優化遮罩透明度以清晰顯現鴿子與彩虹河流主視覺) */
         .poster-bg-full {
-            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.75) 40%, rgba(15, 23, 42, 0.95) 100%), 
-                              url('主視覺.jpg'), 
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.72) 0%, rgba(15, 23, 42, 0.50) 40%, rgba(15, 23, 42, 0.88) 100%), 
+                              url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png'), 
                               url('主視覺.png'), 
-                              url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png');
+                              url('主視覺.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -98,7 +98,7 @@
             <div class="flex items-center space-x-3">
                 <img id="tjc-logo-img" src="tjclogo.jpeg" alt="真耶穌教會Logo" class="w-12 h-12 rounded-full object-cover border-2 border-amber-400/60 shadow-md" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/tjclogo.jpeg';">
                 <div>
-                    <h3 class="text-xs font-bold text-amber-300 tracking-wider uppercase">真耶穌教會 臺灣總會 西區門戶</h3>
+                    <h3 class="text-xs font-bold text-amber-300 tracking-wider uppercase">真耶穌教會 臺灣總會</h3>
                     <p class="text-[11px] text-slate-300 font-serif-title">台灣傳教 100 週年獻禮</p>
                 </div>
             </div>
@@ -125,8 +125,8 @@
                 </p>
             </div>
 
-            <!-- 資訊重點網格 (日期、地點、對象) -->
-            <div class="space-y-4 max-w-2xl mx-auto w-full">
+            <!-- 資訊重點網格 (日期、地點、對象) - 調降邊距往下方移動 -->
+            <div class="space-y-4 max-w-2xl mx-auto w-full pt-10 sm:pt-16">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <!-- 實施日期 -->
                     <div class="bg-slate-950/75 backdrop-blur-md p-4 rounded-2xl border border-amber-500/30 flex items-center space-x-4 shadow-xl">
@@ -160,14 +160,14 @@
                     </div>
                     <div>
                         <span class="text-[10px] text-amber-400 uppercase font-bold tracking-wider">參加對象 Target Audience</span>
-                        <h4 class="text-xs sm:text-sm font-bold text-slate-100">西區教會聯合詩班及同靈（含慕道者）</h4>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-100">西區教會聯合詩班及同靈（含慕道者）索票方式：請洽各小區召集人</h4>
                     </div>
                 </div>
             </div>
 
             <!-- 獻詩陣容與節目說明 -->
             <div class="bg-slate-950/70 backdrop-blur-md p-5 rounded-2xl border border-slate-700/60 text-center space-y-2 max-w-2xl mx-auto w-full shadow-lg">
-                <h5 class="text-xs font-bold text-amber-300 tracking-wider">參、實施方式 · 西區四大小區 16 大詩班合一敬拜</h5>
+                <h5 class="text-xs font-bold text-amber-300 tracking-wider">參、實施方式 · 西區四大小區 14組詩班及一組聖樂團口唱心和讚美主。</h5>
                 <p class="text-xs text-slate-300 leading-relaxed max-w-lg mx-auto font-light">
                     聯合詩班分部合排、15分鐘福音短講見證、音樂傳承歷史回顧特展
                 </p>
@@ -197,7 +197,7 @@
 
             if (theme === 'cream') {
                 frame.className = "poster-container poster-card w-full max-w-[840px] text-slate-900 rounded-3xl overflow-hidden border border-amber-600/30 relative flex flex-col transition-all duration-500 min-h-[1100px]";
-                frame.style.backgroundImage = "linear-gradient(to bottom, rgba(252, 251, 247, 0.92) 0%, rgba(248, 246, 238, 0.85) 40%, rgba(245, 240, 228, 0.96) 100%), url('主視覺.jpg'), url('主視覺.png'), url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png')";
+                frame.style.backgroundImage = "linear-gradient(to bottom, rgba(252, 251, 247, 0.88) 0%, rgba(248, 246, 238, 0.70) 40%, rgba(245, 240, 228, 0.92) 100%), url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%9A.png'), url('主視覺.png'), url('主視覺.jpg')";
                 frame.style.backgroundSize = "cover";
                 frame.style.backgroundPosition = "center";
                 
