@@ -20,11 +20,15 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Adjusted transparency to ~70% (30% background opacity) for vivid background visibility */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.65);
+        /* Unified 78% transparency (22% opacity) for balanced background visibility across both columns */
+        .glass-card, .lyrics-card {
+            background: rgba(15, 23, 42, 0.22);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(212, 175, 55, 0.35);
+        }
+
+        .lyrics-inner-box {
+            background: rgba(15, 23, 42, 0.20);
         }
 
         @media print {
@@ -41,7 +45,7 @@
                 box-shadow: none !important;
                 border: none !important;
             }
-            .glass-card {
+            .glass-card, .lyrics-card {
                 background: rgba(255, 255, 255, 0.9) !important;
                 color: #000 !important;
                 border: 1px solid #ccc !important;
@@ -54,10 +58,9 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between p-3 md:p-6">
 
-    <!-- Action Bar / Print Controls -->
     <header class="w-full max-w-6xl flex justify-between items-center mb-4 no-print">
         <div class="text-xs text-amber-300 font-bold flex items-center gap-2">
-            <span>🎼 115年西區音樂會 節目程序與歌詞橫向雙欄設計</span>
+            <span>🎼 115年西區音樂會 節目單與讚美詩 (兩側透明度統一版)</span>
         </div>
         <div class="flex gap-2">
             <button onclick="downloadScheduleImage()" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold py-2 px-3.5 rounded-xl shadow transition flex items-center gap-1.5">
@@ -71,41 +74,39 @@
         </div>
     </header>
 
-    <!-- Main Schedule Printable Canvas Card -->
     <main id="programCanvas" class="w-full max-w-6xl relative bg-cover bg-center border-2 border-amber-500/50 rounded-3xl shadow-2xl overflow-hidden p-4 md:p-6 space-y-4" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
         
         <!-- High transparency overlay so background image is clearly visible -->
-        <div class="absolute inset-0 bg-slate-950/25 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-slate-950/20 pointer-events-none"></div>
 
         <!-- HEADER SECTION -->
         <div class="relative z-10 text-center space-y-1 pt-1">
             <div class="inline-block px-3 py-0.5 rounded-full bg-amber-500/30 border border-amber-500/60 text-amber-200 text-[11px] tracking-[0.2em] font-bold uppercase">
                 1926-2026 臺灣傳教 100 周年
             </div>
-            <h1 class="text-lg md:text-2xl font-black text-slate-100 tracking-wider">
+            <h1 class="text-lg md:text-2xl font-black text-slate-100 tracking-wider drop-shadow-md">
                 真耶穌教會臺灣傳教百週年115年西區音樂會
             </h1>
-            <p class="text-xs text-amber-200 font-semibold tracking-widest">
+            <p class="text-xs text-amber-200 font-bold tracking-widest drop-shadow">
                 📅 2026 年 11 月 01 日 (日) 📍 中央大學大禮堂
             </p>
         </div>
 
-        <!-- TWO COLUMN HORIZONTAL LAYOUT: Left (Program) | Right (Hymns) -->
         <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
             
             <!-- LEFT COLUMN: PROGRAM TABLE (7 Cols) -->
             <div class="lg:col-span-7 glass-card p-3 rounded-2xl shadow-xl space-y-2">
                 <div class="border-b border-amber-500/30 pb-1.5 flex justify-between items-center">
                     <h2 class="text-xs md:text-sm font-bold gold-gradient-text tracking-wider">
-                        ▲ 節目程序與詩班進場順序
+                        ▲ 節目表
                     </h2>
-                    <span class="text-[10px] text-amber-300/80 bg-amber-500/20 px-2 py-0.5 rounded">全區進場時間表</span>
+                    <span class="text-[10px] text-amber-300/90 bg-amber-500/30 px-2 py-0.5 rounded font-bold">音樂會程序表</span>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-[11px] md:text-xs border-collapse">
                         <thead>
-                            <tr class="border-b border-amber-500/40 text-amber-300 font-bold bg-amber-500/10">
+                            <tr class="border-b border-amber-500/40 text-amber-300 font-bold bg-amber-500/20">
                                 <th class="py-1 px-2 whitespace-nowrap">時間</th>
                                 <th class="py-1 px-2 whitespace-nowrap">程序 / 單位</th>
                                 <th class="py-1 px-2">獻詩曲目 / 備註</th>
@@ -113,21 +114,21 @@
                         </thead>
                         <tbody class="divide-y divide-slate-700/50 font-sans text-slate-100 leading-tight">
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">08:00 前</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">08:00 前</td>
                                 <td class="py-1 px-2 font-bold text-amber-300">報到</td>
-                                <td class="py-1 px-2 text-slate-300">各詩班與同工報到準備</td>
+                                <td class="py-1 px-2 text-slate-200">各詩班與同工報到準備</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">08:00</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">08:00</td>
                                 <td class="py-1 px-2 font-bold text-amber-300">進場走位</td>
-                                <td class="py-1 px-2 text-slate-300">全區詩班依序進場彩排走位</td>
+                                <td class="py-1 px-2 text-slate-200">全區詩班依序進場彩排走位</td>
                             </tr>
-                            <tr class="hover:bg-amber-500/10 bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-300">08:40</td>
+                            <tr class="hover:bg-amber-500/10 bg-amber-500/20">
+                                <td class="py-1 px-2 font-mono text-amber-300 font-bold">08:40</td>
                                 <td class="py-1 px-2 font-bold text-amber-300">序曲</td>
-                                <td class="py-1 px-2 font-mono text-amber-100">329 ‧ 174 ‧ 20 ‧ 主愛臨我 ‧ 21 ‧ 173 ‧ 322 ‧ 173</td>
+                                <td class="py-1 px-2 font-mono text-amber-100 font-semibold">329 ‧ 174 ‧ 20 ‧ 主愛臨我 ‧ 21 ‧ 173 ‧ 322 ‧ 173</td>
                             </tr>
-                            <tr class="hover:bg-amber-500/10 bg-amber-500/20 font-bold">
+                            <tr class="hover:bg-amber-500/10 bg-amber-500/30 font-bold">
                                 <td class="py-1.5 px-2 font-mono text-amber-300">09:00</td>
                                 <td class="py-1.5 px-2 text-amber-200">開會式</td>
                                 <td class="py-1.5 px-2 text-amber-100">
@@ -135,81 +136,81 @@
                                 </td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">09:15</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">09:15</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">傳道夫婦</td>
                                 <td class="py-1 px-2">171 教會唯一根基 ‧ 424 我王之事工</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">09:27</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">09:27</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">五峰牧區</td>
                                 <td class="py-1 px-2">160 真光在心 ‧ 420 奉獻與祢</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">09:37</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">09:37</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">復興前山</td>
                                 <td class="py-1 px-2">135 為什麼忙 ‧ 370 主幫助我們</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">09:48</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">09:48</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">復興中山-兒</td>
                                 <td class="py-1 px-2">我要親近敬拜祢 ‧ 祝福歌</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">09:55</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">09:55</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">東達線</td>
                                 <td class="py-1 px-2">21 美哉 主耶穌 ‧ 427 有一故事傳給萬邦</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">10:07</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">10:07</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">大甲溪線</td>
                                 <td class="py-1 px-2">116 獻身上心 ‧ 320 天使歌唱</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">10:18</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">10:18</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">西大團契</td>
                                 <td class="py-1 px-2">407 在花園裡 ‧ 162 主負我重擔 ‧ 愛的樂章(創作)</td>
                             </tr>
-                            <tr class="hover:bg-amber-500/10 bg-slate-800/80 text-amber-300 font-bold">
+                            <tr class="hover:bg-amber-500/10 bg-slate-900/60 text-amber-300 font-bold">
                                 <td class="py-1 px-2 font-mono">10:32</td>
                                 <td class="py-1 px-2">中場休息</td>
                                 <td class="py-1 px-2">休 息 23 分鐘</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">10:55</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">10:55</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">復興後山</td>
                                 <td class="py-1 px-2">173 十架旌旗 ‧ 455 最美聖名</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">11:09</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">11:09</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">禱英線-兒</td>
                                 <td class="py-1 px-2">祢是我主我王 ‧ 神是我力量泉源</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">11:18</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">11:18</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">力行線社青</td>
                                 <td class="py-1 px-2">91 想念主愛 ‧ 452 我願常見祢</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">11:29</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">11:29</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">中港溪線</td>
                                 <td class="py-1 px-2">235 主我一體 ‧ 322 榮耀歸於天父</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">11:43</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">11:43</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">泰安聯合</td>
                                 <td class="py-1 px-2">457 耶穌奇妙的救恩 ‧ 37 朱紅罪變如雪</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">11:56</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">11:56</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">新望愛</td>
                                 <td class="py-1 px-2">358 基督活在我心 ‧ 163 我靈魂永安樂</td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-200">12:08</td>
+                                <td class="py-1 px-2 font-mono text-amber-200 font-bold">12:08</td>
                                 <td class="py-1 px-2 font-bold text-amber-200">尖石前山</td>
                                 <td class="py-1 px-2">18 歌頌主恩 ‧ 417 耶穌領回家</td>
                             </tr>
-                            <tr class="hover:bg-amber-500/10 bg-amber-500/20 font-bold">
+                            <tr class="hover:bg-amber-500/10 bg-amber-500/30 font-bold">
                                 <td class="py-1.5 px-2 font-mono text-amber-300">12:15</td>
                                 <td class="py-1.5 px-2 text-amber-200">閉會式</td>
                                 <td class="py-1.5 px-2 text-amber-100">
@@ -217,17 +218,17 @@
                                 </td>
                             </tr>
                             <tr class="hover:bg-amber-500/10">
-                                <td class="py-1 px-2 font-mono text-amber-300">會後</td>
+                                <td class="py-1 px-2 font-mono text-amber-300 font-bold">會後</td>
                                 <td class="py-1 px-2 font-bold text-amber-300">平安再會</td>
-                                <td class="py-1 px-2 text-slate-300">整理會場 ‧ 賦歸</td>
+                                <td class="py-1 px-2 text-slate-200">整理會場 ‧ 賦歸</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: HYMN LYRICS (5 Cols) -->
-            <div class="lg:col-span-5 glass-card p-2.5 rounded-2xl shadow-xl space-y-2">
+            <!-- RIGHT COLUMN: HYMN LYRICS (5 Cols) with 75% Transparency -->
+            <div class="lg:col-span-5 lyrics-card p-2.5 rounded-2xl shadow-xl space-y-2">
                 <div class="border-b border-amber-500/30 pb-1 text-left">
                     <h3 class="text-xs md:text-sm font-bold gold-gradient-text flex items-center gap-1.5">
                         <span>📖</span> 開會與閉會式 全體齊唱讚美詩歌詞
@@ -236,11 +237,11 @@
 
                 <div class="space-y-2 text-[10px] md:text-[11px] leading-tight font-serif">
                     <!-- Hymn 274(甲) -->
-                    <div class="bg-slate-900/90 p-2 rounded-xl border border-amber-500/30 space-y-1">
+                    <div class="p-2 rounded-xl space-y-1 bg-amber-500/10 border border-amber-500/20">
                         <div class="font-bold text-amber-300 text-xs border-b border-amber-500/20 pb-0.5">
                             開會式：詩 274(甲)首《晚雨降臨》
                         </div>
-                        <div class="bg-black/60 p-1.5 rounded-lg text-amber-100 leading-snug font-serif text-[10px] space-y-1">
+                        <div class="lyrics-inner-box p-1.5 rounded-lg text-amber-100 leading-snug font-serif text-[10px] space-y-1">
                             <div>
                                 <p>晚雨聖靈已降臨，居住眾人內心，</p>
                                 <p>所有聖經之應許，日日越看越真；</p>
@@ -269,11 +270,11 @@
                     </div>
 
                     <!-- Hymn 174 -->
-                    <div class="bg-slate-900/90 p-2 rounded-xl border border-amber-500/30 space-y-1">
+                    <div class="p-2 rounded-xl space-y-1 bg-amber-500/10 border border-amber-500/20">
                         <div class="font-bold text-amber-300 text-xs border-b border-amber-500/20 pb-0.5">
                             閉會式：詩 174首《真教會必興起》
                         </div>
-                        <div class="bg-black/60 p-1.5 rounded-lg text-amber-100 leading-snug font-serif text-[10px] space-y-0.5">
+                        <div class="lyrics-inner-box p-1.5 rounded-lg text-amber-100 leading-snug font-serif text-[10px] space-y-0.5">
                             <p>真教會必然興起，因為是神的旨意；</p>
                             <p>歸榮耀給主耶穌，讚美主，哈利路亞！</p>
                             <p>真教會必然興起，因為是主的應許；</p>
@@ -286,7 +287,7 @@
                     </div>
                 </div>
 
-                <div class="text-[9px] text-amber-200/60 text-center border-t border-amber-500/20 pt-1 font-sans">
+                <div class="text-[9px] text-amber-200/80 text-center border-t border-amber-500/20 pt-1 font-sans font-semibold">
                     請全體弟兄姊妹憑此頁一同開口齊唱讚美詩 ‧ 願榮耀歸給主耶穌
                 </div>
             </div>
@@ -294,8 +295,8 @@
         </div>
 
         <!-- FOOTER -->
-        <div class="relative z-10 text-center text-[10px] text-amber-200/70 pt-1 border-t border-amber-500/20">
-            真耶穌教會傳教百年西區音樂會籌備小組 ‧ 宣傳與公關組製作
+        <div class="relative z-10 text-center text-[10px] text-amber-200/90 pt-1 border-t border-amber-500/20 font-bold">
+            主辦單位：真耶穌教會臺灣總會西區辦事處
         </div>
 
     </main>
