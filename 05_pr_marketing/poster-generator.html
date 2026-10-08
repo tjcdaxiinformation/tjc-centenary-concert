@@ -3,77 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真耶穌教會臺灣傳教百週年 - 直式宣傳帆布與海報產生器</title>
+    <title>真耶穌教會臺灣傳教百週年 - 直式旗幟與路燈旗印刷檔產生器</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2canvas CDN for High-Res Print Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Noto Serif TC & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        church: {
+                            navy: '#0b192c',
+                            deepnavy: '#050b14',
+                            gold: '#d4af37',
+                            lightgold: '#fff3a1',
+                            cream: '#fdfaf2',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         body {
-            font-family: 'Noto Serif TC', serif, 'Inter', sans-serif;
+            font-family: 'Noto Serif TC', serif;
             background-color: #050b14;
             color: #f3f4f6;
         }
-        
+
         .gold-gradient-text {
             background: linear-gradient(135deg, #fff8cb 0%, #e5c158 40%, #c99a22 80%, #aa7c11 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .gold-metallic-border {
-            border-image: linear-gradient(to bottom, #f7ef8a, #d4af37, #8a640f) 1;
+        /* Vertical Writing Mode Support */
+        .writing-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            letter-spacing: 0.15em;
         }
 
-        /* Aspect ratio presets for banner printing */
-        .poster-ratio-1-2 {
-            aspect-ratio: 1 / 2;
+        /* Flag Ratios */
+        .banner-ratio-60-150 {
+            aspect-ratio: 60 / 150;
         }
-        .poster-ratio-2-3 {
-            aspect-ratio: 2 / 3;
+        .banner-ratio-60-180 {
+            aspect-ratio: 60 / 180;
         }
-        .poster-ratio-1-25 {
-            aspect-ratio: 1 / 2.5;
+        .banner-ratio-90-180 {
+            aspect-ratio: 90 / 180;
         }
 
-        /* Print Bleed Area Overlay */
+        /* Bleed lines for print overlay */
         .bleed-lines {
             position: absolute;
             inset: 12px;
-            border: 1px dashed rgba(239, 68, 68, 0.6);
+            border: 1.5px dashed rgba(239, 68, 68, 0.7);
             pointer-events: none;
-            z-index: 40;
+            z-index: 50;
         }
-
         .bleed-lines::after {
-            content: '裁切/安全邊界 Safety Margin';
+            content: '印刷出血線 Safety Bleed Margin';
             position: absolute;
             top: 2px;
-            right: 6px;
-            font-size: 9px;
-            color: rgba(239, 68, 68, 0.8);
+            left: 6px;
+            font-size: 8px;
+            color: rgba(239, 68, 68, 0.9);
             font-family: sans-serif;
+            font-weight: bold;
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #081120;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e3a8a;
-            border-radius: 3px;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #081120; }
+        ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 3px; }
 
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #posterPrintArea, #posterPrintArea * {
-                visibility: visible;
-            }
-            #posterPrintArea {
+            body * { visibility: hidden; }
+            #bannerPrintArea, #bannerPrintArea * { visibility: visible; }
+            #bannerPrintArea {
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -83,242 +102,244 @@
                 border: none !important;
                 box-shadow: none !important;
             }
-            .bleed-lines {
-                display: none !important;
-            }
+            .bleed-lines { display: none !important; }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-between p-3 md:p-6">
 
-    <!-- Header -->
     <header class="w-full max-w-7xl text-center mb-6">
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs md:text-sm tracking-widest mb-2">
             <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
             真耶穌教會臺灣傳教百週年 ‧ 西區音樂會宣傳專案
         </div>
         <h1 class="text-2xl md:text-4xl font-black tracking-wider gold-gradient-text">
-            直式宣傳帆布與海報印刷檔產生器
+            直式旗幟與路燈旗印刷檔產生器
         </h1>
-        <p class="text-xs md:text-sm text-gray-400 mt-1.5 max-w-2xl mx-auto">
-            專為實體印刷（X展架、門型帆布、易拉寶、場地海報）設計，支援一鍵輸出 300 DPI 高解析度圖檔與 PDF 視窗列印。
+        <p class="text-xs md:text-sm text-gray-400 mt-1 max-w-2xl mx-auto">
+            專為實體路燈旗、直式掛旗、展場旗幟設計，右側融合百年品牌圖騰與標語，左側凸顯音樂會地點與時間。
         </p>
     </header>
 
-    <!-- Main Container -->
     <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-        <!-- Controls Panel (Left 5 cols) -->
+        <!-- 左側面板：編輯控制區 (5 欄) -->
         <div class="lg:col-span-5 bg-[#112240] border border-blue-900/50 p-5 md:p-6 rounded-2xl shadow-2xl space-y-5">
             <div class="flex items-center justify-between border-b border-blue-900/60 pb-3">
                 <h2 class="text-base font-bold text-amber-200 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    帆布/海報印刷參數編輯
+                    <i class="fa-solid fa-flag text-amber-400"></i>
+                    <span>旗幟文案與版面參數編輯</span>
                 </h2>
                 <span class="text-[11px] bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">印刷專用</span>
             </div>
 
-            <!-- Print Specs & Presets -->
+            <!-- 尺寸比例選擇器 -->
             <div class="space-y-3">
-                <div>
-                    <label class="block text-xs uppercase font-bold text-gray-300 mb-1.5">1. 選擇印刷成品尺寸比例</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setRatio('1-2', '60cm × 120cm / 90cm × 180cm')" id="btnRatio1-2" class="ratio-btn bg-amber-500 text-slate-950 font-bold py-2 px-1 text-xs rounded-xl transition border border-amber-400 shadow">
-                            1 : 2 帆布<br><span class="text-[10px] opacity-80 font-normal">門型架/X展架</span>
-                        </button>
-                        <button onclick="setRatio('2-3', '60cm × 90cm / A1 / A2')" id="btnRatio2-3" class="ratio-btn bg-[#081120] text-gray-300 hover:text-white font-medium py-2 px-1 text-xs rounded-xl transition border border-blue-900">
-                            2 : 3 海報<br><span class="text-[10px] text-gray-400 font-normal">標準海報比例</span>
-                        </button>
-                        <button onclick="setRatio('1-25', '80cm × 200cm')" id="btnRatio1-25" class="ratio-btn bg-[#081120] text-gray-300 hover:text-white font-medium py-2 px-1 text-xs rounded-xl transition border border-blue-900">
-                            1 : 2.5 易拉寶<br><span class="text-[10px] text-gray-400 font-normal">高挺型展架</span>
-                        </button>
-                    </div>
-                    <div id="sizeHint" class="text-[11px] text-amber-400/90 mt-1.5 font-mono">
-                        📏 建議實體輸出尺寸：60cm × 120cm 或 90cm × 180cm
-                    </div>
+                <label class="block text-xs uppercase font-bold text-gray-300">1. 選擇旗幟輸出尺寸規格</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setRatio('60-150', '60cm × 150cm (標準路燈旗)')" id="btnRatio60-150" class="ratio-btn bg-amber-500 text-slate-950 font-bold py-2 px-1 text-xs rounded-xl transition border border-amber-400 shadow">
+                        60 × 150 cm<br><span class="text-[10px] opacity-80 font-normal">路燈旗 / 燈柱旗</span>
+                    </button>
+                    <button onclick="setRatio('60-180', '60cm × 180cm (加長型門口旗)')" id="btnRatio60-180" class="ratio-btn bg-[#081120] text-gray-300 hover:text-white font-medium py-2 px-1 text-xs rounded-xl transition border border-blue-900">
+                        60 × 180 cm<br><span class="text-[10px] text-gray-400 font-normal">加長直立旗</span>
+                    </button>
+                    <button onclick="setRatio('90-180', '90cm × 180cm (大型會場直旗)')" id="btnRatio90-180" class="ratio-btn bg-[#081120] text-gray-300 hover:text-white font-medium py-2 px-1 text-xs rounded-xl transition border border-blue-900">
+                        90 × 180 cm<br><span class="text-[10px] text-gray-400 font-normal">大型大堂展旗</span>
+                    </button>
                 </div>
+                <div id="sizeHint" class="text-[11px] text-amber-400/90 font-mono">
+                    📏 實體旗幟輸出尺寸：60cm × 150cm (標準路燈旗)
+                </div>
+            </div>
 
-                <!-- Bleed & Safety Display Toggle -->
+            <!-- 出血線與背景透明度開關 -->
+            <div class="space-y-2">
                 <div class="flex items-center justify-between p-3 bg-[#081120] rounded-xl border border-blue-900/60">
-                    <span class="text-xs font-semibold text-gray-300 flex items-center gap-1.5">
-                        <span>✂️</span> 顯示印刷裁切/出血安全線 (Bleed)
-                    </span>
+                    <span class="text-xs font-semibold text-gray-300">✂️ 顯示印刷裁切/出血安全線</span>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggleBleed" class="sr-only peer" checked onchange="toggleBleedLines(this.checked)">
                         <div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                 </div>
 
-                <!-- Form Fields -->
-                <div class="space-y-3 pt-2">
+                <!-- 右側直幅照片檔上傳設定 -->
+                <div class="p-3 bg-[#081120] rounded-xl border border-blue-900/60 space-y-2">
+                    <label class="block text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                        <span>🖼️</span> 上傳右側百年圖騰直幅照片 (.png / .jpg)
+                    </label>
+                    <input type="file" id="inRightBannerImg" accept="image/*" onchange="handleRightBannerUpload(event)" class="w-full text-xs text-gray-300 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer transition">
+                    <p class="text-[10px] text-gray-400 leading-tight">
+                        選擇上傳您準備好的直幅圖片（如《下午3.14的影像.png》），將直接精準替換右側直幅圖案區。
+                    </p>
+                </div>
+
+                <div class="p-3 bg-[#081120] rounded-xl border border-blue-900/60 space-y-1.5">
+                    <div class="flex justify-between items-center text-xs text-gray-300 font-semibold">
+                        <span>☀️ 主視覺背景明亮度</span>
+                        <span id="bgBrightnessVal" class="text-amber-400 font-mono">1.15</span>
+                    </div>
+                    <input type="range" id="bgBrightness" min="0.5" max="2.0" step="0.05" value="1.15" class="w-full accent-amber-400" oninput="updateBrightness(this.value)">
+                </div>
+            </div>
+
+            <div class="space-y-3 pt-2">
+                <h3 class="text-xs font-bold text-amber-300 uppercase tracking-wider">2. 旗幟文案內容設定</h3>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">左側大標題（主要活動）</label>
+                    <input type="text" id="inLeftMainTitle" value="西區音樂會" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">左側時間與地點資訊</label>
+                    <input type="text" id="inLeftSubText" value="2026.11.1於中央大學大禮堂" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">右側主標語一</label>
+                    <input type="text" id="inRightSlogan1" value="重修牆垣" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">右側主標語二</label>
+                    <input type="text" id="inRightSlogan2" value="開展境界" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">主標題 / 盛會主題</label>
-                        <input type="text" id="inMainTitle" value="真耶穌教會臺灣傳教百週年" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-100 focus:outline-none focus:border-amber-400 transition">
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">右側百年主題</label>
+                        <input type="text" id="inRightCentennial" value="臺灣傳教" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-300 focus:outline-none focus:border-amber-400 transition">
                     </div>
-
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">副標題 / 音樂會名稱</label>
-                        <input type="text" id="inSubTitle" value="西區詩歌音樂會" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400 transition">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">百年核心標語 (Slogan)</label>
-                        <input type="text" id="inSlogan" value="重修牆垣 ‧ 開展境界" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-amber-200 focus:outline-none focus:border-amber-400 transition">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">舉辦日期 Date</label>
-                            <input type="text" id="inEventDate" value="2026 年 11 月 01 日 (日)" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">時間 Time</label>
-                            <input type="text" id="inEventTime" value="上午 08:00 入場 ‧ 08:30 正式開始" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">舉開地點 / 演藝廳名稱 Location</label>
-                        <input type="text" id="inLocation" value="中央大學大禮堂" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">演出單位與重點 Highlights</label>
-                        <textarea id="inHighlights" rows="3" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl p-3 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition leading-relaxed">演出單位：西區各牧區聯合詩班 /西大團契/西區傳道長執詩班 ‧ 管弦樂團
-現場節目：依據真耶穌教會讚美詩詩歌獻詩 ‧ 百週年傳教史巡禮
-入場方式：免費索票入場 ‧ 憑票對號入座</textarea>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">主辦單位 Organizers</label>
-                            <input type="text" id="inOrg" value="真耶穌教會臺灣總會西區辦事處" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-300 focus:outline-none focus:border-amber-400 transition">
-                        </div>
-                        <div>
-                            <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">IG QR Code 標題</label>
-                            <input type="text" id="inQrText" value="掃描關注官方 IG" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-300 focus:outline-none focus:border-amber-400 transition">
-                        </div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">周年標籤</label>
+                        <input type="text" id="inRightAnniversary" value="100周年" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-300 focus:outline-none focus:border-amber-400 transition">
                     </div>
                 </div>
 
-                <!-- Export / Download Action Buttons -->
-                <div class="pt-4 space-y-2">
-                    <button onclick="downloadHighResPoster()" class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        下載高解析度印刷圖檔 (PNG 檔)
-                    </button>
-                    
-                    <button onclick="window.print()" class="w-full bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-2.5 px-4 rounded-xl border border-blue-800 transition text-xs flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                        直接列印 / 另存為 PDF
-                    </button>
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">右側年份範圍</label>
+                    <input type="text" id="inRightYears" value="1926 - 2026" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-amber-200 font-mono focus:outline-none focus:border-amber-400 transition">
                 </div>
+            </div>
 
-                <p class="text-[11px] text-gray-400 pt-2 border-t border-blue-900/40">
-                    💡 **印刷提醒：** 下載之圖檔解析度經優化處理，可以直接寄給輸出印刷廠作為門型展架帆布、易拉寶或實體海報製作使用。
-                </p>
+            <!-- 下載與列印按鈕區 -->
+            <div class="pt-4 space-y-2 border-t border-blue-900/40">
+                <button onclick="downloadHighResBanner()" class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
+                    <i class="fa-solid fa-download"></i>
+                    <span>下載高解析度印刷圖檔 (300 DPI PNG)</span>
+                </button>
+                
+                <button onclick="window.print()" class="w-full bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-2.5 px-4 rounded-xl border border-blue-800 transition text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>另存為 PDF / 直接列印</span>
+                </button>
             </div>
         </div>
 
-        <!-- Poster Canvas Preview (Right 7 cols) -->
+        <!-- 右側面板：旗幟即時實體預覽 (7 欄) -->
         <div class="lg:col-span-7 flex flex-col items-center">
             <div class="text-xs uppercase tracking-widest text-amber-400/80 mb-2 font-mono flex items-center gap-2">
-                <span>🖨️ 印刷即時預覽 (Print Canvas Preview)</span>
+                <i class="fa-solid fa-eye"></i>
+                <span>直式旗幟實體預覽 (Live Canvas Preview)</span>
             </div>
 
-            <!-- Printable Poster Card Container -->
-            <div class="w-full max-w-[420px] flex justify-center">
-                <div id="posterPrintArea" class="poster-ratio-1-2 relative w-full bg-cover bg-center border-4 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col justify-between p-7 text-gray-100 transition-all duration-300" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+            <!-- 旗幟實體預覽區容器 -->
+            <div class="w-full max-w-[380px] flex justify-center">
+                <div id="bannerPrintArea" class="banner-ratio-60-150 relative w-full bg-cover bg-center border-4 border-amber-500/60 rounded-2xl shadow-2xl overflow-hidden flex transition-all duration-300" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
                     
-                    <!-- Bleed Line Marker for Print -->
+                    <!-- 出血線遮罩 -->
                     <div id="bleedOverlay" class="bleed-lines"></div>
 
-                    <!-- Soft Light Gradient Overlay for Maximum Background Visual Brightness (Avoids obscuring the dove) -->
-                    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/20 to-slate-950/90 pointer-events-none"></div>
+                    <!-- 主視覺背景調色與遮罩層 -->
+                    <div id="bgOverlayFilter" class="absolute inset-0 bg-slate-950/25 backdrop-brightness-[1.15] transition-all pointer-events-none"></div>
 
-                    <!-- TOP SECTION: HEADER & SLOGAN -->
-                    <div class="relative z-10 text-center space-y-2 pt-2">
-                        <!-- Top Mini Tag -->
-                        <div class="inline-block px-3 py-0.5 rounded-full bg-amber-500/25 border border-amber-500/50 text-amber-300 text-[10px] tracking-[0.2em] font-semibold uppercase">
-                            1926 - 2026 臺灣傳教 100 周年
+                    <!-- 雙欄版面配置網格 (Left: Event Info | Right: Centennial Emblem & Slogan) -->
+                    <div class="relative z-10 w-full h-full grid grid-cols-12 p-5 text-church-navy">
+                        
+                        <!-- LEFT SIDE COLUMN (6 Cols): Music Concert Info & Date/Venue Vertical Text -->
+                        <div class="col-span-6 flex flex-col justify-between items-start pr-2 border-r border-amber-500/30">
+                            
+                            <!-- Top Spacer / Accent Dot -->
+                            <div class="w-full pt-2">
+                                <div class="inline-block px-2 py-0.5 rounded bg-amber-500/80 text-slate-950 text-[9px] font-bold tracking-widest uppercase shadow">
+                                    音樂會特刊旗
+                                </div>
+                            </div>
+
+                            <!-- Middle Main Vertical Title: 西區音樂會 -->
+                            <div class="my-auto py-2">
+                                <h1 id="outLeftMainTitle" class="text-2xl sm:text-3xl font-black text-amber-100 tracking-[0.2em] writing-vertical leading-snug drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] bg-slate-950/70 p-3 rounded-2xl border border-amber-400/40">
+                                    西區音樂會
+                                </h1>
+                            </div>
+
+                            <!-- Bottom SubText: 2026.11.1 於中央大學大禮堂 -->
+                            <div class="pb-2 w-full">
+                                <div id="outLeftSubText" class="text-xs sm:text-sm font-bold text-amber-200 tracking-wider writing-vertical leading-relaxed drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] bg-slate-950/80 p-2.5 rounded-xl border border-amber-500/40">
+                                    2026.11.1於中央大學大禮堂
+                                </div>
+                            </div>
+
                         </div>
 
-                        <!-- Main Title -->
-                        <h2 id="outMainTitle" class="text-xs md:text-sm tracking-[0.25em] text-gray-100 uppercase font-medium drop-shadow-md">
-                            真耶穌教會臺灣傳教百週年
-                        </h2>
+                        <!-- RIGHT SIDE COLUMN (6 Cols): Photo/Image Banner Emblem Display Area -->
+                        <div class="col-span-6 flex flex-col justify-center items-center pl-2 h-full">
+                            <div id="rightBannerContainer" class="w-full h-full rounded-xl overflow-hidden shadow-2xl border border-amber-500/50 bg-church-cream/95 flex flex-col justify-between items-center relative p-1">
+                                <!-- Uploaded Photo Element -->
+                                <img id="outRightBannerImage" src="" alt="百年圖騰直幅照片" class="w-full h-full object-contain rounded-lg hidden shadow-sm">
+                                
+                                <!-- Default Text/Graphic Layout (Displayed until a photo is uploaded) -->
+                                <div id="outRightBannerFallback" class="w-full h-full flex flex-col justify-between items-center text-center p-2.5">
+                                    <!-- 1. Top Section: Centenary Double-Arch Fortress Wall Logo -->
+                                    <div class="w-full pt-1 flex flex-col items-center">
+                                        <div class="w-20 h-16 relative flex items-center justify-center">
+                                            <svg viewBox="0 0 240 180" class="w-full h-full drop-shadow-md" fill="none">
+                                                <g fill="#0b192c">
+                                                    <polygon points="40,20 60,17 60,25 75,23 75,15 95,12 95,20 115,17 115,10 135,8 135,16 155,13 155,5 175,3 175,11 195,8 195,0 205,0 205,120 195,120 195,15 40,35" />
+                                                    <rect x="35" y="40" width="165" height="5" transform="skewY(-5)" />
+                                                    <rect x="32" y="49" width="170" height="5" transform="skewY(-5)" />
+                                                    <rect x="29" y="58" width="175" height="5" transform="skewY(-5)" />
+                                                    <rect x="26" y="67" width="180" height="5" transform="skewY(-5)" />
+                                                    <rect x="23" y="76" width="185" height="5" transform="skewY(-5)" />
+                                                    <rect x="20" y="85" width="190" height="5" transform="skewY(-5)" />
+                                                    <rect x="17" y="94" width="195" height="5" transform="skewY(-5)" />
+                                                    <rect x="14" y="103" width="200" height="5" transform="skewY(-5)" />
+                                                    <rect x="11" y="112" width="205" height="5" transform="skewY(-5)" />
+                                                    <rect x="8" y="121" width="210" height="5" transform="skewY(-5)" />
+                                                    <rect x="5" y="130" width="215" height="5" transform="skewY(-5)" />
+                                                    <rect x="2" y="139" width="220" height="6" transform="skewY(-5)" />
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
 
-                        <!-- Concert Subtitle (Gold Gradient Header) -->
-                        <h1 id="outSubTitle" class="text-2xl md:text-3xl font-black tracking-wider gold-gradient-text drop-shadow-lg leading-tight">
-                            西區詩歌音樂會
-                        </h1>
+                                    <!-- 2. Middle Section: Vertical Calligraphy Slogans (重修牆垣 開展境界) -->
+                                    <div class="my-auto flex justify-center items-center gap-2 py-1">
+                                        <div id="outRightSlogan1" class="text-xl sm:text-2xl font-black text-church-navy writing-vertical leading-none tracking-[0.2em]">
+                                            重修牆垣
+                                        </div>
+                                        <div id="outRightSlogan2" class="text-xl sm:text-2xl font-black text-church-navy writing-vertical leading-none tracking-[0.2em] pt-4">
+                                            開展境界
+                                        </div>
+                                    </div>
 
-                        <!-- Divider line with gold element -->
-                        <div class="w-24 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto opacity-80 my-1"></div>
-
-                        <!-- Slogan -->
-                        <p id="outSlogan" class="text-sm md:text-base font-bold text-amber-200 tracking-[0.2em] drop-shadow-md">
-                            重修牆垣 ‧ 開展境界
-                        </p>
-                    </div>
-
-                    <!-- MIDDLE SPACER: LEAVE DOVE IMAGE UNBLOCKED -->
-                    <div class="relative z-10 my-auto min-h-[100px]"></div>
-
-                    <!-- LOWER SECTION: HIGHLIGHTS & PROGRAM DETAILS (Pushed down to the bottom above QR) -->
-                    <div class="relative z-10 text-center space-y-3 px-1 mb-2">
-                        
-                        <!-- Event Info Box -->
-                        <div class="p-3.5 bg-[#050b14]/90 border border-amber-500/50 rounded-2xl shadow-2xl backdrop-blur-md space-y-1.5">
-                            <div class="flex items-center justify-center gap-1.5 text-amber-300 font-bold text-xs uppercase tracking-wider border-b border-amber-500/20 pb-1">
-                                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                音樂會時間與地點
-                            </div>
-
-                            <div id="outEventDate" class="text-sm md:text-base font-black text-amber-200 tracking-wide">
-                                2026 年 11 月 01 日 (日)
-                            </div>
-
-                            <div id="outEventTime" class="text-xs text-gray-200 font-medium">
-                                上午 08:00 入場 ‧ 08:30 正式開始
-                            </div>
-
-                            <div class="pt-1 border-t border-gray-800/80">
-                                <div id="outLocation" class="text-xs text-amber-100 font-semibold leading-snug">
-                                    中央大學大禮堂
+                                    <!-- 3. Bottom Section: 臺灣傳教 100周年 1926 - 2026 -->
+                                    <div class="w-full border-t border-church-navy/20 pt-2 space-y-1">
+                                        <div class="text-[11px] sm:text-xs font-bold text-church-navy tracking-widest">
+                                            <span id="outRightCentennial">臺灣傳教</span>
+                                        </div>
+                                        <div class="text-base sm:text-lg font-black text-church-navy font-sans tracking-wide">
+                                            <span id="outRightAnniversary">100周年</span>
+                                        </div>
+                                        <div class="w-12 h-0.5 bg-church-navy/80 mx-auto my-0.5"></div>
+                                        <div id="outRightYears" class="text-[10px] sm:text-xs font-bold font-mono text-church-navy tracking-widest">
+                                            1926 - 2026
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Highlights Bullet Points -->
-                        <div id="outHighlights" class="text-[11px] text-gray-200 leading-relaxed font-sans space-y-0.5 bg-[#081120]/85 p-2.5 rounded-xl border border-blue-900/60 text-center shadow-lg">
-                            演出單位：西區各牧區聯合詩班 /西大團契/西區傳道長執詩班 ‧ 管弦樂團<br>
-                            現場節目：依據真耶穌教會讚美詩詩歌獻詩 ‧ 百週年傳教史巡禮<br>
-                            入場方式：免費索票入場 ‧ 憑票對號入座
-                        </div>
-
-                    </div>
-
-                    <!-- BOTTOM SECTION: QR CODE & ORGANIZER FOOTER -->
-                    <div class="relative z-10 pt-2.5 border-t border-amber-500/30 flex items-center justify-between gap-3 bg-[#050b14]/80 p-2.5 rounded-xl backdrop-blur-sm">
-                        <!-- Left: Org text -->
-                        <div class="text-left space-y-1">
-                            <div id="outOrg" class="text-[11px] font-bold text-amber-200 tracking-wider">
-                                真耶穌教會臺灣總會西區辦事處
-                            </div>
-                            <div class="text-[9px] text-gray-400">
-                                傳教百年西區音樂會籌備小組 敬邀
-                            </div>
-                            <div id="outQrText" class="text-[10px] text-amber-400 font-medium pt-0.5">
-                                📲 掃描關注官方 IG 獲取最新索票消息
-                            </div>
-                        </div>
-
-                        <!-- Right: Dynamic QR Code to IG -->
-                        <div class="bg-white p-1.5 rounded-lg shadow-md shrink-0 text-center">
-                            <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.instagram.com/tjc100_west_concert/" alt="IG QR Code" class="w-14 h-14 object-contain">
-                            <div class="text-[8px] font-mono text-slate-800 font-bold mt-0.5">IG 專頁</div>
-                        </div>
                     </div>
 
                 </div>
@@ -327,7 +348,6 @@
 
     </main>
 
-    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 hidden bg-amber-500 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-2xl z-50 text-xs md:text-sm transition">
         通知訊息
     </div>
@@ -339,65 +359,72 @@
 
     <script>
         // DOM Input Elements
-        const inMainTitle = document.getElementById('inMainTitle');
-        const inSubTitle = document.getElementById('inSubTitle');
-        const inSlogan = document.getElementById('inSlogan');
-        const inEventDate = document.getElementById('inEventDate');
-        const inEventTime = document.getElementById('inEventTime');
-        const inLocation = document.getElementById('inLocation');
-        const inHighlights = document.getElementById('inHighlights');
-        const inOrg = document.getElementById('inOrg');
-        const inQrText = document.getElementById('inQrText');
+        const inLeftMainTitle = document.getElementById('inLeftMainTitle');
+        const inLeftSubText = document.getElementById('inLeftSubText');
+        const inRightSlogan1 = document.getElementById('inRightSlogan1');
+        const inRightSlogan2 = document.getElementById('inRightSlogan2');
+        const inRightCentennial = document.getElementById('inRightCentennial');
+        const inRightAnniversary = document.getElementById('inRightAnniversary');
+        const inRightYears = document.getElementById('inRightYears');
 
         // DOM Output Elements
-        const outMainTitle = document.getElementById('outMainTitle');
-        const outSubTitle = document.getElementById('outSubTitle');
-        const outSlogan = document.getElementById('outSlogan');
-        const outEventDate = document.getElementById('outEventDate');
-        const outEventTime = document.getElementById('outEventTime');
-        const outLocation = document.getElementById('outLocation');
-        const outHighlights = document.getElementById('outHighlights');
-        const outOrg = document.getElementById('outOrg');
-        const outQrText = document.getElementById('outQrText');
+        const outLeftMainTitle = document.getElementById('outLeftMainTitle');
+        const outLeftSubText = document.getElementById('outLeftSubText');
+        const outRightSlogan1 = document.getElementById('outRightSlogan1');
+        const outRightSlogan2 = document.getElementById('outRightSlogan2');
+        const outRightCentennial = document.getElementById('outRightCentennial');
+        const outRightAnniversary = document.getElementById('outRightAnniversary');
+        const outRightYears = document.getElementById('outRightYears');
 
-        const posterPrintArea = document.getElementById('posterPrintArea');
+        const bannerPrintArea = document.getElementById('bannerPrintArea');
         const bleedOverlay = document.getElementById('bleedOverlay');
+        const bgOverlayFilter = document.getElementById('bgOverlayFilter');
         const sizeHint = document.getElementById('sizeHint');
         const toast = document.getElementById('toast');
 
-        // Live Binding Function
-        function bindInput(inputEl, outputEl, formatFn = null) {
+        // Photo Upload Handler for Right Side Banner Image
+        function handleRightBannerUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgEl = document.getElementById('outRightBannerImage');
+                const fallbackEl = document.getElementById('outRightBannerFallback');
+                
+                if (imgEl) {
+                    imgEl.src = e.target.result;
+                    imgEl.classList.remove('hidden');
+                }
+                if (fallbackEl) {
+                    fallbackEl.classList.add('hidden');
+                }
+                showToast('🎉 已成功載入右側直幅官方照片圖檔！');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Live Text Binding Function
+        function bindText(inputEl, outputEl) {
             if (!inputEl || !outputEl) return;
             inputEl.addEventListener('input', (e) => {
-                const val = e.target.value;
-                if (formatFn) {
-                    outputEl.innerHTML = formatFn(val);
-                } else {
-                    outputEl.textContent = val;
-                }
+                outputEl.textContent = e.target.value;
             });
         }
 
-        bindInput(inMainTitle, outMainTitle);
-        bindInput(inSubTitle, outSubTitle);
-        bindInput(inSlogan, outSlogan);
-        bindInput(inEventDate, outEventDate);
-        bindInput(inEventTime, outEventTime);
-        bindInput(inLocation, outLocation);
-        bindInput(inOrg, outOrg);
-        bindInput(inQrText, outQrText);
+        bindText(inLeftMainTitle, outLeftMainTitle);
+        bindText(inLeftSubText, outLeftSubText);
+        bindText(inRightSlogan1, outRightSlogan1);
+        bindText(inRightSlogan2, outRightSlogan2);
+        bindText(inRightCentennial, outRightCentennial);
+        bindText(inRightAnniversary, outRightAnniversary);
+        bindText(inRightYears, outRightYears);
 
-        // Format multiline highlights with linebreaks
-        bindInput(inHighlights, outHighlights, (text) => {
-            return text.replace(/\n/g, '<br>');
-        });
-
-        // Set Aspect Ratio Presets
+        // Aspect Ratio Switcher
         function setRatio(ratio, hintText) {
-            posterPrintArea.classList.remove('poster-ratio-1-2', 'poster-ratio-2-3', 'poster-ratio-1-25');
-            posterPrintArea.classList.add(`poster-ratio-${ratio}`);
+            bannerPrintArea.classList.remove('banner-ratio-60-150', 'banner-ratio-60-180', 'banner-ratio-90-180');
+            bannerPrintArea.classList.add(`banner-ratio-${ratio}`);
 
-            // Update button styles
             document.querySelectorAll('.ratio-btn').forEach(btn => {
                 btn.className = "ratio-btn bg-[#081120] text-gray-300 hover:text-white font-medium py-2 px-1 text-xs rounded-xl transition border border-blue-900";
             });
@@ -408,46 +435,52 @@
             }
 
             if (sizeHint) {
-                sizeHint.textContent = `📏 建議實體輸出尺寸：${hintText}`;
+                sizeHint.textContent = `📏 實體旗幟輸出尺寸：${hintText}`;
             }
 
-            showToast(`已切換為 ${ratio.replace('-', ':')} 帆布比例！`);
+            showToast(`已切換旗幟規格為 ${hintText}！`);
         }
 
-        // Toggle Bleed Margin Display
+        // Toggle Bleed Overlay
         function toggleBleedLines(show) {
             if (bleedOverlay) {
                 bleedOverlay.style.display = show ? 'block' : 'none';
             }
         }
 
-        // Download High Resolution Poster Image using html2canvas
-        function downloadHighResPoster() {
-            showToast('⏳ 正在為您繪製高解析度印刷圖檔，請稍候...');
+        // Update Background Brightness
+        function updateBrightness(val) {
+            document.getElementById('bgBrightnessVal').textContent = val;
+            if (bgOverlayFilter) {
+                bgOverlayFilter.style.backdropFilter = `brightness(${val})`;
+            }
+        }
 
-            // Hide bleed lines temporarily for export
+        // High Resolution Download using html2canvas
+        function downloadHighResBanner() {
+            showToast('⏳ 正在為您轉繪 300 DPI 高解析度印刷旗幟圖檔...');
+
             const isBleedVisible = bleedOverlay.style.display !== 'none';
             bleedOverlay.style.display = 'none';
 
-            html2canvas(posterPrintArea, {
-                scale: 3, // 3x high resolution scale (300 DPI equivalent)
+            html2canvas(bannerPrintArea, {
+                scale: 3, // 300 DPI high resolution scaling
                 useCORS: true,
                 allowTaint: true,
-                backgroundColor: null,
+                backgroundColor: null
             }).then(canvas => {
-                // Restore bleed line visibility
                 if (isBleedVisible) bleedOverlay.style.display = 'block';
 
                 const link = document.createElement('a');
-                link.download = `傳教百年西區音樂會_直式宣傳帆布印刷圖檔.png`;
+                link.download = `傳教百年西區音樂會_直式旗幟路燈旗印刷檔.png`;
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
 
-                showToast('🎉 高解析度印刷 PNG 圖檔已下載成功！');
+                showToast('🎉 高解析度旗幟 PNG 圖檔已順利下載完成！');
             }).catch(err => {
                 console.error(err);
                 if (isBleedVisible) bleedOverlay.style.display = 'block';
-                showToast('❌ 圖檔匯出失敗，請嘗試直接使用列印/PDF 功能。');
+                showToast('❌ 圖檔匯出失敗，請嘗試使用另存 PDF 功能。');
             });
         }
 
@@ -456,7 +489,7 @@
             toast.classList.remove('hidden');
             setTimeout(() => {
                 toast.classList.add('hidden');
-            }, 3500);
+            }, 3000);
         }
     </script>
 </body>
