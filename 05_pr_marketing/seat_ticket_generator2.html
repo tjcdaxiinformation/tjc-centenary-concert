@@ -53,7 +53,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- 頂部高質感導覽列 -->
+    <!-- 1. 頂部高質感導覽列 (正確獨立閉合) -->
     <header class="bg-church-navy text-white shadow-md border-b border-church-gold/30 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -64,11 +64,49 @@
                     <h1 class="text-base sm:text-lg font-bold tracking-tight text-amber-300">真耶穌教會臺灣傳教百週年115年西區音樂會 門票產生器</h1>
                     <p class="text-[10px] sm:text-xs text-slate-400">西區門戶 · 實體入場票套印、座號展開與高解析 AI/PDF 出圖工具</p>
                 </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="bg-amber-500/10 text-amber-400 text-xs px-2.5 py-1 rounded-full border border-amber-500/20 font-mono font-bold">
+                    <i class="fa-solid fa-shield-halved mr-1"></i>核定版 (43排 1,518席)
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. 核心主要內容區域 -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        
+        <!-- 上方：門票實體模擬預覽卡片區塊 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 space-y-3">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
+                <div class="flex items-center space-x-2">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg border border-emerald-200">
+                        <i class="fa-solid fa-eye mr-1"></i>實體門票套印視覺預覽
+                    </span>
+                    <span id="preview-index-text" class="text-xs font-mono font-bold text-slate-500">1/1,518</span>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <button onclick="prevTicket()" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center space-x-1">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>上一張</span>
+                    </button>
+                    <button onclick="nextTicket()" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center space-x-1">
+                        <span>下一張</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button onclick="downloadTicketImage()" class="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold shadow-xs transition flex items-center space-x-1">
+                        <i class="fa-solid fa-file-image"></i>
+                        <span>下載高清 PNG 圖檔</span>
+                    </button>
+                </div>
+            </div>
+
             <!-- 實體入場票比例卡片容器 (比照官方視覺圖 + 撕票存根聯) -->
-            <div class="flex justify-center overflow-x-auto py-2">
+            <div class="flex justify-center overflow-x-auto py-2 custom-scrollbar">
                 <div id="ticket-preview-card" class="relative w-[920px] h-[230px] shrink-0 bg-white border border-slate-300 rounded-xl shadow-xl flex overflow-hidden select-none font-sans">
                     
-                    <!-- 1. 最左側深綠色條 (1926-2026 真耶穌教會臺灣傳教 100 周年) -->
+                    <!-- 2A. 最左側深綠色條 (1926-2026 真耶穌教會臺灣傳教 100 周年) -->
                     <div class="w-[40px] bg-[#1a3a2a] text-amber-200 flex flex-col items-center justify-between py-3 px-1 border-r border-amber-500/30 shrink-0">
                         <span class="text-[8px] font-mono tracking-widest text-amber-300/80">1926</span>
                         <div class="writing-vertical text-[9px] font-bold tracking-[0.25em] text-amber-100 whitespace-nowrap">
@@ -77,19 +115,19 @@
                         <span class="text-[8px] font-mono tracking-widest text-amber-300/80">2026</span>
                     </div>
 
-                    <!-- 2. 主卡片內容區 (底圖為官方主視覺.png) -->
+                    <!-- 2B. 主卡片內容區 (底圖為官方主視覺.png) -->
                     <div class="flex-grow relative bg-cover bg-center flex justify-between p-3.5" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
                         <!-- 半透明柔光遮罩確保文字閱讀 -->
                         <div class="absolute inset-0 bg-white/20 backdrop-blur-[0.5px] pointer-events-none"></div>
 
-                        <!-- 2A. 左區：入場票大標題 -->
+                        <!-- 左側：入場票大標題 -->
                         <div class="relative z-10 flex flex-col justify-start pt-1 pl-1 shrink-0">
                             <h1 class="text-2xl sm:text-3xl font-serif font-black text-[#1a3a2a] tracking-wider drop-shadow-sm">
                                 入場票
                             </h1>
                         </div>
 
-                        <!-- 2B. 中央區：座椅編號變數 (動態套印，一排單行) -->
+                        <!-- 中央區：座椅編號變數 (動態套印，一排單行) -->
                         <div class="relative z-20 my-auto text-center px-2 flex-1 max-w-[320px]">
                             <div class="bg-white/95 backdrop-blur-md border-2 border-[#1a3a2a] rounded-xl py-2 px-3 shadow-xl">
                                 <span class="text-[10px] font-bold tracking-wider text-emerald-900 block mb-0.5 whitespace-nowrap">
@@ -101,7 +139,7 @@
                             </div>
                         </div>
 
-                        <!-- 2C. 右區：音樂會名稱、標語與時間地點 -->
+                        <!-- 右區：音樂會名稱、標語與時間地點 -->
                         <div class="relative z-10 flex flex-col justify-between text-right pr-1 py-0.5 text-[#1a3a2a] shrink-0 max-w-[240px]">
                             <!-- 標題與標語 -->
                             <div class="space-y-0.5">
@@ -132,13 +170,13 @@
 
                     </div>
 
-                    <!-- 3. 虛線撕裂線 (Perforated Tear Line) -->
+                    <!-- 2C. 虛線撕裂線 (Perforated Tear Line) -->
                     <div class="relative w-0 border-r-2 border-dashed border-emerald-900/40 z-20 flex flex-col justify-between py-1 bg-amber-100/50">
                         <div class="w-2.5 h-2.5 bg-slate-100 rounded-full -ml-[6px] -mt-2.5 border border-slate-300"></div>
                         <div class="w-2.5 h-2.5 bg-slate-100 rounded-full -ml-[6px] -mb-2.5 border border-slate-300"></div>
                     </div>
 
-                    <!-- 4. 右側撕票存根聯 (Stub Section) -->
+                    <!-- 2D. 右側撕票存根聯 (Stub Section) -->
                     <div class="w-[180px] shrink-0 relative bg-cover bg-center flex flex-col justify-between p-3 text-[#1a3a2a] bg-emerald-50/50 border-l border-emerald-900/10" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
                         <!-- 半透明遮罩 -->
                         <div class="absolute inset-0 bg-white/40 backdrop-blur-[0.5px] pointer-events-none"></div>
