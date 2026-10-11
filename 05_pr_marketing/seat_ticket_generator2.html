@@ -53,7 +53,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- 1. 頂部高質感導覽列 (正確獨立閉合) -->
+    <!-- 1. 頂部高質感導覽列 -->
     <header class="bg-church-navy text-white shadow-md border-b border-church-gold/30 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
@@ -62,7 +62,7 @@
                 </div>
                 <div>
                     <h1 class="text-base sm:text-lg font-bold tracking-tight text-amber-300">真耶穌教會臺灣傳教百週年115年西區音樂會 門票產生器</h1>
-                    <p class="text-[10px] sm:text-xs text-slate-400">西區門戶 · 實體入場票套印、座號展開與高解析 AI/PDF 出圖工具</p>
+                    <p class="text-[10px] sm:text-xs text-slate-400">西區門戶 · 實體入場券套印、座號展開與高解析 AI/PDF 出圖工具</p>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
@@ -81,7 +81,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
                 <div class="flex items-center space-x-2">
                     <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg border border-emerald-200">
-                        <i class="fa-solid fa-eye mr-1"></i>實體門票套印視覺預覽
+                        <i class="fa-solid fa-eye mr-1"></i>實體入場券套印視覺預覽
                     </span>
                     <span id="preview-index-text" class="text-xs font-mono font-bold text-slate-500">1/1,518</span>
                 </div>
@@ -102,9 +102,9 @@
                 </div>
             </div>
 
-            <!-- 實體入場票比例卡片容器 (比照官方視覺圖 + 撕票存根聯) -->
+            <!-- 實體入場券比例卡片容器 (比照官方視覺圖 + 撕票存根聯) -->
             <div class="flex justify-center overflow-x-auto py-2 custom-scrollbar">
-                <div id="ticket-preview-card" class="relative w-[920px] h-[230px] shrink-0 bg-white border border-slate-300 rounded-xl shadow-xl flex overflow-hidden select-none font-sans">
+                <div id="ticket-preview-card" class="relative w-[960px] h-[230px] shrink-0 bg-white border border-slate-300 rounded-xl shadow-xl flex overflow-hidden select-none font-sans">
                     
                     <!-- 2A. 最左側深綠色條 (1926-2026 真耶穌教會臺灣傳教 100 周年) -->
                     <div class="w-[40px] bg-[#1a3a2a] text-amber-200 flex flex-col items-center justify-between py-3 px-1 border-r border-amber-500/30 shrink-0">
@@ -120,27 +120,27 @@
                         <!-- 半透明柔光遮罩確保文字閱讀 -->
                         <div class="absolute inset-0 bg-white/20 backdrop-blur-[0.5px] pointer-events-none"></div>
 
-                        <!-- 左側：入場票大標題 -->
+                        <!-- 左側：入場券大標題 -->
                         <div class="relative z-10 flex flex-col justify-start pt-1 pl-1 shrink-0">
                             <h1 class="text-2xl sm:text-3xl font-serif font-black text-[#1a3a2a] tracking-wider drop-shadow-sm">
-                                入場票
+                                入場券
                             </h1>
                         </div>
 
-                        <!-- 中央區：座椅編號變數 (動態套印，一排單行) -->
-                        <div class="relative z-20 my-auto text-center px-2 flex-1 max-w-[320px]">
-                            <div class="bg-white/95 backdrop-blur-md border-2 border-[#1a3a2a] rounded-xl py-2 px-3 shadow-xl">
+                        <!-- 中央區：座椅編號變數 (加寬對話框，100% 完整無截斷顯示) -->
+                        <div class="relative z-20 my-auto text-center px-1 flex-1 max-w-[420px]">
+                            <div class="bg-white/95 backdrop-blur-md border-2 border-[#1a3a2a] rounded-xl py-2 px-4 shadow-xl">
                                 <span class="text-[10px] font-bold tracking-wider text-emerald-900 block mb-0.5 whitespace-nowrap">
                                     ★ 憑卷入場 ‧ 對號入座 ★
                                 </span>
-                                <h2 id="preview-formatted-text" class="text-base sm:text-lg font-mono font-black text-church-navy tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">
+                                <h2 id="preview-formatted-text" class="text-sm sm:text-base md:text-lg font-mono font-black text-church-navy tracking-tight whitespace-nowrap">
                                     下層(1樓入口)、A排、01號
                                 </h2>
                             </div>
                         </div>
 
                         <!-- 右區：音樂會名稱、標語與時間地點 -->
-                        <div class="relative z-10 flex flex-col justify-between text-right pr-1 py-0.5 text-[#1a3a2a] shrink-0 max-w-[240px]">
+                        <div class="relative z-10 flex flex-col justify-between text-right pr-1 py-0.5 text-[#1a3a2a] shrink-0 max-w-[230px]">
                             <!-- 標題與標語 -->
                             <div class="space-y-0.5">
                                 <h3 class="text-[11px] font-black tracking-tight whitespace-nowrap">
@@ -176,8 +176,8 @@
                         <div class="w-2.5 h-2.5 bg-slate-100 rounded-full -ml-[6px] -mb-2.5 border border-slate-300"></div>
                     </div>
 
-                    <!-- 2D. 右側撕票存根聯 (Stub Section) -->
-                    <div class="w-[180px] shrink-0 relative bg-cover bg-center flex flex-col justify-between p-3 text-[#1a3a2a] bg-emerald-50/50 border-l border-emerald-900/10" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+                    <!-- 2D. 右側撕票存根聯 (Stub Section，加寬並微調字體確保 100% 完整顯示) -->
+                    <div class="w-[210px] shrink-0 relative bg-cover bg-center flex flex-col justify-between p-2.5 text-[#1a3a2a] bg-emerald-50/50 border-l border-emerald-900/10" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
                         <!-- 半透明遮罩 -->
                         <div class="absolute inset-0 bg-white/40 backdrop-blur-[0.5px] pointer-events-none"></div>
 
@@ -186,11 +186,11 @@
                             <span class="text-[8px] font-mono font-bold text-emerald-900/80">TICKET STUB</span>
                         </div>
 
-                        <!-- 存根聯核心座位資訊 (保留座位號碼) -->
-                        <div class="relative z-10 my-auto text-center py-1">
-                            <div class="bg-white/95 border border-[#1a3a2a] rounded-lg p-2 shadow-md">
+                        <!-- 存根聯核心座位資訊 (100% 完整呈現不被切割) -->
+                        <div class="relative z-10 my-auto text-center py-0.5">
+                            <div class="bg-white/95 border border-[#1a3a2a] rounded-lg p-1.5 shadow-md">
                                 <span class="text-[9px] font-bold text-emerald-900 block mb-0.5">座位 Seat No.</span>
-                                <div id="preview-stub-seat-text" class="text-xs font-mono font-bold text-church-navy whitespace-nowrap overflow-hidden text-ellipsis">
+                                <div id="preview-stub-seat-text" class="text-[10.5px] font-mono font-bold text-church-navy whitespace-nowrap tracking-tight">
                                     下層(1樓入口)、A排、01號
                                 </div>
                             </div>
