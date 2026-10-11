@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真耶穌教會臺灣傳教百週年115年西區音樂會 門票座位統計與廠商套印產生器</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS CDN (for Excel import) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- html2canvas CDN (for high-res ticket export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google Fonts (Noto Serif TC, Noto Sans TC & Mono) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        church: {
+                            navy: '#0f172a',      /* 莊重深藍 */
+                            bronze: '#8a5e3c',    /* 古銅金 */
+                            gold: '#b8860b',      /* 聖光金 */
+                            green: '#1a3a2a',     /* 門票專用深綠 */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Vertical text styling for ticket side strip */
+        .writing-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- 頂部高質感導覽列 -->
+    <header class="bg-church-navy text-white shadow-md border-b border-church-gold/30 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-500/20 text-amber-400 p-2 rounded-xl border border-amber-500/30">
+                    <i class="fa-solid fa-ticket text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-amber-300">真耶穌教會臺灣傳教百週年115年西區音樂會 門票產生器</h1>
+                    <p class="text-[10px] sm:text-xs text-slate-400">西區門戶 · 實體入場票套印、座號展開與高解析 AI/PDF 出圖工具</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="bg-amber-500/10 text-amber-400 text-xs px-2.5 py-1 rounded-full border border-amber-500/20 font-mono font-bold">
+                    <i class="fa-solid fa-shield-halved mr-1"></i>全館 1,518 席核定版
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 核心主要區域 -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        
+        <!-- 上方：門票實體樣式模擬展示區 (依據官方設計圖樣) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 pb-3 gap-2">
+                <div class="flex items-center space-x-2">
+                    <span class="p-1.5 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">實體門票版樣</span>
+                    <h2 class="text-sm font-bold text-church-navy">官方正式入場票套印預覽 (中央座位變數)</h2>
+                </div>
+                <div class="flex items-center space-x-3 text-xs">
+                    <div class="flex items-center space-x-1 bg-slate-100 px-2 py-1 rounded-lg">
+                        <button onclick="prevTicket()" class="w-6 h-6 rounded bg-white hover:bg-slate-200 text-slate-800 text-xs font-bold shadow-xs transition">‹</button>
+                        <span id="preview-index-text" class="text-xs font-mono font-bold px-2 text-church-navy">1/1,518</span>
+                        <button onclick="nextTicket()" class="w-6 h-6 rounded bg-white hover:bg-slate-200 text-slate-800 text-xs font-bold shadow-xs transition">›</button>
+                    </div>
+                    <button onclick="downloadTicketImage()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shadow transition flex items-center space-x-1">
+                        <i class="fa-solid fa-file-image"></i>
+                        <span>下載高清 PNG (供進 AI 轉 PDF)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 實體入場票比例卡片容器 (比照官方視覺圖) -->
+            <div class="flex justify-center overflow-x-auto py-2">
+                <div id="ticket-preview-card" class="relative w-[780px] h-[240px] shrink-0 bg-white border border-slate-300 rounded-xl shadow-xl flex overflow-hidden select-none font-sans">
+                    
+                    <!-- 1. 最左側深綠色條 (1926-2026 真耶穌教會臺灣傳教 100 周年) -->
+                    <div class="w-[42px] bg-[#1a3a2a] text-amber-200 flex flex-col items-center justify-between py-3 px-1 border-r border-amber-500/30 shrink-0">
+                        <span class="text-[9px] font-mono tracking-widest text-amber-300/80">1926</span>
+                        <div class="writing-vertical text-[10px] font-bold tracking-[0.25em] text-amber-100 whitespace-nowrap">
+                            真耶穌教會臺灣傳教100周年
+                        </div>
+                        <span class="text-[9px] font-mono tracking-widest text-amber-300/80">2026</span>
+                    </div>
+
+                    <!-- 2. 主卡片內容區 (底圖為官方主視覺.png) -->
+                    <div class="flex-grow relative bg-cover bg-center flex justify-between p-4" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+                        <!-- 半透明柔光遮罩確保文字閱讀 -->
+                        <div class="absolute inset-0 bg-white/20 backdrop-blur-[0.5px] pointer-events-none"></div>
+
+                        <!-- 2A. 左區：入場票大標題 -->
+                        <div class="relative z-10 flex flex-col justify-start pt-1 pl-2">
+                            <h1 class="text-3xl font-serif font-black text-[#1a3a2a] tracking-wider drop-shadow-sm">
+                                入場票
+                            </h1>
+                        </div>
+
+                        <!-- 2B. 中央區：座椅編號變數 (動態套印) -->
+                        <div class="relative z-20 my-auto text-center px-4">
+                            <div class="bg-white/90 backdrop-blur-md border-2 border-[#1a3a2a] rounded-2xl p-3 shadow-2xl min-w-[280px]">
+                                <span class="text-[10px] uppercase font-bold tracking-widest text-emerald-900 block mb-1">
+                                    ★ 門票對號座位 Seat No. ★
+                                </span>
+                                <h2 id="preview-formatted-text" class="text-xl sm:text-2xl font-mono font-black text-church-navy tracking-wide">
+                                    下層(1樓入口)、A排、01號
+                                </h2>
+                            </div>
+                        </div>
+
+                        <!-- 2C. 右區：音樂會名稱、標語與時間地點 -->
+                        <div class="relative z-10 flex flex-col justify-between text-right pr-2 py-1 text-[#1a3a2a]">
+                            <!-- 標題與標語 -->
+                            <div class="space-y-1">
+                                <h3 class="text-xs font-black tracking-wide">
+                                    真耶穌教會傳教百周年 - 西區詩歌音樂會
+                                </h3>
+                                <div class="text-base font-serif font-black tracking-wider text-emerald-950">
+                                    重修牆垣 開展境界
+                                </div>
+                                <div class="text-[8px] font-mono font-bold tracking-tighter text-emerald-900/80 uppercase">
+                                    REBUILDING THE WALLS, EXTENDING THE BOUNDARY
+                                </div>
+                            </div>
+
+                            <!-- 日期時間與地點 -->
+                            <div class="space-y-0.5 pt-2">
+                                <div class="text-lg font-black font-mono leading-none">
+                                    2026 11.1
+                                </div>
+                                <div class="text-[11px] font-bold">
+                                    上午 08:30
+                                </div>
+                                <div class="text-[11px] font-bold">
+                                    國立中央大學–大禮堂
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center text-xs text-slate-500 pt-1 border-t border-slate-100">
+                <span>💡 提示：中央顯示之座椅編號會隨著選擇的格式（頓號、空格、連字號）即時轉換。</span>
+                <button onclick="copySinglePreview()" class="text-church-navy font-bold hover:underline flex items-center space-x-1">
+                    <i class="fa-regular fa-copy"></i>
+                    <span>複製當前單張文字</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 中間：輸入與操作面板 Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- 左側 7 欄：文字解析與檔案上傳 -->
+            <div class="lg:col-span-7 space-y-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                        <h2 class="text-sm font-bold text-church-navy flex items-center space-x-2">
+                            <i class="fa-solid fa-bolt text-amber-500"></i>
+                            <span>全館 43 排座席數量資料（核定版 1,518 席）</span>
+                        </h2>
+                        <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                            ★ 下層 25 排 + 上層 18 排
+                        </span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <textarea id="paste-input" rows="7" class="w-full p-3 border border-slate-200 rounded-xl text-xs font-mono focus:ring-2 focus:ring-church-gold/50 focus:outline-none custom-scrollbar leading-relaxed">下層(1樓入口) A排 列數:27
+下層(1樓入口) B排 列數:32
+下層(1樓入口) C排 列數:33
+下層(1樓入口) D排 列數:34
+下層(1樓入口) E排 列數:36
+下層(1樓入口) F排 列數:36
+下層(1樓入口) G排 列數:33
+下層(1樓入口) H排 列數:34
+下層(1樓入口) I排 列數:35
+下層(1樓入口) J排 列數:48
+下層(1樓入口) K排 列數:47
+下層(1樓入口) L排 列數:48
+下層(1樓入口) M排 列數:47
+下層(1樓入口) N排 列數:48
+下層(1樓入口) O排 列數:47
+下層(1樓入口) P排 列數:48
+下層(1樓入口) Q排 列數:47
+下層(1樓入口) R排 列數:46
+下層(1樓入口) S排 列數:43
+下層(1樓入口) T排 列數:42
+下層(1樓入口) U排 列數:39
+下層(1樓入口) V排 列數:36
+下層(1樓入口) W排 列數:35
+下層(1樓入口) X排 列數:30
+下層(1樓入口) Y排 列數:11
+
+上層(2樓入口) A排 列數:6
+上層(2樓入口) B排 列數:6
+上層(2樓入口) C排 列數:6
+上層(2樓入口) D排 列數:6
+上層(2樓入口) E排 列數:6
+上層(2樓入口) F排 列數:44
+上層(2樓入口) G排 列數:44
+上層(2樓入口) H排 列數:44
+上層(2樓入口) I排 列數:44
+上層(2樓入口) J排 列數:44
+上層(2樓入口) K排 列數:40
+上層(2樓入口) L排 列數:40
+上層(2樓入口) M排 列數:40
+上層(2樓入口) N排 列數:38
+上層(2樓入口) O排 列數:38
+上層(2樓入口) P排 列數:34
+上層(2樓入口) Q排 列數:38
+上層(2樓入口) R排 列數:38</textarea>
+
+                        <button onclick="parseRawText()" class="w-full py-2.5 bg-church-navy hover:bg-slate-800 text-amber-300 rounded-xl text-xs font-bold shadow transition flex items-center justify-center space-x-2 active:scale-98">
+                            <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+                            <span>重新解析並展開門票清單 (全館 1,518 席)</span>
+                        </button>
+                    </div>
+
+                    <!-- Excel 檔案拖曳上傳 -->
+                    <div class="pt-2 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <div class="flex items-center space-x-2 text-xs text-slate-500 w-full sm:w-auto">
+                            <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-lg border border-slate-200 transition flex items-center space-x-1.5 text-xs">
+                                <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                                <span>匯入 Excel / CSV 檔</span>
+                                <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleFileSelect(event)">
+                            </label>
+                            <span id="file-name-display" class="text-[11px] text-slate-400 font-mono italic hidden">已載入檔案</span>
+                        </div>
+
+                        <button onclick="clearAllData()" class="text-[11px] text-rose-600 hover:text-rose-800 font-bold flex items-center space-x-1 self-end sm:self-auto">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>清空資料</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右側 5 欄：即時統計卡片 -->
+            <div class="lg:col-span-5 space-y-4">
+                
+                <!-- 統計看板 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-3">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center space-x-1.5">
+                        <i class="fa-solid fa-chart-pie text-church-bronze"></i>
+                        <span>門票座位總數量統計</span>
+                    </h3>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200/60">
+                            <span class="text-[10px] font-bold text-amber-800 block">門票總張數</span>
+                            <span id="stat-total" class="text-2xl font-black font-mono text-church-navy">1,518</span>
+                            <span class="text-[10px] text-amber-700 block mt-0.5">張門票標籤</span>
+                        </div>
+                        <div class="bg-blue-50/60 p-3 rounded-xl border border-blue-200/60">
+                            <span class="text-[10px] font-bold text-blue-800 block">下層 (1樓入口)</span>
+                            <span id="stat-lower" class="text-2xl font-black font-mono text-blue-700">962</span>
+                            <span class="text-[10px] text-blue-600 block mt-0.5">張 (A-Y排 共25排)</span>
+                        </div>
+                        <div class="bg-purple-50/60 p-3 rounded-xl border border-purple-200/60">
+                            <span class="text-[10px] font-bold text-purple-800 block">上層 (2樓入口)</span>
+                            <span id="stat-upper" class="text-2xl font-black font-mono text-purple-700">556</span>
+                            <span class="text-[10px] text-purple-600 block mt-0.5">張 (A-R排 共18排)</span>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <span class="text-[10px] font-bold text-slate-600 block">全館總排別</span>
+                            <span id="stat-rows" class="text-2xl font-black font-mono text-slate-700">43</span>
+                            <span class="text-[10px] text-slate-400 block mt-0.5">個獨立排號</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 門票製作提醒說明 -->
+                <div class="bg-slate-800 text-slate-200 rounded-2xl p-4 text-xs space-y-2">
+                    <div class="font-bold text-amber-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-print"></i>
+                        <span>門票印製與 AI/PDF 導出說明</span>
+                    </div>
+                    <p class="leading-relaxed text-slate-300 text-[11px]">
+                        1. 點擊「**下載高清 PNG**」可直接匯出帶有該座椅編號的高解析門票圖檔。<br>
+                        2. 亦可將全館門票匯出為 **CSV 檔案**，提供給專業印刷廠使用 Adobe InDesign / AI 進行「變數合併資料套印」。
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 下方：座位詳細清單與匯出導出功能 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+            
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <!-- 篩選 Tab -->
+                <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-bold space-x-1">
+                    <button id="filter-all" onclick="setFilter('all')" class="px-3 py-1.5 rounded-lg bg-white text-church-navy shadow-xs transition">
+                        全館座位 (<span id="count-filter-all">1,518</span>)
+                    </button>
+                    <button id="filter-lower" onclick="setFilter('lower')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+                        下層 1F (<span id="count-filter-lower">962</span>)
+                    </button>
+                    <button id="filter-upper" onclick="setFilter('upper')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition">
+                        上層 2F (<span id="count-filter-upper">556</span>)
+                    </button>
+                </div>
+
+                <!-- 搜尋與樣式控制 -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end text-xs gap-3">
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400"></i>
+                        <input type="text" id="search-input" onkeyup="renderTable()" placeholder="搜尋排號或座號..." class="pl-8 pr-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:ring-1 focus:ring-church-gold focus:outline-none">
+                    </div>
+
+                    <div class="flex items-center space-x-3 text-[11px] text-slate-600 shrink-0">
+                        <label class="flex items-center space-x-1.5 cursor-pointer select-none">
+                            <input type="checkbox" id="pad-zero-checkbox" checked onchange="renderTable(); updateTicketPreview();" class="rounded border-slate-300 text-church-gold focus:ring-church-gold">
+                            <span class="font-bold text-slate-700">座號自動補零 (01號)</span>
+                        </label>
+
+                        <div class="flex items-center space-x-1">
+                            <span>套印模板：</span>
+                            <select id="template-select" onchange="renderTable(); updateTicketPreview();" class="border border-slate-200 rounded-lg p-1 text-xs focus:ring-1 focus:ring-church-gold focus:outline-none">
+                                <option value="punctuated">下層(1樓入口)、A排、01號 (頓號分隔)</option>
+                                <option value="space">下層(1樓入口) A排 01號 (空格分隔)</option>
+                                <option value="compact">下層(1樓入口)-A排-01號 (連字號分隔)</option>
+                                <option value="vendor">下層(1樓入口) / A排01號 (印刷廠商專用)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能按鈕：匯出 CSV / 複製全部 -->
+            <div class="flex justify-between items-center text-xs">
+                <span class="text-slate-400 text-[11px]">可直接導出為標準 Excel 門票清單或提供給廠商進行流水印製</span>
+                <div class="flex space-x-2">
+                    <button onclick="copyFormattedList()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl shadow-xs transition flex items-center space-x-1.5">
+                        <i class="fa-regular fa-copy"></i>
+                        <span>複製全部套印字串</span>
+                    </button>
+                    <button onclick="exportToCSV()" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded-xl shadow-xs transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span>導出全館 CSV 檔案</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 座位統計資料表格 -->
+            <div class="overflow-x-auto custom-scrollbar border border-slate-100 rounded-xl">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                        <tr>
+                            <th class="py-3 px-3 w-16">序號</th>
+                            <th class="py-3 px-3">層別 (入口)</th>
+                            <th class="py-3 px-3">區域</th>
+                            <th class="py-3 px-3">排別</th>
+                            <th class="py-3 px-3">座號</th>
+                            <th class="py-3 px-3">套印實體預覽文字</th>
+                        </tr>
+                    </thead>
+                    <tbody id="seats-table-body" class="divide-y divide-slate-100 font-mono">
+                        <!-- 資料由 JS 自動渲染 -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- 提示訊息彈窗 (Toast) -->
+    <div id="toast-notification" class="hidden fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 text-xs z-50">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+        <span id="toast-message">操作完成</span>
+    </div>
+
+    <!-- 邏輯腳本 -->
+    <script>
+        // 全域座位數據儲存結構
+        let seatData = [];
+        let currentFilter = 'all';
+        let previewIndex = 0;
+
+        // 提示訊息彈窗
+        function showNotification(msg) {
+            const toast = document.getElementById('toast-notification');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // 0. 全角字元轉半角字元處理
+        function normalizeText(str) {
+            if (!str) return '';
+            return str.replace(/[\uFF01-\uFF5E]/g, function(ch) {
+                return String.fromCharCode(ch.charCodeAt(0) - 0xfee0);
+            }).replace(/\u3000/g, ' ');
+        }
+
+        // 層別名稱標準化：統一為「下層(1樓入口)」與「上層(2樓入口)」
+        function normalizeFloorName(fl) {
+            if (!fl) return '下層(1樓入口)';
+            if (fl.includes('上層') || fl.includes('2樓') || fl.includes('2F')) {
+                return '上層(2樓入口)';
+            }
+            return '下層(1樓入口)';
+        }
+
+        // 1. 核心座位展開器：將「排別: A, 列數: 27」自動展開為 01~27 號門票
+        function generateRowSeats(floor, zone, rowStr, totalSeats) {
+            const seats = [];
+            const padElem = document.getElementById('pad-zero-checkbox');
+            const usePad = padElem ? padElem.checked : true;
+            const normalizedFloor = normalizeFloorName(floor);
+
+            for (let s = 1; s <= totalSeats; s++) {
+                const seatNo = usePad ? String(s).padStart(2, '0') : String(s);
+                seats.push({
+                    floor: normalizedFloor,
+                    zone: zone || '',
+                    row: rowStr.toUpperCase(),
+                    seat: seatNo,
+                    raw: `${normalizedFloor} ${zone ? zone + ' ' : ''}${rowStr}排 ${seatNo}號`
+                });
+            }
+            return seats;
+        }
+
+        // 2. 解析純文字輸入框
+        function parseRawText() {
+            const rawText = document.getElementById('paste-input').value;
+            const lines = rawText.split('\n');
+            seatData = [];
+
+            let currentFloor = '下層(1樓入口)';
+            let currentZone = '';
+
+            lines.forEach(line => {
+                let str = normalizeText(line.trim());
+                if (!str) return;
+
+                // 檢查層別區塊標題
+                if (str.includes('上層') || str.includes('2樓') || str.includes('2F')) {
+                    currentFloor = '上層(2樓入口)';
+                } else if (str.includes('下層') || str.includes('1樓') || str.includes('1F')) {
+                    currentFloor = '下層(1樓入口)';
+                }
+
+                // 檢查區域標題
+                const zoneMatch = str.match(/([A-Za-z]|左|中|右|黃|藍|紅)區/);
+                if (zoneMatch) {
+                    currentZone = zoneMatch[0];
+                }
+
+                // 清理標點
+                let cleanStr = str.replace(/[、、,;\/:：]/g, ' ');
+
+                // 模式 1: 帶有「列數」、「座位數」、「共X張」語法
+                const countMatch = cleanStr.match(/([A-Za-z]{1,2}|\d+)\s*排?\s*(?:列數|座位數|張數|容量|共)?\s*(\d+)\s*(?:個位子|個座位|個|位|號|張)?/i);
+                
+                // 模式 2: 範圍語法 "A排 1~27號"
+                const rangeMatch = cleanStr.match(/([A-Za-z]{1,2}|\d+)\s*排?\s*(\d+)\s*[-~到]\s*(\d+)\s*號?/i);
+
+                if (rangeMatch) {
+                    const rowStr = rangeMatch[1].toUpperCase();
+                    const startSeat = parseInt(rangeMatch[2], 10);
+                    const endSeat = parseInt(rangeMatch[3], 10);
+                    if (!isNaN(startSeat) && !isNaN(endSeat) && endSeat >= startSeat && endSeat <= 300) {
+                        for (let s = startSeat; s <= endSeat; s++) {
+                            const padElem = document.getElementById('pad-zero-checkbox');
+                            const usePad = padElem ? padElem.checked : true;
+                            const seatNo = usePad ? String(s).padStart(2, '0') : String(s);
+                            seatData.push({
+                                floor: currentFloor,
+                                zone: currentZone,
+                                row: rowStr,
+                                seat: seatNo,
+                                raw: `${currentFloor} ${currentZone ? currentZone + ' ' : ''}${rowStr}排 ${seatNo}號`
+                            });
+                        }
+                        return;
+                    }
+                }
+
+                // 匹配「排別」+「列數(總個數)」
+                if (countMatch && !cleanStr.includes('1號') && !cleanStr.includes('01號')) {
+                    const rowStr = countMatch[1].toUpperCase();
+                    const totalSeats = parseInt(countMatch[2], 10);
+
+                    if (!isNaN(totalSeats) && totalSeats > 0 && totalSeats <= 300) {
+                        const generated = generateRowSeats(currentFloor, currentZone, rowStr, totalSeats);
+                        seatData = seatData.concat(generated);
+                        return;
+                    }
+                }
+
+                // 單筆座位解析
+                const singleSeatMatch = cleanStr.match(/([A-Za-z]{1,2}|\d+)\s*排\s*(\d+)\s*號/);
+                if (singleSeatMatch) {
+                    const rowStr = singleSeatMatch[1].toUpperCase();
+                    const padElem = document.getElementById('pad-zero-checkbox');
+                    const usePad = padElem ? padElem.checked : true;
+                    const sNo = usePad ? String(singleSeatMatch[2]).padStart(2, '0') : singleSeatMatch[2];
+                    seatData.push({
+                        floor: currentFloor,
+                        zone: currentZone,
+                        row: rowStr,
+                        seat: sNo,
+                        raw: `${currentFloor} ${currentZone ? currentZone + ' ' : ''}${rowStr}排 ${sNo}號`
+                    });
+                }
+            });
+
+            updateAllViews();
+            showNotification(`已解析生成全館 ${seatData.length} 張門票套印清單！`);
+        }
+
+        // 3. 處理 Excel 檔案選擇
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('file-name-display').innerText = `已載入：${file.name}`;
+            document.getElementById('file-name-display').classList.remove('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    if (!jsonRows || jsonRows.length === 0) {
+                        showNotification("Excel 檔案內容為空！");
+                        return;
+                    }
+
+                    seatData = [];
+                    let currentFloor = '下層(1樓入口)';
+                    let currentZone = '';
+
+                    jsonRows.forEach(row => {
+                        if (!row || row.length === 0) return;
+                        const rowStr = row.join(' ');
+                        const str = normalizeText(rowStr);
+
+                        if (str.includes('上層') || str.includes('2樓')) currentFloor = '上層(2樓入口)';
+                        else if (str.includes('下層') || str.includes('1樓')) currentFloor = '下層(1樓入口)';
+
+                        const match = str.match(/([A-Za-z]{1,2})\s*排\s*(\d+)/i);
+                        if (match) {
+                            const rName = match[1].toUpperCase();
+                            const total = parseInt(match[2], 10);
+                            if (total > 0 && total <= 300) {
+                                seatData = seatData.concat(generateRowSeats(currentFloor, currentZone, rName, total));
+                            }
+                        }
+                    });
+
+                    updateAllViews();
+                    showNotification(`成功從 Excel 解析並展開生成 ${seatData.length} 張門票！`);
+                } catch (err) {
+                    console.error(err);
+                    showNotification("讀取 Excel 失敗，請確認檔案格式。");
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // 4. 清空資料
+        function clearAllData() {
+            seatData = [];
+            document.getElementById('paste-input').value = '';
+            document.getElementById('file-name-display').classList.add('hidden');
+            updateAllViews();
+            showNotification("已清空所有座位數據。");
+        }
+
+        // 5. 格式化輸出字串
+        function getFormattedSeatText(item) {
+            const template = document.getElementById('template-select').value;
+            const zoneText = item.zone ? item.zone + ' ' : '';
+            const padElem = document.getElementById('pad-zero-checkbox');
+            const usePad = padElem ? padElem.checked : true;
+            const seatNo = usePad ? String(item.seat).padStart(2, '0') : String(item.seat);
+
+            if (template === 'punctuated') {
+                return `${item.floor}、${item.row}排、${seatNo}號`;
+            } else if (template === 'compact') {
+                return `${item.floor}-${zoneText}${item.row}排-${seatNo}號`;
+            } else if (template === 'vendor') {
+                return `${item.floor} / ${zoneText}${item.row}排${seatNo}號`;
+            }
+            return `${item.floor} ${zoneText}${item.row}排 ${seatNo}號`;
+        }
+
+        // 6. 更新所有統計與畫面 UI
+        function updateAllViews() {
+            const total = seatData.length;
+            const lowerCount = seatData.filter(s => s.floor.includes('下層')).length;
+            const upperCount = seatData.filter(s => s.floor.includes('上層')).length;
+            const rowsSet = new Set(seatData.map(s => `${s.floor}-${s.zone}-${s.row}`));
+
+            document.getElementById('stat-total').innerText = total.toLocaleString();
+            document.getElementById('stat-lower').innerText = lowerCount.toLocaleString();
+            document.getElementById('stat-upper').innerText = upperCount.toLocaleString();
+            document.getElementById('stat-rows').innerText = rowsSet.size;
+
+            document.getElementById('count-filter-all').innerText = total.toLocaleString();
+            document.getElementById('count-filter-lower').innerText = lowerCount.toLocaleString();
+            document.getElementById('count-filter-upper').innerText = upperCount.toLocaleString();
+
+            previewIndex = 0;
+            renderTable();
+            updateTicketPreview();
+        }
+
+        // 7. 渲染表格
+        function renderTable() {
+            const tbody = document.getElementById('seats-table-body');
+            const searchKeyword = document.getElementById('search-input').value.trim();
+
+            let filtered = seatData;
+
+            if (currentFilter === 'lower') {
+                filtered = filtered.filter(s => s.floor.includes('下層'));
+            } else if (currentFilter === 'upper') {
+                filtered = filtered.filter(s => s.floor.includes('上層'));
+            }
+
+            if (searchKeyword) {
+                filtered = filtered.filter(s => 
+                    s.row.includes(searchKeyword) || 
+                    s.seat.includes(searchKeyword) || 
+                    s.zone.includes(searchKeyword) ||
+                    s.floor.includes(searchKeyword)
+                );
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400 italic">無符合條件的座位資料</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map((item, idx) => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="py-2.5 px-3 font-mono text-[11px] text-slate-400">${(idx + 1).toString().padStart(4, '0')}</td>
+                    <td class="py-2.5 px-3 font-bold ${item.floor.includes('上層') ? 'text-purple-700' : 'text-blue-700'}">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] ${item.floor.includes('上層') ? 'bg-purple-50' : 'bg-blue-50'}">${item.floor}</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-600">${item.zone || '-'}</td>
+                    <td class="py-2.5 px-3 font-semibold text-slate-800">${item.row} 排</td>
+                    <td class="py-2.5 px-3 font-semibold text-slate-800">${item.seat} 號</td>
+                    <td class="py-2.5 px-3 font-mono font-bold text-church-navy">${getFormattedSeatText(item)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // 8. 篩選控制
+        function setFilter(type) {
+            currentFilter = type;
+            ['all', 'lower', 'upper'].forEach(t => {
+                const btn = document.getElementById(`filter-${t}`);
+                if (t === type) {
+                    btn.className = "px-3 py-1.5 rounded-lg bg-white text-church-navy shadow-xs font-bold transition";
+                } else {
+                    btn.className = "px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 font-bold transition";
+                }
+            });
+            renderTable();
+        }
+
+        // 9. 預覽控制
+        function updateTicketPreview() {
+            if (seatData.length === 0) {
+                document.getElementById('preview-formatted-text').innerText = '尚無門票資料';
+                document.getElementById('preview-index-text').innerText = '0/0';
+                return;
+            }
+            if (previewIndex < 0) previewIndex = 0;
+            if (previewIndex >= seatData.length) previewIndex = seatData.length - 1;
+
+            const item = seatData[previewIndex];
+            document.getElementById('preview-formatted-text').innerText = getFormattedSeatText(item);
+            document.getElementById('preview-index-text').innerText = `${previewIndex + 1}/${seatData.length.toLocaleString()}`;
+        }
+
+        function prevTicket() {
+            if (previewIndex > 0) {
+                previewIndex--;
+                updateTicketPreview();
+            }
+        }
+
+        function nextTicket() {
+            if (previewIndex < seatData.length - 1) {
+                previewIndex++;
+                updateTicketPreview();
+            }
+        }
+
+        function copySinglePreview() {
+            const txt = document.getElementById('preview-formatted-text').innerText;
+            if (!txt || txt === '尚無門票資料') return;
+            copyToClipboard(txt);
+            showNotification(`已複製單張文字：${txt}`);
+        }
+
+        // 下載高清 PNG 圖片 (可直接匯入 AI 排版轉 PDF)
+        function downloadTicketImage() {
+            const cardElem = document.getElementById('ticket-preview-card');
+            if (!cardElem) return;
+
+            showNotification("⏳ 正在匯出高解析度門票 PNG 圖檔...");
+
+            html2canvas(cardElem, {
+                scale: 3, // 3x 超高解析度
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const item = seatData[previewIndex] || { row: 'A', seat: '01' };
+                const fileName = `115音樂會門票_${item.floor}_${item.row}排_${item.seat}號.png`;
+                
+                const link = document.createElement("a");
+                link.download = fileName;
+                link.href = canvas.toDataURL("image/png", 1.0);
+                link.click();
+
+                showNotification("🎉 高清門票圖檔下載完成！可直接放入 AI 匯出 PDF 给廠商。");
+            }).catch(err => {
+                console.error(err);
+                showNotification("❌ 門票圖檔匯出失敗，請重試。");
+            });
+        }
+
+        // 10. 複製全部格式化文字
+        function copyFormattedList() {
+            if (seatData.length === 0) {
+                showNotification("無可複製的座位資料！");
+                return;
+            }
+            const lines = seatData.map(item => getFormattedSeatText(item)).join('\n');
+            copyToClipboard(lines);
+            showNotification(`已成功複製全館 ${seatData.length} 張套印文字！`);
+        }
+
+        // 通用剪貼簿複製 helper
+        function copyToClipboard(text) {
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+        }
+
+        // 11. 導出 CSV
+        function exportToCSV() {
+            if (seatData.length === 0) {
+                showNotification("無座位數據可匯出！");
+                return;
+            }
+            let csvContent = "\uFEFF序號,層別,區域,排號,座號,門票套印字串\n";
+            seatData.forEach((item, idx) => {
+                const formatted = getFormattedSeatText(item);
+                csvContent += `${idx + 1},"${item.floor}","${item.zone}","${item.row}","${item.seat}","${formatted}"\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `115音樂會_門票座位套印清單_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showNotification("已順利下載全館 CSV 檔案！");
+        }
+
+        // 頁面初始化載入
+        window.onload = function() {
+            parseRawText();
+        }
+    </script>
+</body>
+</html>
