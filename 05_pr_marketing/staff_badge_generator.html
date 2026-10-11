@@ -14,8 +14,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <!-- QRCode.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- html2canvas library for export -->
+    <!-- html2canvas library for image exporting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- JSZip for batch download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
         body {
@@ -24,49 +26,80 @@
             color: #f1f5f9;
         }
 
-        /* Fixed Standard Badge Dimensions Aspect Ratio (1:1.58 - Standard CR80 vertical badge) */
+        /* Standard Badge Dimensions Aspect Ratio (CR80 vertical badge proportional fit) */
         .badge-container {
             width: 360px;
             height: 570px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
         }
 
+        .badge-container-print {
+            width: 340px;
+            height: 538px;
+        }
+
         /* Glassmorphism panel styling for the middle job title frame */
         .badge-glass-panel {
             background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(245, 158, 11, 0.35);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
 
-        /* Lanyard hole marker styling */
+        /* Lanyard hole slot styling (橢圓夾掛牌用簍空匡線) */
         .lanyard-hole {
-            width: 52px;
-            height: 12px;
-            background: #020617;
-            border: 2px solid rgba(217, 119, 6, 0.6);
+            width: 54px;
+            height: 14px;
+            background: transparent;
+            border: 2px dashed rgba(245, 158, 11, 0.8);
             border-radius: 9999px;
             margin: 0 auto;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        /* Print setup */
+        /* Custom Scrollbar for batch grid */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+
+        /* Print setup for standard A4 paper */
         @media print {
             body {
                 background: white !important;
                 color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
             .no-print {
                 display: none !important;
             }
-            .print-only {
-                display: block !important;
+            .print-only-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 15px !important;
+                padding: 10px !important;
+                width: 100% !important;
             }
-            .badge-container {
+            .badge-container, .badge-container-print {
                 box-shadow: none !important;
-                border: 1px solid #ccc !important;
-                page-break-inside: avoid;
+                border: 1px border-slate-300 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                margin: 0 auto 15px auto !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
         }
     </style>
@@ -74,22 +107,27 @@
 <body class="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100 antialiased selection:bg-amber-500 selection:text-slate-950">
 
     <!-- Top Navbar -->
-    <header class="no-print bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <header class="no-print bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-amber-500/20">
                     100
                 </div>
                 <div>
                     <h1 class="text-base font-bold text-slate-100 leading-tight">真耶穌教會臺灣傳教百週年</h1>
-                    <p class="text-xs text-amber-400 font-medium">官方工作證與識別證線上產生器</p>
+                    <p class="text-xs text-amber-400 font-medium">官方識別證與通行證產生器 (含批次產生)</p>
                 </div>
             </div>
+
+            <!-- Header Quick Actions -->
             <div class="flex items-center space-x-2">
-                <button onclick="downloadBadge()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-amber-500/10">
-                    <i class="fa-solid fa-download"></i> 下載圖檔 (PNG)
+                <button onclick="openBatchModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-indigo-600/20">
+                    <i class="fa-solid fa-users-gear"></i> 批次名單輸入
                 </button>
-                <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5">
+                <button onclick="downloadSingleBadge()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-amber-500/20">
+                    <i class="fa-solid fa-download"></i> 下載單張 PNG
+                </button>
+                <button onclick="triggerPrint()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5">
                     <i class="fa-solid fa-print"></i> 列印識別證
                 </button>
             </div>
@@ -99,27 +137,35 @@
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-        <!-- Left Panel: Controls & Inputs (lg:col-span-5) -->
+        <!-- Left Panel: Form Controls & Inputs (lg:col-span-5) -->
         <section class="no-print lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-5">
-            <div>
-                <h2 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                    <i class="fa-solid fa-[#f59e0b] fa-sliders"></i> 證件資料編輯器
-                </h2>
-                <p class="text-xs text-slate-400 mt-1">即時編輯下方欄位，右側證件預覽將自動進行同步。</p>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-amber-400"></i> 證件資料編輯器
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">底圖已含百週年標頭文字，即時修改內容即刻更新。</p>
+                </div>
+                <button onclick="openBatchModal()" class="text-xs bg-slate-800 hover:bg-slate-700 text-amber-300 px-2.5 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1">
+                    <i class="fa-solid fa-list-check"></i> 貼上團隊名單
+                </button>
             </div>
 
             <!-- Quick Preset Buttons -->
             <div>
                 <label class="block text-xs font-semibold text-slate-300 mb-2">快速選擇卡別樣式</label>
                 <div class="grid grid-cols-3 gap-2">
-                    <button onclick="applyPreset('工作證', '宣傳公關組', '張小明 執事')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/50 border border-slate-700 rounded-lg text-xs text-slate-200 transition text-center">
+                    <button onclick="applyPreset('工 作 證', '宣傳公關組', '張小明 執事')" class="px-2.5 py-2 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/50 border border-slate-700 rounded-xl text-xs font-medium text-slate-200 transition text-center flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-id-card text-amber-400"></i>
                         工作證
                     </button>
-                    <button onclick="applyPreset('貴 賓 證', '總會代表團', '李大衛 牧師')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/50 border border-slate-700 rounded-lg text-xs text-slate-200 transition text-center">
+                    <button onclick="applyPreset('貴 賓 證', '總會代表團', '李大衛 牧師')" class="px-2.5 py-2 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/50 border border-slate-700 rounded-xl text-xs font-medium text-slate-200 transition text-center flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-star text-amber-400"></i>
                         貴賓證
                     </button>
-                    <button onclick="applyPreset('志 工 證', '會場接待組', '林姊妹')" class="px-2.5 py-1.5 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/50 border border-slate-700 rounded-lg text-xs text-slate-200 transition text-center">
-                        志工證
+                    <button onclick="applyPreset('舞台通行證', '節目工作組', '林亞設 弟兄')" class="px-2.5 py-2 bg-slate-800 hover:bg-amber-500/20 hover:border-amber-500/50 border border-slate-700 rounded-xl text-xs font-medium text-slate-200 transition text-center flex flex-col items-center gap-1">
+                        <i class="fa-solid fa-compact-disc text-amber-400"></i>
+                        舞台通行證
                     </button>
                 </div>
             </div>
@@ -128,7 +174,7 @@
             <div class="space-y-3 pt-1">
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">證件類型大標 (Badge Title)</label>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">證件類型名稱</label>
                         <input type="text" id="inBadgeType" value="工 作 證" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400 transition">
                     </div>
                     <div>
@@ -139,8 +185,8 @@
 
                 <div>
                     <div class="flex justify-between items-center mb-1">
-                        <label class="block text-xs font-semibold text-slate-300">持證人姓名 / 職銜 (選填)</label>
-                        <label class="inline-flex items-center cursor-pointer text-xs text-slate-400 gap-1">
+                        <label class="block text-xs font-semibold text-slate-300">持證人姓名 / 職銜</label>
+                        <label class="inline-flex items-center cursor-pointer text-xs text-slate-400 gap-1.5">
                             <input type="checkbox" id="chkShowName" checked class="rounded bg-slate-950 border-slate-700 text-amber-500 focus:ring-amber-500">
                             顯示姓名欄
                         </label>
@@ -149,7 +195,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">QR Code 驗證網址 / 序號</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">QR Code 驗證內容 / 網址</label>
                     <input type="text" id="inQR" value="https://tjc100.org.tw/pass/VERIFY-88902" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400 transition">
                 </div>
 
@@ -163,112 +209,210 @@
                     <input type="text" id="inOrg" value="主辦單位：真耶穌教會臺灣總會" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400 transition">
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">背景圖片網址 (預設使用百週年主題背景)</label>
-                    <input type="text" id="inBgUrl" placeholder="https://..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400 transition">
+                <!-- Background setting & Text Overlay Toggle -->
+                <div class="pt-2 border-t border-slate-800 space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">識別證底圖檔案路徑 / 網址</label>
+                        <input type="text" id="inBgUrl" value="識別證底圖.png" placeholder="識別證底圖.png" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-amber-400 transition">
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                        <span class="flex items-center gap-1.5">
+                            <i class="fa-solid fa-heading text-amber-400"></i>
+                            顯示頂部三排文字 (底圖已含則免勾選)
+                        </span>
+                        <input type="checkbox" id="chkShowHeader" class="rounded bg-slate-900 border-slate-700 text-amber-500 focus:ring-amber-500">
+                    </div>
                 </div>
             </div>
 
-            <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 leading-relaxed">
-                <i class="fa-solid fa-circle-info text-amber-400 mr-1"></i>
-                提示：證件尺寸為標準 CR-80 比例，下載圖檔後可直接輸出列印為 54mm × 85.6mm 實體卡片。
+            <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400 leading-relaxed flex items-start gap-2">
+                <i class="fa-solid fa-circle-info text-amber-400 mt-0.5"></i>
+                <div>
+                    提示：底圖已預設套用「<span class="text-amber-300 font-mono">識別證底圖.png</span>」，頂部保留簍空掛牌孔，其餘文字均可自訂並支援批量輸出。
+                </div>
             </div>
         </section>
 
-        <!-- Right Panel: Live Badge Preview (lg:col-span-7) -->
-        <section class="lg:col-span-7 flex flex-col items-center justify-center min-h-[580px]">
-            <div class="text-xs text-slate-400 mb-3 flex items-center gap-2">
-                <i class="fa-solid fa-eye text-amber-400"></i>
-                實時雙面/單面證件預覽 (Original Grid Alignment Preserved)
-            </div>
+        <!-- Right Panel: Live Preview & Batch Grid (lg:col-span-7) -->
+        <section class="lg:col-span-7 flex flex-col items-center justify-start min-h-[580px] w-full">
+            
+            <!-- View Switcher Tabs -->
+            <div class="no-print w-full flex items-center justify-between mb-4 bg-slate-900 p-1.5 rounded-2xl border border-slate-800">
+                <div class="flex space-x-1">
+                    <button id="tabSingleBtn" onclick="switchView('single')" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-amber-500 text-slate-950 shadow-md">
+                        <i class="fa-solid fa-id-badge"></i> 單張識別證預覽
+                    </button>
+                    <button id="tabBatchBtn" onclick="switchView('batch')" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-400 hover:text-slate-100 hover:bg-slate-800">
+                        <i class="fa-solid fa-layer-group"></i> 批次識別證清單 <span id="batchCountBadge" class="bg-indigo-600 text-white text-[10px] px-1.5 py-0.5 rounded-full font-mono hidden">0</span>
+                    </button>
+                </div>
 
-            <!-- Badge Frame Outer Wrapper -->
-            <div id="badgeContainerWrapper" class="p-4 bg-slate-900/50 border border-slate-800 rounded-3xl shadow-2xl">
-                <!-- Badge Canvas Base -->
-                <div id="badgeCanvas" class="badge-container relative rounded-2xl overflow-hidden flex flex-col justify-between p-5 text-center border-2 border-amber-500/50 bg-slate-950 transition-all">
-                    
-                    <!-- Background Layer with Image/Gradient Overlay -->
-                    <div id="bgOverlay" class="absolute inset-0 z-0 bg-cover bg-center opacity-40 mix-blend-luminosity" style="background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80');"></div>
-                    <div class="absolute inset-0 z-0 bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-slate-950/95"></div>
-
-                    <!-- Top Header Section: Logo & Anniversary Badge -->
-                    <div class="relative z-10 space-y-1">
-                        <div class="flex items-center justify-center gap-2">
-                            <div class="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-black text-xs">
-                                ✝
-                            </div>
-                            <span class="text-[11px] font-bold tracking-wider text-amber-200 uppercase">TRUE JESUS CHURCH</span>
-                        </div>
-                        <h2 class="text-xs font-black tracking-widest text-slate-100 uppercase">真耶穌教會 臺灣傳教百週年</h2>
-                        <div class="text-[9px] text-amber-400/90 tracking-widest font-semibold">100TH ANNIVERSARY IN TAIWAN</div>
-
-                        <!-- Lanyard Hole Slot (Position Unchanged) -->
-                        <div class="pt-2">
-                            <div class="lanyard-hole"></div>
-                        </div>
-                    </div>
-
-                    <!-- Center Section: Badge Category Title & Department/Name (中間職銜框: STRICT POSITION) -->
-                    <div class="relative z-10 my-auto py-4 px-4 badge-glass-panel rounded-2xl shadow-2xl space-y-2 border border-amber-500/40">
-                        <div class="text-[9px] text-amber-300/80 tracking-widest uppercase font-semibold">
-                            OFFICIAL EVENT PASS
-                        </div>
-
-                        <!-- Badge Category Main Title (e.g., 工 作 證) -->
-                        <div id="outBadgeType" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 tracking-widest py-0.5">
-                            工 作 證
-                        </div>
-
-                        <!-- Division / Department -->
-                        <div id="outDepartment" class="text-sm font-bold text-slate-100 tracking-wider">
-                            宣傳公關組
-                        </div>
-
-                        <!-- Name Wrapper (Toggleable) -->
-                        <div id="outNameWrapper" class="pt-1">
-                            <div class="w-12 h-0.5 bg-amber-500/50 mx-auto mb-1.5"></div>
-                            <div id="outName" class="text-base font-extrabold text-amber-300 tracking-wider">
-                                陳大衛 執事
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Section: QR Code, Note, Organizer -->
-                    <div class="relative z-10 space-y-2 pt-2">
-                        <!-- QR Code Container -->
-                        <div class="flex flex-col items-center justify-center">
-                            <div class="p-1.5 bg-white rounded-xl shadow-lg border border-amber-400/30">
-                                <div id="qrcode" class="w-16 h-16 flex items-center justify-center"></div>
-                            </div>
-                        </div>
-
-                        <!-- Note Field -->
-                        <div id="outNote" class="text-[10px] text-slate-300/90 font-medium tracking-tight">
-                            憑證入場 ‧ 請隨身佩戴 ‧ 限本人使用
-                        </div>
-
-                        <!-- Divider line -->
-                        <div class="w-full h-px bg-slate-800"></div>
-
-                        <!-- Organizer Text -->
-                        <div id="outOrg" class="text-[9px] text-slate-400 font-bold tracking-wider">
-                            主辦單位：真耶穌教會臺灣總會
-                        </div>
-                    </div>
-
+                <div id="batchHeaderActions" class="hidden flex items-center gap-2">
+                    <button onclick="downloadAllBatchZip()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3 py-1.5 rounded-xl transition flex items-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-file-zipper"></i> 下載全部 PNG
+                    </button>
                 </div>
             </div>
+
+            <!-- Single Badge View Container -->
+            <div id="singleView" class="w-full flex flex-col items-center py-4">
+                <div id="badgeContainerWrapper" class="p-4 bg-slate-900/60 border border-slate-800 rounded-3xl shadow-2xl">
+                    
+                    <!-- Single Badge Canvas Base -->
+                    <div id="badgeCanvas" class="badge-container relative rounded-2xl overflow-hidden flex flex-col justify-between p-5 text-center border-2 border-amber-500/40 bg-slate-950 transition-all">
+                        
+                        <!-- Background Layer -->
+                        <div id="bgOverlay" class="absolute inset-0 z-0 bg-cover bg-center transition-all duration-300" style="background-image: url('識別證底圖.png');"></div>
+
+                        <!-- Top Header Section (預設留空頂部三排字，僅保留簍空掛牌孔) -->
+                        <div class="relative z-10 space-y-1">
+                            <!-- Lanyard Hole Slot (橢圓夾掛牌用簍空匡線) -->
+                            <div class="pt-1">
+                                <div class="lanyard-hole"></div>
+                            </div>
+
+                            <!-- Optional Header Text (Default hidden because background image already contains top 3 lines) -->
+                            <div id="outHeaderGroup" class="hidden space-y-0.5 pt-1">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <div class="w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center text-slate-950 font-black text-[9px]">✝</div>
+                                    <span class="text-[10px] font-bold tracking-wider text-amber-200 uppercase">TRUE JESUS CHURCH</span>
+                                </div>
+                                <h2 class="text-xs font-black tracking-widest text-slate-100 uppercase">真耶穌教會 臺灣傳教百週年</h2>
+                                <div class="text-[8px] text-amber-400 tracking-widest font-semibold">100TH ANNIVERSARY IN TAIWAN</div>
+                            </div>
+                        </div>
+
+                        <!-- Center Section: Badge Category Title & Department/Name (中間職銜框) -->
+                        <div class="relative z-10 my-auto py-4 px-4 badge-glass-panel rounded-2xl shadow-2xl space-y-2 border border-amber-500/40">
+                            <div class="text-[9px] text-amber-300/80 tracking-widest uppercase font-semibold">
+                                OFFICIAL EVENT PASS
+                            </div>
+
+                            <!-- Badge Category Main Title -->
+                            <div id="outBadgeType" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 tracking-widest py-0.5">
+                                工 作 證
+                            </div>
+
+                            <!-- Division / Department -->
+                            <div id="outDepartment" class="text-sm font-bold text-slate-100 tracking-wider">
+                                宣傳公關組
+                            </div>
+
+                            <!-- Name Wrapper (Toggleable) -->
+                            <div id="outNameWrapper" class="pt-1">
+                                <div class="w-12 h-0.5 bg-amber-500/50 mx-auto mb-1.5"></div>
+                                <div id="outName" class="text-base font-extrabold text-amber-300 tracking-wider">
+                                    陳大衛 執事
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Section: QR Code, Note, Organizer -->
+                        <div class="relative z-10 space-y-2 pt-1">
+                            <!-- QR Code Container -->
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="p-1.5 bg-white rounded-xl shadow-lg border border-amber-400/30">
+                                    <div id="qrcode" class="w-16 h-16 flex items-center justify-center"></div>
+                                </div>
+                            </div>
+
+                            <!-- Note Field -->
+                            <div id="outNote" class="text-[10px] text-slate-200/90 font-medium tracking-tight">
+                                憑證入場 ‧ 請隨身佩戴 ‧ 限本人使用
+                            </div>
+
+                            <!-- Divider line -->
+                            <div class="w-full h-px bg-slate-700/60"></div>
+
+                            <!-- Organizer Text -->
+                            <div id="outOrg" class="text-[9px] text-slate-300 font-bold tracking-wider">
+                                主辦單位：真耶穌教會臺灣總會
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Badges Grid View Container -->
+            <div id="batchView" class="hidden w-full space-y-4">
+                <div class="no-print bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+                    <div class="text-xs text-slate-300">
+                        <i class="fa-solid fa-list-ol text-indigo-400 mr-1"></i>
+                        目前已載入 <span id="batchCountText" class="font-bold text-indigo-300">0</span> 位組員資料，點擊列印將直接輸出全體名單。
+                    </div>
+                    <button onclick="openBatchModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-semibold transition">
+                        <i class="fa-solid fa-pen-to-square"></i> 重新編輯批次名單
+                    </button>
+                </div>
+
+                <!-- Printable Batch Container -->
+                <div id="batchGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 justify-items-center w-full max-h-[700px] overflow-y-auto p-2">
+                    <!-- Dynamic Badges will be generated here -->
+                </div>
+            </div>
+
         </section>
 
     </main>
 
+    <!-- Batch Input Modal -->
+    <div id="batchModal" class="no-print fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4 relative">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2 text-indigo-400 font-bold text-base">
+                    <i class="fa-solid fa-paste"></i> 批次貼上名單產生識別證
+                </div>
+                <button onclick="closeBatchModal()" class="text-slate-400 hover:text-slate-100 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="text-xs text-slate-300 space-y-2">
+                <p>請將全體組員的「<strong>服勤組別</strong>」與「<strong>姓名/職銜</strong>」貼於下方。格式說明：</p>
+                <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-400">
+                    組別, 姓名職銜 (例如：宣傳公關組, 陳大衛 執事)<br>
+                    每行代表一張識別證，支援逗號、Tab 或空格分隔。
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">批次卡別名稱（預設套用）：</label>
+                <select id="modalBadgeType" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-bold focus:outline-none mb-3">
+                    <option value="工 作 證">工 作 證</option>
+                    <option value="貴 賓 證">貴 賓 證</option>
+                    <option value="舞台通行證" selected>舞台通行證</option>
+                </select>
+
+                <label class="block text-xs font-semibold text-slate-300 mb-1">團隊組員名單資料：</label>
+                <textarea id="batchInputArea" rows="8" placeholder="舞台節目組, 張小明 弟兄&#10;舞台音控組, 李大衛 執事&#10;會場接待組, 林瑪利 姊妹" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 font-mono focus:outline-none focus:border-amber-400 transition"></textarea>
+            </div>
+
+            <div class="flex justify-end gap-2 border-t border-slate-800 pt-3">
+                <button onclick="closeBatchModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition">
+                    取消
+                </button>
+                <button onclick="processBatchInput()" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl shadow-lg transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> 解析並批次生成識別證
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Box -->
+    <div id="toast" class="no-print fixed bottom-6 right-6 z-50 bg-slate-800 border border-amber-500 text-slate-100 px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold hidden flex items-center gap-2">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-amber-400"></i>
+        <span id="toastMsg">訊息通知</span>
+    </div>
+
     <!-- Footer -->
     <footer class="no-print bg-slate-900/40 border-t border-slate-900 py-4 px-4 text-center text-xs text-slate-500">
-        真耶穌教會臺灣傳教百週年 聖會工作證/識別證系統 &copy; 2026 True Jesus Church Taiwan
+        真耶穌教會臺灣傳教百週年 聖會識別證產生系統 &copy; 2026 True Jesus Church Taiwan
     </footer>
 
     <script>
-        // DOM Element Handles
+        // DOM Handles
         const inBadgeType = document.getElementById('inBadgeType');
         const inDepartment = document.getElementById('inDepartment');
         const inName = document.getElementById('inName');
@@ -277,6 +421,7 @@
         const inNote = document.getElementById('inNote');
         const inOrg = document.getElementById('inOrg');
         const inBgUrl = document.getElementById('inBgUrl');
+        const chkShowHeader = document.getElementById('chkShowHeader');
 
         const outBadgeType = document.getElementById('outBadgeType');
         const outDepartment = document.getElementById('outDepartment');
@@ -285,10 +430,33 @@
         const outNote = document.getElementById('outNote');
         const outOrg = document.getElementById('outOrg');
         const bgOverlay = document.getElementById('bgOverlay');
+        const outHeaderGroup = document.getElementById('outHeaderGroup');
 
         let qrCodeObj = null;
+        let batchItems = [];
 
-        // Two-way binding helper function
+        // Dynamic Toast function (Replacing native alert)
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = msg;
+            if (isError) {
+                toastIcon.className = "fa-solid fa-triangle-exclamation text-rose-400";
+                toast.classList.replace('border-amber-500', 'border-rose-500');
+            } else {
+                toastIcon.className = "fa-solid fa-circle-check text-amber-400";
+                toast.classList.replace('border-rose-500', 'border-amber-500');
+            }
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Two-way Input Binder
         function bindInput(inputEl, outputEl, callback = null) {
             if (!inputEl || !outputEl) return;
             inputEl.addEventListener('input', (e) => {
@@ -305,30 +473,41 @@
 
         // Name visibility toggle
         chkShowName.addEventListener('change', (e) => {
+            outNameWrapper.style.display = e.target.checked ? 'block' : 'none';
+        });
+
+        // Top Header Text visibility toggle
+        chkShowHeader.addEventListener('change', (e) => {
             if (e.target.checked) {
-                outNameWrapper.style.display = 'block';
+                outHeaderGroup.classList.remove('hidden');
             } else {
-                outNameWrapper.style.display = 'none';
+                outHeaderGroup.classList.add('hidden');
             }
         });
 
-        // Background Image URL update
+        // Background Image URL update handler
         inBgUrl.addEventListener('input', (e) => {
-            const url = e.target.value.trim();
-            if (url) {
-                bgOverlay.style.backgroundImage = `url('${url}')`;
-            } else {
-                bgOverlay.style.backgroundImage = `url('https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80')`;
-            }
+            const url = e.target.value.trim() || '識別證底圖.png';
+            bgOverlay.style.backgroundImage = `url('${url}')`;
+            updateAllBatchBackgrounds(url);
         });
 
-        // Generate or Update QR code
-        function updateQRCode(text) {
-            const qrContainer = document.getElementById("qrcode");
+        // Background error fallback
+        const testImg = new Image();
+        testImg.onerror = function() {
+            // If local 識別證底圖.png isn't available in preview, apply visually rich gradient background
+            console.log("Local background image note: 識別證底圖.png will render when available locally.");
+        };
+        testImg.src = "識別證底圖.png";
+
+        // QR Code Generator Function
+        function updateQRCode(text, targetContainerId = "qrcode") {
+            const qrContainer = document.getElementById(targetContainerId);
+            if (!qrContainer) return;
             qrContainer.innerHTML = "";
             if (!text) return;
 
-            qrCodeObj = new QRCode(qrContainer, {
+            new QRCode(qrContainer, {
                 text: text,
                 width: 64,
                 height: 64,
@@ -342,7 +521,7 @@
             updateQRCode(e.target.value);
         });
 
-        // Preset button helper
+        // Apply Preset Helper
         function applyPreset(badgeType, dept, name) {
             inBadgeType.value = badgeType;
             outBadgeType.textContent = badgeType;
@@ -352,29 +531,239 @@
 
             inName.value = name;
             outName.textContent = name;
+
+            showToast(`已切換至「${badgeType}」樣式預設`);
         }
 
-        // Export badge to PNG image file
-        function downloadBadge() {
+        // View Tab Switcher (Single vs Batch)
+        function switchView(mode) {
+            const singleView = document.getElementById('singleView');
+            const batchView = document.getElementById('batchView');
+            const tabSingleBtn = document.getElementById('tabSingleBtn');
+            const tabBatchBtn = document.getElementById('tabBatchBtn');
+            const batchHeaderActions = document.getElementById('batchHeaderActions');
+
+            if (mode === 'single') {
+                singleView.classList.remove('hidden');
+                batchView.classList.add('hidden');
+
+                tabSingleBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-amber-500 text-slate-950 shadow-md";
+                tabBatchBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-400 hover:text-slate-100 hover:bg-slate-800";
+                batchHeaderActions.classList.add('hidden');
+            } else {
+                if (batchItems.length === 0) {
+                    openBatchModal();
+                    return;
+                }
+                singleView.classList.add('hidden');
+                batchView.classList.remove('hidden');
+
+                tabBatchBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-indigo-600 text-white shadow-md";
+                tabSingleBtn.className = "px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-400 hover:text-slate-100 hover:bg-slate-800";
+                batchHeaderActions.classList.remove('hidden');
+            }
+        }
+
+        // Batch Modal Dialog Functions
+        function openBatchModal() {
+            document.getElementById('batchModal').classList.remove('hidden');
+        }
+
+        function closeBatchModal() {
+            document.getElementById('batchModal').classList.add('hidden');
+        }
+
+        function processBatchInput() {
+            const rawText = document.getElementById('batchInputArea').value.trim();
+            const defaultBadgeType = document.getElementById('modalBadgeType').value;
+
+            if (!rawText) {
+                showToast("請輸入或貼上組員名單資料！", true);
+                return;
+            }
+
+            const lines = rawText.split('\n');
+            batchItems = [];
+
+            lines.forEach((line, idx) => {
+                const trimmed = line.trim();
+                if (!trimmed) return;
+
+                // Split by comma, tab, or dash
+                let parts = trimmed.split(/[,，\t]/);
+                if (parts.length < 2) {
+                    parts = trimmed.split(/\s+-\s+/);
+                }
+
+                let dept = "服勤組別";
+                let name = trimmed;
+
+                if (parts.length >= 2) {
+                    dept = parts[0].trim();
+                    name = parts.slice(1).join(' ').trim();
+                }
+
+                batchItems.push({
+                    id: idx,
+                    type: defaultBadgeType,
+                    dept: dept,
+                    name: name,
+                    qr: `https://tjc100.org.tw/pass/VERIFY-${10000 + idx}`
+                });
+            });
+
+            if (batchItems.length > 0) {
+                renderBatchGrid();
+                closeBatchModal();
+                switchView('batch');
+                showToast(`已成功匯入 ${batchItems.length} 筆識別證資料！`);
+            } else {
+                showToast("未能解析有效名單，請檢查格式。", true);
+            }
+        }
+
+        // Render Batch Cards in Grid
+        function renderBatchGrid() {
+            const grid = document.getElementById('batchGrid');
+            const bgUrl = inBgUrl.value.trim() || '識別證底圖.png';
+            grid.innerHTML = "";
+
+            document.getElementById('batchCountText').textContent = batchItems.length;
+            const countBadge = document.getElementById('batchCountBadge');
+            countBadge.textContent = batchItems.length;
+            countBadge.classList.remove('hidden');
+
+            batchItems.forEach((item, index) => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = "badge-container badge-container-print relative rounded-2xl overflow-hidden flex flex-col justify-between p-5 text-center border-2 border-amber-500/40 bg-slate-950 shadow-xl my-2";
+                cardDiv.id = `batchCard_${index}`;
+
+                cardDiv.innerHTML = `
+                    <div class="batch-bg-overlay absolute inset-0 z-0 bg-cover bg-center" style="background-image: url('${bgUrl}');"></div>
+                    
+                    <div class="relative z-10 space-y-1">
+                        <div class="pt-1">
+                            <div class="lanyard-hole"></div>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 my-auto py-3 px-3 badge-glass-panel rounded-2xl shadow-xl space-y-1.5 border border-amber-500/40">
+                        <div class="text-[8px] text-amber-300/80 tracking-widest uppercase font-semibold">
+                            OFFICIAL EVENT PASS
+                        </div>
+                        <div class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-amber-400 to-yellow-500 tracking-widest py-0.5">
+                            ${item.type}
+                        </div>
+                        <div class="text-xs font-bold text-slate-100 tracking-wider">
+                            ${item.dept}
+                        </div>
+                        <div class="pt-0.5">
+                            <div class="w-10 h-0.5 bg-amber-500/50 mx-auto mb-1"></div>
+                            <div class="text-sm font-extrabold text-amber-300 tracking-wider">
+                                ${item.name}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative z-10 space-y-1.5 pt-1">
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="p-1.5 bg-white rounded-xl shadow-md border border-amber-400/30">
+                                <div id="batch_qr_${index}" class="w-14 h-14 flex items-center justify-center"></div>
+                            </div>
+                        </div>
+                        <div class="text-[9px] text-slate-200/90 font-medium tracking-tight">
+                            ${inNote.value}
+                        </div>
+                        <div class="w-full h-px bg-slate-700/60"></div>
+                        <div class="text-[8px] text-slate-300 font-bold tracking-wider">
+                            ${inOrg.value}
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(cardDiv);
+
+                // Render QR Code for each item
+                setTimeout(() => {
+                    updateQRCode(item.qr, `batch_qr_${index}`);
+                }, 50);
+            });
+        }
+
+        function updateAllBatchBackgrounds(url) {
+            const overlays = document.querySelectorAll('.batch-bg-overlay');
+            overlays.forEach(el => {
+                el.style.backgroundImage = `url('${url}')`;
+            });
+        }
+
+        // Download Single Badge PNG
+        function downloadSingleBadge() {
             const canvasContainer = document.getElementById("badgeCanvas");
             
-            // Temporary enhancement for high resolution export
+            showToast("正在生成高解析度 PNG 圖檔...");
             html2canvas(canvasContainer, {
-                scale: 3, // High DPI export
+                scale: 3,
                 useCORS: true,
                 backgroundColor: null
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `TJC100_Badge_${inBadgeType.value.replace(/\s+/g, '')}.png`;
+                link.download = `TJC100_${inBadgeType.value.replace(/\s+/g, '')}_${inName.value.replace(/\s+/g, '')}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+                showToast("下載完成！");
             }).catch(err => {
                 console.error("Export error:", err);
-                alert("產生圖檔時發生錯誤，請稍後再試或使用截圖功能。");
+                showToast("產生圖檔失敗，請重新嘗試。", true);
             });
         }
 
-        // Initialization on page load
+        // Batch Zip Download
+        function downloadAllBatchZip() {
+            if (batchItems.length === 0) {
+                showToast("無可供下載的批次識別證！", true);
+                return;
+            }
+
+            showToast("正在打包下載全部識別證 PNG...");
+            const zip = new JSZip();
+            let processed = 0;
+
+            batchItems.forEach((item, index) => {
+                const elem = document.getElementById(`batchCard_${index}`);
+                html2canvas(elem, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
+                    const dataUrl = canvas.toDataURL('image/png').split(',')[1];
+                    const filename = `識別證_${index + 1}_${item.dept}_${item.name}.png`;
+                    zip.file(filename, dataUrl, { base64: true });
+                    
+                    processed++;
+                    if (processed === batchItems.length) {
+                        zip.generateAsync({ type: "blob" }).then(function(content) {
+                            const link = document.createElement('a');
+                            link.href = URL.createObjectURL(content);
+                            link.download = `TJC100_識別證批次包.zip`;
+                            link.click();
+                            showToast("全體識別證壓縮包已成功下載！");
+                        });
+                    }
+                });
+            });
+        }
+
+        // Smart Print Trigger (Handles batch or single view)
+        function triggerPrint() {
+            const isBatchView = !document.getElementById('batchView').classList.contains('hidden');
+            if (isBatchView) {
+                const batchGrid = document.getElementById('batchGrid');
+                batchGrid.classList.add('print-only-grid');
+                window.print();
+                batchGrid.classList.remove('print-only-grid');
+            } else {
+                window.print();
+            }
+        }
+
+        // Page Initialization
         window.addEventListener('load', () => {
             updateQRCode(inQR.value);
         });
