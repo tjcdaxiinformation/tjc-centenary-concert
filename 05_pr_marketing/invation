@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真耶穌教會臺灣傳教百週年 - 官方邀請卡產生器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Serif TC', serif, 'Noto Sans TC', sans-serif;
+            background-color: #050b14;
+            color: #f3f4f6;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff8cb 0%, #e5c158 40%, #c99a22 80%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Standard A5 / Invitation Aspect Ratio */
+        .invitation-ratio {
+            width: 100%;
+            max-width: 520px;
+            aspect-ratio: 1 / 1.414; /* A5 standard proportion */
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #081120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 3px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #invitationCard, #invitationCard * {
+                visibility: visible;
+            }
+            #invitationCard {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100% !important;
+                max-width: none !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-3 md:p-6">
+
+    <!-- Header -->
+    <header class="w-full max-w-7xl text-center mb-6">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs md:text-sm tracking-widest mb-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            真耶穌教會臺灣傳教百週年 ‧ 西區音樂會籌備小組
+        </div>
+        <h1 class="text-2xl md:text-4xl font-black tracking-wider gold-gradient-text">
+            貴賓單張邀請卡產生器
+        </h1>
+        <p class="text-xs md:text-sm text-gray-400 mt-1.5 max-w-2xl mx-auto">
+            專為西區音樂會製作之貴賓邀請函，保留被邀請人職銜姓名欄位，支援線上個別套印或直接印出手寫。
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Left Controls (5 cols) -->
+        <div class="lg:col-span-5 bg-[#112240] border border-blue-900/50 p-5 md:p-6 rounded-2xl shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-blue-900/60 pb-3">
+                <h2 class="text-base font-bold text-amber-200 flex items-center gap-2">
+                    <span>✉️</span>
+                    <span>邀請卡內容與對象設定</span>
+                </h2>
+                <span class="text-[11px] bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">貴賓專屬</span>
+            </div>
+
+            <!-- Recipient Inputs -->
+            <div class="space-y-3">
+                <div class="p-3 bg-[#081120] rounded-xl border border-amber-500/30 space-y-2">
+                    <label class="block text-xs uppercase font-bold text-amber-300">👤 被邀請人資訊 (受邀貴賓)</label>
+                    <div class="grid grid-cols-12 gap-2">
+                        <div class="col-span-7">
+                            <input type="text" id="inRecipientName" value="張大衛" placeholder="貴賓姓名 (如：張大衛)" class="w-full bg-[#0c1b33] border border-blue-900/80 rounded-lg px-3 py-2 text-xs text-amber-100 font-bold focus:outline-none focus:border-amber-400 transition">
+                        </div>
+                        <div class="col-span-5">
+                            <input type="text" id="inRecipientTitle" value="長老 / 執事" placeholder="職銜 (如：長老)" class="w-full bg-[#0c1b33] border border-blue-900/80 rounded-lg px-3 py-2 text-xs text-amber-200 focus:outline-none focus:border-amber-400 transition">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 pt-1">
+                        <input type="checkbox" id="chkBlankMode" onchange="toggleBlankMode(this.checked)" class="rounded border-slate-700 text-amber-500 focus:ring-amber-400">
+                        <label for="chkBlankMode" class="text-[11px] text-gray-300 cursor-pointer">保留底線（留白供批次手寫填寫）</label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">誠摯邀請敬語 / 稱謂問候</label>
+                    <input type="text" id="inSalutation" value="主內平安！誠摯邀請您蒞臨指導：" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">百年核心主題 Slogan</label>
+                    <input type="text" id="inSlogan" value="重修牆垣 開展境界" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-amber-300 font-bold focus:outline-none focus:border-amber-400 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">盛會名稱 Event Title</label>
+                    <input type="text" id="inMainTitle" value="真耶穌教會臺灣傳教百年 西區詩歌音樂會" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-amber-200 font-bold focus:outline-none focus:border-amber-400 transition">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">舉開日期與時間</label>
+                        <input type="text" id="inEventTime" value="2026.11.01 (日) 上午 08:30" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3 py-2 text-xs text-gray-200 font-bold focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">舉開地點</label>
+                        <input type="text" id="inLocation" value="國立中央大學 大禮堂" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3 py-2 text-xs text-gray-200 font-bold focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">邀請內文敘述</label>
+                    <textarea id="inBodyText" rows="3" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl p-2.5 text-xs text-gray-300 focus:outline-none focus:border-amber-400 transition leading-relaxed">謹訂於主後 2026 年 11 月 1 日舉開傳教百週年西區詩歌音樂會。同心以詩歌頌揚主恩、重修信仰牆垣，敬備貴賓專屬席位，誠摯盼望您的蒞臨共襄盛舉，同沐主恩！</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">落款與邀請單位</label>
+                    <input type="text" id="inSignOff" value="真耶穌教會西區辦事處 ‧ 音樂會籌備小組 敬邀" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-amber-300 focus:outline-none focus:border-amber-400 transition">
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="pt-3 space-y-2">
+                <button onclick="downloadHighResCard()" class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
+                    <span>📥</span>
+                    <span>下載高清邀請卡圖檔 (PNG)</span>
+                </button>
+                
+                <button onclick="window.print()" class="w-full bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-2.5 px-4 rounded-xl border border-blue-800 transition text-xs flex items-center justify-center gap-2">
+                    <span>🖨️</span>
+                    <span>列印 / 存為 A5 邀請函 PDF 檔</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Preview (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col items-center">
+            <div class="text-xs uppercase tracking-widest text-amber-400/80 mb-2 font-mono flex items-center gap-2">
+                <span>🖼️ 貴賓邀請卡實體視覺預覽 (A5 版面)</span>
+            </div>
+
+            <!-- Invitation Card Output Element -->
+            <div class="w-full flex justify-center py-2">
+                <div id="invitationCard" class="invitation-ratio relative bg-cover bg-center border-4 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col justify-between p-7 text-slate-900 transition-all duration-300" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+                    
+                    <!-- Soft white overlay mask for optimal text contrast -->
+                    <div class="absolute inset-0 bg-white/45 backdrop-blur-[0.5px] pointer-events-none"></div>
+
+                    <!-- 1. HEADER: Header Badge & Recipient Name Field -->
+                    <div class="relative z-10 space-y-3">
+                        <div class="flex justify-between items-center border-b border-emerald-900/30 pb-2">
+                            <span class="text-[10px] font-mono font-bold tracking-widest text-emerald-950 uppercase bg-amber-100/80 px-2.5 py-0.5 rounded border border-amber-300">
+                                OFFICIAL INVITATION ‧ 貴賓邀請函
+                            </span>
+                            <span class="text-[10px] font-mono font-bold text-slate-700">1926 — 2026</span>
+                        </div>
+
+                        <!-- Recipient Name & Title Line -->
+                        <div class="bg-white/85 backdrop-blur-xs p-3.5 rounded-xl border-2 border-[#1a3a2a] shadow-md">
+                            <div id="outSalutation" class="text-[11px] font-bold text-emerald-900 mb-1">
+                                主內平安！誠摯邀請您蒞臨指導：
+                            </div>
+                            <div class="flex items-baseline gap-2 border-b-2 border-dashed border-emerald-900/60 pb-1 pt-0.5">
+                                <span class="text-xs text-slate-600 font-bold">敬邀：</span>
+                                <span id="outRecipientName" class="text-xl font-serif font-black text-emerald-950 tracking-wider">
+                                    張大衛
+                                </span>
+                                <span id="outRecipientTitle" class="text-xs font-bold text-emerald-900">
+                                    長老 / 執事
+                                </span>
+                                <span class="text-xs font-serif text-slate-700 ml-auto">惠鑒</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. MIDDLE CONTENT: Slogan, Event Title & Body Text -->
+                    <div class="relative z-10 my-auto py-2 text-center space-y-2">
+                        
+                        <div class="text-[10px] font-mono tracking-[0.2em] font-bold text-slate-700 uppercase">
+                            2026 11.1 ‧ 傳教百週年西區盛宴
+                        </div>
+
+                        <!-- Slogan -->
+                        <h2 id="outSlogan" class="text-2xl md:text-3xl font-black font-serif text-[#1a3a2a] tracking-wider drop-shadow-sm">
+                            重修牆垣 開展境界
+                        </h2>
+
+                        <!-- Main Title -->
+                        <div id="outMainTitle" class="text-sm font-black text-[#0f172a] bg-white/70 py-1 px-3 rounded-lg border border-amber-500/40 inline-block shadow-xs">
+                            真耶穌教會臺灣傳教百年 西區詩歌音樂會
+                        </div>
+
+                        <!-- Invitation Body -->
+                        <p id="outBodyText" class="text-xs text-slate-800 leading-relaxed font-sans px-3 py-2 bg-white/75 rounded-xl border border-slate-200 text-justify shadow-xs">
+                            謹訂於主後 2026 年 11 月 1 日舉開傳教百週年西區詩歌音樂會。同心以詩歌頌揚主恩、重修信仰牆垣，敬備貴賓專屬席位，誠摯盼望您的蒞臨共襄盛舉，同沐主恩！
+                        </p>
+                    </div>
+
+                    <!-- 3. FOOTER: Venue, Time, Scripture & Sign-off -->
+                    <div class="relative z-10 space-y-2">
+                        
+                        <!-- Event Info Box -->
+                        <div class="p-2.5 bg-white/90 border border-emerald-900/30 rounded-xl shadow-xs text-center">
+                            <div class="flex justify-around items-center text-xs font-bold text-emerald-950">
+                                <div>
+                                    <span class="text-[9px] text-slate-500 block">時間</span>
+                                    <span id="outEventTime" class="font-mono font-black text-church-navy">2026.11.01 (日) 上午 08:30</span>
+                                </div>
+                                <div class="h-5 w-0.5 bg-emerald-900/20"></div>
+                                <div>
+                                    <span class="text-[9px] text-slate-500 block">地點</span>
+                                    <span id="outLocation" class="font-bold text-emerald-950">國立中央大學 大禮堂</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scripture Quote -->
+                        <div class="text-[8.5px] font-serif font-bold text-emerald-950 text-center italic bg-amber-50/90 p-1.5 rounded-md border border-amber-300">
+                            「以色列啊，日子必到，你的牆垣必重修；到那日，你的境界必開展」（彌七11）
+                        </div>
+
+                        <!-- Sign off and QR Code -->
+                        <div class="flex items-center justify-between pt-1 border-t border-emerald-900/20 bg-white/80 p-2 rounded-lg">
+                            <div>
+                                <div id="outSignOff" class="text-xs font-bold text-slate-900 font-serif">
+                                    真耶穌教會西區辦事處 ‧ 音樂會籌備小組 敬邀
+                                </div>
+                                <div class="text-[8px] text-emerald-900">憑此邀請函 / 入場券對號入場</div>
+                            </div>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://www.instagram.com/tjc100_west_concert/" alt="IG QR Code" class="w-8 h-8 object-contain bg-white p-0.5 rounded border border-slate-300">
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 hidden bg-amber-500 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-2xl z-50 text-xs md:text-sm transition">
+        通知訊息
+    </div>
+
+    <footer class="mt-8 text-center text-xs text-gray-500 border-t border-blue-900/40 pt-4 w-full max-w-7xl">
+        真耶穌教會傳教百年西區音樂會籌備小組 ‧ 宣傳與公關組製作
+    </footer>
+
+    <script>
+        const inRecipientName = document.getElementById('inRecipientName');
+        const inRecipientTitle = document.getElementById('inRecipientTitle');
+        const inSalutation = document.getElementById('inSalutation');
+        const inSlogan = document.getElementById('inSlogan');
+        const inMainTitle = document.getElementById('inMainTitle');
+        const inEventTime = document.getElementById('inEventTime');
+        const inLocation = document.getElementById('inLocation');
+        const inBodyText = document.getElementById('inBodyText');
+        const inSignOff = document.getElementById('inSignOff');
+
+        const outRecipientName = document.getElementById('outRecipientName');
+        const outRecipientTitle = document.getElementById('outRecipientTitle');
+        const outSalutation = document.getElementById('outSalutation');
+        const outSlogan = document.getElementById('outSlogan');
+        const outMainTitle = document.getElementById('outMainTitle');
+        const outEventTime = document.getElementById('outEventTime');
+        const outLocation = document.getElementById('outLocation');
+        const outBodyText = document.getElementById('outBodyText');
+        const outSignOff = document.getElementById('outSignOff');
+
+        const invitationCard = document.getElementById('invitationCard');
+        const toast = document.getElementById('toast');
+
+        function bindText(inputEl, outputEl) {
+            if (!inputEl || !outputEl) return;
+            inputEl.addEventListener('input', (e) => {
+                outputEl.textContent = e.target.value;
+            });
+        }
+
+        bindText(inRecipientName, outRecipientName);
+        bindText(inRecipientTitle, outRecipientTitle);
+        bindText(inSalutation, outSalutation);
+        bindText(inSlogan, outSlogan);
+        bindText(inMainTitle, outMainTitle);
+        bindText(inEventTime, outEventTime);
+        bindText(inLocation, outLocation);
+        bindText(inBodyText, outBodyText);
+        bindText(inSignOff, outSignOff);
+
+        function toggleBlankMode(isBlank) {
+            if (isBlank) {
+                outRecipientName.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                outRecipientTitle.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                inRecipientName.disabled = true;
+                inRecipientTitle.disabled = true;
+            } else {
+                outRecipientName.textContent = inRecipientName.value || "張大衛";
+                outRecipientTitle.textContent = inRecipientTitle.value || "長老 / 執事";
+                inRecipientName.disabled = false;
+                inRecipientTitle.disabled = false;
+            }
+        }
+
+        function downloadHighResCard() {
+            showToast('⏳ 正在繪製 A5 高解析度貴賓邀請卡，請稍候...');
+
+            html2canvas(invitationCard, {
+                scale: 3, // 3x high resolution print quality
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null,
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const recipient = inRecipientName.value || '手寫版';
+                link.download = `傳教百年西區音樂會_貴賓邀請卡_${recipient}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+
+                showToast('🎉 高解析度邀請卡 PNG 下載成功！');
+            }).catch(err => {
+                console.error(err);
+                showToast('❌ 圖檔匯出失敗，請嘗試直接使用列印功能。');
+            });
+        }
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
