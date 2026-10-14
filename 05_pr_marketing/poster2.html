@@ -34,7 +34,6 @@
         }
     </script>
     <style>
-        /* Custom styles & animations */
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
@@ -51,7 +50,7 @@
 
         /* Poster Background Style */
         .poster-bg-main {
-            background-image: linear-gradient(to bottom, rgba(255,255,255,0.45), rgba(240,245,250,0.85)), url('主視覺.png');
+            background-image: linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(240,245,250,0.88)), url('主視覺.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -59,10 +58,10 @@
 
         /* Glassmorphism text contrast overlays */
         .glass-card {
-            background: rgba(255, 255, 255, 0.82);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         .hover-lift {
@@ -104,8 +103,8 @@
                 <i class="fa-solid fa-music text-lg"></i>
             </div>
             <div>
-                <h1 class="font-bold text-slate-900 text-base leading-tight">西區百周年詩歌音樂會海報</h1>
-                <p class="text-xs text-slate-500">線上內容編輯與高清海報輸出系統</p>
+                <h1 class="font-bold text-slate-900 text-base leading-tight">西區百周年詩歌音樂會海報生成器</h1>
+                <p class="text-xs text-slate-500">動態內容編輯、QR Code 自訂與高畫質海報輸出</p>
             </div>
         </div>
 
@@ -116,14 +115,9 @@
                 <span>更換背景圖</span>
                 <input type="file" id="bgImageUploader" accept="image/*" onchange="uploadBgImage(event)" class="hidden">
             </label>
-            <label class="hover-lift px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl flex items-center gap-1.5 transition cursor-pointer border border-slate-300">
-                <i class="fa-solid fa-qrcode text-purple-600"></i>
-                <span>上傳官方 IG QR Code</span>
-                <input type="file" id="qrImageUploader" accept="image/*" onchange="uploadQrImage(event)" class="hidden">
-            </label>
             <button onclick="toggleEditPanel()" class="hover-lift px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-xl flex items-center gap-1.5 transition shadow">
                 <i class="fa-solid fa-sliders"></i>
-                <span>編輯內容</span>
+                <span>編輯所有內文</span>
             </button>
             <button onclick="downloadAsImage()" class="hover-lift px-4 py-2 bg-blue-900 hover:bg-blue-800 text-white text-sm font-medium rounded-xl flex items-center gap-2 shadow-md transition">
                 <i class="fa-solid fa-download"></i>
@@ -142,20 +136,19 @@
             
             <!-- Poster Top Section -->
             <div class="relative z-10 w-full flex flex-col justify-between items-end gap-2">
-                <!-- Top Tagline Quote -->
-                <div class="text-right glass-card px-4 py-2.5 rounded-2xl shadow-sm">
+                <!-- Top Bible Verse / Tagline Quote -->
+                <div class="text-right glass-card px-4 py-2.5 rounded-2xl shadow-sm max-w-md">
                     <p id="displayHeaderTag" class="font-serif text-sky-950 font-bold text-xs sm:text-sm md:text-base leading-relaxed tracking-wide drop-shadow-sm">
-                        福音在臺灣100年，是見證神的榮耀，<br/>
-                        我們齊聚一同高聲頌揚神，誠摯歡迎您。
+                        「以色列啊，日子必到，你的牆垣必重修；<br/>到那日，你的境界必開展」（彌七11）
                     </p>
                 </div>
 
                 <!-- Centennial Badge -->
-                <div class="flex items-center gap-2 mt-1 px-3 py-1 bg-white/70 backdrop-blur-xs rounded-full text-[10px] sm:text-xs font-serif text-slate-800 tracking-wider border border-white/80">
-                    <span class="font-cinzel font-bold text-slate-700">1926</span>
+                <div id="displayCentennialBadge" class="flex items-center gap-2 mt-1 px-3 py-1 bg-white/75 backdrop-blur-xs rounded-full text-[10px] sm:text-xs font-serif text-slate-800 tracking-wider border border-white/80">
+                    <span id="displayYearStart" class="font-cinzel font-bold text-slate-700">1926</span>
                     <span class="w-6 h-[1px] bg-slate-400 inline-block"></span>
-                    <span class="font-cinzel font-bold text-slate-700">2026</span>
-                    <span class="ml-1 font-medium text-slate-900">真耶穌教會臺灣傳教 <strong class="font-cinzel text-sm">100</strong> 周年</span>
+                    <span id="displayYearEnd" class="font-cinzel font-bold text-slate-700">2026</span>
+                    <span id="displayCentennialText" class="ml-1 font-medium text-slate-900">真耶穌教會臺灣傳教 <strong class="font-cinzel text-sm">100</strong> 周年</span>
                 </div>
             </div>
 
@@ -172,24 +165,24 @@
                         REBUILDING THE WALLS, EXTENDING THE BOUNDARY
                     </p>
 
-                    <!-- Date Display -->
-                    <div class="my-2 sm:my-3 flex items-baseline justify-center gap-2 font-serif text-brandNavy">
-                        <span id="displayDate" class="text-3xl sm:text-5xl md:text-6xl font-bold font-cinzel tracking-tight drop-shadow-sm">
-                            2026 11/1 <span class="text-xl sm:text-3xl font-serif font-normal">(日)</span>
-                        </span>
-                    </div>
-
-                    <!-- Subtle Decorative Divider Line -->
-                    <div class="w-4/5 max-w-xs h-[1px] mx-auto bg-gradient-to-r from-transparent via-amber-400 to-transparent my-2"></div>
-
-                    <!-- Event Name -->
-                    <div class="space-y-1">
-                        <p id="displayChurchEvent" class="font-serif text-base sm:text-2xl text-brandNavy font-semibold tracking-wider">
+                    <!-- Event Name / Subtitle Requested -->
+                    <div class="my-3 space-y-1">
+                        <p id="displayChurchEvent" class="font-serif text-base sm:text-2xl text-brandNavy font-bold tracking-wider">
                             真耶穌教會臺灣傳教百週年
                         </p>
                         <h3 id="displayMusicEvent" class="font-serif text-2xl sm:text-4xl text-brandNavy font-black tracking-widest drop-shadow-sm">
                             西區詩歌音樂會
                         </h3>
+                    </div>
+
+                    <!-- Subtle Decorative Divider Line -->
+                    <div class="w-4/5 max-w-xs h-[1px] mx-auto bg-gradient-to-r from-transparent via-amber-400 to-transparent my-2"></div>
+
+                    <!-- Date Display -->
+                    <div class="my-2 sm:my-3 flex items-baseline justify-center gap-2 font-serif text-brandNavy">
+                        <span id="displayDate" class="text-2xl sm:text-4xl md:text-5xl font-bold font-cinzel tracking-tight drop-shadow-sm">
+                            2026.11.01 <span class="text-lg sm:text-2xl font-serif font-semibold">(日)</span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -202,17 +195,15 @@
                     <!-- Time -->
                     <div class="flex flex-col items-center justify-center">
                         <span class="font-serif text-xs font-bold text-slate-800 tracking-widest mb-0.5">【 時 間 】</span>
-                        <p id="displayTime" class="font-serif text-sm sm:text-lg text-brandNavy font-bold">
-                            08:00 <span class="text-xs text-slate-700">入場</span>
-                            <span class="mx-1">|</span>
-                            08:30 <span class="text-xs text-slate-700">正式開始</span>
+                        <p id="displayTime" class="font-serif text-sm sm:text-base text-brandNavy font-bold">
+                            上午 08:30 <span class="text-xs text-slate-600 font-normal">(08:00 入場)</span>
                         </p>
                     </div>
 
                     <!-- Location -->
                     <div class="flex flex-col items-center justify-center border-t sm:border-t-0 sm:border-l border-slate-300/60 pt-1.5 sm:pt-0">
                         <span class="font-serif text-xs font-bold text-slate-800 tracking-widest mb-0.5">【 地 點 】</span>
-                        <p id="displayLocation" class="font-serif text-sm sm:text-lg text-brandNavy font-extrabold leading-tight">
+                        <p id="displayLocation" class="font-serif text-sm sm:text-base text-brandNavy font-extrabold leading-tight">
                             國立中央大學 大禮堂
                         </p>
                     </div>
@@ -239,14 +230,14 @@
                         </div>
                     </div>
 
-                    <!-- Right: Official IG QR Code Widget -->
+                    <!-- Right: Official QR Code Widget -->
                     <div id="qrCodeContainer" class="flex flex-col items-center justify-center shrink-0 border-t sm:border-t-0 sm:border-l border-slate-300/60 pt-2 sm:pt-0 sm:pl-3 w-full sm:w-auto">
                         <div class="bg-white p-1 rounded-lg border border-slate-200 shadow-sm flex items-center justify-center">
-                            <img id="displayQrImg" src="音樂會官方ig.png" alt="官方 IG QR Code" class="w-16 h-16 object-contain rounded" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://instagram.com'">
+                            <img id="displayQrImg" src="音樂會官方ig.png" alt="地點/官方 QR Code" class="w-16 h-16 object-contain rounded" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://maps.google.com'">
                         </div>
                         <span id="displayQrLabel" class="text-[9px] sm:text-[10px] font-bold text-amber-900 mt-1 tracking-wider flex items-center gap-1">
-                            <i class="fa-brands fa-instagram text-pink-600"></i>
-                            <span>音樂會官方 IG</span>
+                            <i class="fa-solid fa-qrcode text-amber-600"></i>
+                            <span>地點請掃描 / 官方 IG</span>
                         </span>
                     </div>
 
@@ -263,7 +254,7 @@
         <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
             <div class="flex items-center gap-2">
                 <i class="fa-solid fa-pen-to-square text-amber-600"></i>
-                <h3 class="font-bold text-slate-800">編輯海報與 QR Code 內容</h3>
+                <h3 class="font-bold text-slate-800">海報所有內文即時編輯</h3>
             </div>
             <button onclick="toggleEditPanel()" class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-200 text-slate-500 transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
@@ -274,7 +265,7 @@
         <div class="p-5 overflow-y-auto space-y-4 flex-1">
             
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">頂部標語/經文感言</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">右上角經文 / 標語內容</label>
                 <textarea id="inputHeaderTag" rows="2" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" oninput="updatePoster()"></textarea>
             </div>
 
@@ -289,6 +280,18 @@
                 </div>
             </div>
 
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                <label class="block text-xs font-bold text-amber-900">大會與音樂會名稱（標題）</label>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">第一行名稱</label>
+                    <input type="text" id="inputChurchEvent" class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-amber-500 focus:outline-none" oninput="updatePoster()">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">第二行名稱</label>
+                    <input type="text" id="inputMusicEvent" class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-amber-500 focus:outline-none" oninput="updatePoster()">
+                </div>
+            </div>
+
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">舉辦日期</label>
@@ -298,16 +301,6 @@
                     <label class="block text-xs font-semibold text-slate-600 mb-1">活動時間</label>
                     <input type="text" id="inputTime" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" oninput="updatePoster()">
                 </div>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">大會名稱（第一行）</label>
-                <input type="text" id="inputChurchEvent" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" oninput="updatePoster()">
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">音樂會名稱（第二行）</label>
-                <input type="text" id="inputMusicEvent" class="w-full text-sm border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-amber-500 focus:outline-none" oninput="updatePoster()">
             </div>
 
             <div>
@@ -346,11 +339,11 @@
             <hr class="border-slate-200 my-2">
 
             <!-- QR Code Section Controls -->
-            <div class="space-y-3 bg-amber-50/50 p-3 rounded-xl border border-amber-200/60">
+            <div class="space-y-3 bg-amber-50/60 p-3 rounded-xl border border-amber-200/60">
                 <div class="flex items-center justify-between">
                     <label class="text-xs font-bold text-amber-950 flex items-center gap-1.5">
                         <i class="fa-solid fa-qrcode text-amber-600"></i>
-                        <span>官方 QR Code 設定</span>
+                        <span>QR Code 圖檔與標籤</span>
                     </label>
                     <div class="flex items-center gap-1">
                         <input type="checkbox" id="inputShowQr" class="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500" checked onchange="toggleQrVisibility()">
@@ -359,13 +352,13 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">QR Code 下方標籤說明</label>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">QR Code 下方說明標籤</label>
                     <input type="text" id="inputQrLabel" class="w-full text-sm border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-amber-500 focus:outline-none" oninput="updatePoster()">
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">更換 QR Code 圖片</label>
-                    <input type="file" id="inputQrFile" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100" onchange="uploadQrImage(event)">
+                    <input type="file" id="inputQrFile" accept="image/*" class="w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200" onchange="uploadQrImage(event)">
                 </div>
             </div>
 
@@ -386,20 +379,21 @@
         });
 
         function initInputs() {
-            document.getElementById('inputHeaderTag').value = "福音在臺灣100年，是見證神的榮耀，\n我們齊聚一同高聲頌揚神，誠摯歡迎您。";
+            document.getElementById('inputHeaderTag').value = "「以色列啊，日子必到，你的牆垣必重修；\n到那日，你的境界必開展」（彌七11）";
             document.getElementById('inputMainTitle').value = "重修牆垣 開展境界";
             document.getElementById('inputSubTitle').value = "REBUILDING THE WALLS, EXTENDING THE BOUNDARY";
-            document.getElementById('inputDate').value = "2026 11/1 (日)";
-            document.getElementById('inputTime').value = "08:00 入場 | 08:30 正式開始";
             document.getElementById('inputChurchEvent').value = "真耶穌教會臺灣傳教百週年";
             document.getElementById('inputMusicEvent').value = "西區詩歌音樂會";
+            document.getElementById('inputDate').value = "2026.11.01 (日)";
+            document.getElementById('inputTime').value = "上午 08:30 (08:00 入場)";
             document.getElementById('inputLocation').value = "國立中央大學 大禮堂";
             document.getElementById('inputOrganizer').value = "真耶穌教會西區辦事處、真耶穌教會西區聖樂推展小組";
             document.getElementById('inputContractor').value = "真耶穌教會西區復興小區";
             document.getElementById('inputAdvisor').value = "真耶穌教會臺灣總會";
             document.getElementById('inputChoir').value = "西區各牧區聯合詩班、西區傳道夫婦詩班、西大團契詩班";
             document.getElementById('inputOrchestra').value = "亞古珥管弦樂團";
-            document.getElementById('inputQrLabel').value = "音樂會官方 IG";
+            document.getElementById('inputQrLabel').value = "地點請掃描 / 官方 IG";
+            updatePoster();
         }
 
         // Live Update Text Elements
@@ -408,9 +402,10 @@
             document.getElementById('displayHeaderTag').innerHTML = headerTag;
             document.getElementById('displayMainTitle').innerText = document.getElementById('inputMainTitle').value;
             document.getElementById('displaySubTitle').innerText = document.getElementById('inputSubTitle').value;
-            document.getElementById('displayDate').innerText = document.getElementById('inputDate').value;
             document.getElementById('displayChurchEvent').innerText = document.getElementById('inputChurchEvent').value;
             document.getElementById('displayMusicEvent').innerText = document.getElementById('inputMusicEvent').value;
+            document.getElementById('displayDate').innerHTML = document.getElementById('inputDate').value;
+            document.getElementById('displayTime').innerHTML = document.getElementById('inputTime').value;
             document.getElementById('displayLocation').innerText = document.getElementById('inputLocation').value;
             document.getElementById('displayOrganizer').innerText = document.getElementById('inputOrganizer').value;
             document.getElementById('displayContractor').innerText = document.getElementById('inputContractor').value;
@@ -420,11 +415,10 @@
 
             // Handle QR Code Label
             const qrText = document.getElementById('inputQrLabel').value;
-            document.getElementById('displayQrLabel').querySelector('span').innerText = qrText;
-
-            // Handle time parsing
-            const timeVal = document.getElementById('inputTime').value;
-            document.getElementById('displayTime').innerText = timeVal;
+            const qrLabelSpan = document.getElementById('displayQrLabel').querySelector('span');
+            if (qrLabelSpan) {
+                qrLabelSpan.innerText = qrText;
+            }
         }
 
         // Toggle Drawer Visibility
@@ -451,7 +445,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const poster = document.getElementById('posterCanvas');
-                    poster.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.45), rgba(240,245,250,0.85)), url('${e.target.result}')`;
+                    poster.style.backgroundImage = `linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(240,245,250,0.88)), url('${e.target.result}')`;
                 };
                 reader.readAsDataURL(file);
             }
@@ -484,7 +478,7 @@
                 backgroundColor: '#ffffff'
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = '西區百周年詩歌音樂會海報.png';
+                link.download = '真耶穌教會臺灣傳教百週年_西區詩歌音樂會海報.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
                 document.body.style.cursor = 'default';
