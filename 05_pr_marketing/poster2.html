@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真耶穌教會臺灣傳教百周年 - 西區詩歌音樂會海報</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2canvas for image generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBlue: '#1a365d',
+                        brandNavy: '#0f2b5c',
+                        goldPrimary: '#c5a059',
+                        goldDark: '#8c6114',
+                        goldLight: '#eec785',
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Gold gradient text styling */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #a87e32 0%, #d4af37 35%, #8a5d1b 70%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.15));
+        }
+
+        .text-gold-emboss {
+            color: #b08128;
+            text-shadow: 1px 1px 0px #fff, -1px -1px 0px rgba(100,70,10,0.3), 2px 2px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Pastel background mesh emulation */
+        .poster-bg {
+            background: 
+                radial-gradient(circle at 20% 15%, rgba(255, 235, 200, 0.6) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(200, 240, 255, 0.5) 0%, transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(200, 225, 255, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 85% 85%, rgba(230, 210, 255, 0.5) 0%, transparent 45%),
+                linear-gradient(180deg, #f3f8fd 0%, #ffffff 40%, #ffffff 70%, #edf5fd 100%);
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .poster-container {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                max-width: none !important;
+            }
+        }
+
+        /* Subtle smooth animations */
+        .hover-lift {
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans min-h-screen text-slate-800 flex flex-col items-center justify-start p-2 sm:p-6">
+
+    <!-- Control Bar (Non-printable) -->
+    <header class="no-print w-full max-w-5xl bg-white shadow-md rounded-2xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4 border border-slate-200">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-900 text-white flex items-center justify-center font-bold text-lg shadow">
+                <i class="fa-solid fa-music"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-slate-800 text-lg leading-tight">西區百周年詩歌音樂會 海報生成器</h1>
+                <p class="text-xs text-slate-500">2026 真耶穌教會臺灣傳教百周年 宣傳海報</p>
+            </div>
+        </div>
+
+        <div class="flex items-center flex-wrap gap-2">
+            <button onclick="toggleEditPanel()" class="hover-lift px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl flex items-center gap-1.5 transition">
+                <i class="fa-solid fa-sliders text-blue-600"></i>
+                <span>編輯內容</span>
+            </button>
+            <button onclick="downloadAsImage()" class="hover-lift px-4 py-2 bg-blue-900 hover:bg-blue-800 text-white text-sm font-medium rounded-xl flex items-center gap-2 shadow-md transition">
+                <i class="fa-solid fa-download"></i>
+                <span>下載高清 PNG</span>
+            </button>
+            <button onclick="window.print()" class="hover-lift px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-xl flex items-center gap-1.5 shadow transition">
+                <i class="fa-solid fa-print"></i>
+                <span>列印 / 存為 PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Content Editor Modal / Drawer (Hidden by default) -->
+    <div id="editPanel" class="no-print hidden w-full max-w-5xl bg-white rounded-2xl shadow-xl p-6 mb-6 border border-blue-100 transition-all">
+        <div class="flex justify-between items-center mb-4 pb-2 border-b">
+            <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-blue-600"></i> 海報文字編輯區
+            </h3>
+            <button onclick="toggleEditPanel()" class="text-slate-400 hover:text-slate-600 text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">主題標語 (中文)</label>
+                <input type="text" id="inputMainTitle" value="重修牆垣 開展境界" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">主題標語 (英文)</label>
+                <input type="text" id="inputSubTitle" value="REBUILDING THE WALLS, EXTENDING THE BOUNDARY" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">頂部經典宣傳語</label>
+                <textarea id="inputHeaderTag" rows="2" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">福音在臺灣100年，是見證神的榮耀，&#10;我們齊聚一同高聲頌揚神，誠摯歡迎您。</textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">活動日期</label>
+                <input type="text" id="inputDate" value="2026 11/1 (日)" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">入場/開始時間</label>
+                <input type="text" id="inputTime" value="08:00 入場  08:30 正式開始" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">地點名稱</label>
+                <input type="text" id="inputLocation" value="國立中央大學 大禮堂" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">主辦單位</label>
+                <input type="text" id="inputOrganizer" value="真耶穌教會西區辦事處、真耶穌教會西區聖樂推展小組" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">承辦單位</label>
+                <input type="text" id="inputContractor" value="真耶穌教會西區復興小區" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">指導單位</label>
+                <input type="text" id="inputAdvisor" value="真耶穌教會臺灣總會" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-500 mb-1">獻唱詩班</label>
+                <input type="text" id="inputChoir" value="西區各牧區聯合詩班、西區傳道夫婦詩班、西大團契詩班" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+            <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-500 mb-1">樂器演奏</label>
+                <input type="text" id="inputOrchestra" value="亞古珥管弦樂團" oninput="updatePosterText()" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button onclick="resetPosterText()" class="px-3 py-1.5 text-xs text-slate-500 hover:text-red-600">恢復預設值</button>
+        </div>
+    </div>
+
+    <!-- Main Poster Wrapper with high precision aspect ratio -->
+    <main class="w-full flex justify-center items-center py-2">
+        <div id="posterCanvas" class="poster-container poster-bg relative w-full max-w-[720px] aspect-[1/1.414] bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 flex flex-col justify-between p-6 sm:p-10 select-none">
+            
+            <!-- Background Abstract Artwork (Soft Dove / Light Rays SVG) -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                <!-- Soft top pastel organic shapes -->
+                <svg class="absolute top-0 left-0 w-full h-1/2 opacity-60" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M-100,-50 C150,120 350,-20 600,100 C750,180 850,50 900,-50 Z" fill="url(#gradPastelYellow)"/>
+                    <path d="M-50,100 C200,250 450,80 700,220 C800,270 850,200 900,150 Z" fill="url(#gradPastelCyan)" opacity="0.4"/>
+                    <defs>
+                        <linearGradient id="gradPastelYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fff8db" stop-opacity="0.8"/>
+                            <stop offset="100%" stop-color="#e0f2fe" stop-opacity="0.3"/>
+                        </linearGradient>
+                        <linearGradient id="gradPastelCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.6"/>
+                            <stop offset="100%" stop-color="#fbcfe8" stop-opacity="0.3"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <!-- Soft Holy Dove Graphic Overlay Top Left -->
+                <svg class="absolute -top-4 -left-6 w-72 sm:w-96 h-auto opacity-30 text-sky-200" viewBox="0 0 200 200" fill="currentColor">
+                    <path d="M150,40 C120,40 90,60 70,90 C50,80 30,85 10,100 C30,110 50,110 70,105 C80,125 100,140 130,145 C110,130 100,115 105,100 C125,95 155,80 180,50 C170,50 160,45 150,40 Z" />
+                </svg>
+
+                <!-- Bottom Water Wave / Cloud Shapes -->
+                <svg class="absolute bottom-0 left-0 w-full h-1/3 opacity-50" viewBox="0 0 800 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M-50,180 C150,120 300,240 500,160 C650,100 750,200 850,150 L850,350 L-50,350 Z" fill="url(#gradBottomBlue)"/>
+                    <path d="M-50,220 C200,180 400,280 650,200 C750,170 820,230 900,210 L900,350 L-50,350 Z" fill="url(#gradBottomPurple)" opacity="0.6"/>
+                    <defs>
+                        <linearGradient id="gradBottomBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#dbeafe"/>
+                            <stop offset="100%" stop-color="#bfdbfe"/>
+                        </linearGradient>
+                        <linearGradient id="gradBottomPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#f3e8ff"/>
+                            <stop offset="100%" stop-color="#bae6fd"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <!-- Gentle glowing light points -->
+                <div class="absolute bottom-8 left-12 w-4 h-4 rounded-full bg-yellow-200 blur-sm opacity-80"></div>
+                <div class="absolute bottom-16 right-20 w-6 h-6 rounded-full bg-blue-200 blur-md opacity-70"></div>
+                <div class="absolute top-1/4 right-10 w-8 h-8 rounded-full bg-orange-100 blur-lg opacity-60"></div>
+            </div>
+
+            <!-- Poster Top Section -->
+            <div class="relative z-10 w-full flex flex-col justify-between items-end gap-2">
+                <!-- Top Tagline Quote -->
+                <div class="text-right">
+                    <p id="displayHeaderTag" class="font-serif text-sky-900 font-semibold text-xs sm:text-sm md:text-base leading-relaxed tracking-wide drop-shadow-sm">
+                        福音在臺灣100年，是見證神的榮耀，<br/>
+                        我們齊聚一同高聲頌揚神，誠摯歡迎您。
+                    </p>
+                </div>
+
+                <!-- Centennial Badge -->
+                <div class="flex items-center gap-2 mt-2 sm:mt-4 text-[10px] sm:text-xs font-serif text-slate-700 tracking-wider">
+                    <span class="font-cinzel font-bold text-slate-600">1926</span>
+                    <span class="w-8 h-[1px] bg-slate-400 inline-block"></span>
+                    <span class="font-cinzel font-bold text-slate-600">2026</span>
+                    <span class="ml-1 font-medium text-slate-800">真耶穌教會臺灣傳教 <strong class="font-cinzel text-sm">100</strong> 周年</span>
+                </div>
+            </div>
+
+            <!-- Poster Middle Section: Main Theme Titles & Event Date -->
+            <div class="relative z-10 w-full text-center my-auto py-2 flex flex-col items-center">
+                <!-- Theme Title Chinese -->
+                <h2 id="displayMainTitle" class="font-serif text-3xl sm:text-5xl md:text-6xl font-black text-gold-emboss tracking-widest my-1 sm:my-2 leading-tight">
+                    重修牆垣 開展境界
+                </h2>
+
+                <!-- Theme Title English -->
+                <p id="displaySubTitle" class="font-cinzel font-bold text-[9px] sm:text-xs md:text-sm text-amber-800 tracking-widest uppercase mb-4 sm:mb-8 opacity-90">
+                    REBUILDING THE WALLS, EXTENDING THE BOUNDARY
+                </p>
+
+                <!-- Date Display -->
+                <div class="my-2 sm:my-4 flex items-baseline justify-center gap-2 font-serif text-brandNavy">
+                    <span id="displayDate" class="text-4xl sm:text-6xl md:text-7xl font-bold font-cinzel tracking-tight drop-shadow-sm">
+                        2026 11/1 <span class="text-2xl sm:text-4xl font-serif font-normal">(日)</span>
+                    </span>
+                </div>
+
+                <!-- Subtle Decorative Divider Line -->
+                <div class="w-4/5 max-w-md h-[1px] bg-gradient-to-r from-transparent via-blue-300 to-transparent my-3 sm:my-5"></div>
+
+                <!-- Event Name -->
+                <div class="space-y-1 sm:space-y-2">
+                    <p id="displayChurchEvent" class="font-serif text-lg sm:text-2xl md:text-3xl text-brandNavy font-semibold tracking-wider">
+                        真耶穌教會臺灣傳教百周年
+                    </p>
+                    <h3 id="displayMusicEvent" class="font-serif text-2xl sm:text-4xl md:text-5xl text-brandNavy font-black tracking-widest drop-shadow-sm">
+                        西區詩歌音樂會
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Poster Bottom Section: Details & Units -->
+            <div class="relative z-10 w-full text-center flex flex-col items-center gap-3 sm:gap-5">
+                
+                <!-- Time & Location Box -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 w-full max-w-lg mx-auto py-2 border-t border-b border-blue-200/60">
+                    <!-- Time -->
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="font-serif text-xs sm:text-sm font-bold text-slate-700 tracking-widest mb-1">【 時 間 】</span>
+                        <p id="displayTime" class="font-serif text-base sm:text-xl text-brandNavy font-medium">
+                            08:00 <span class="text-xs sm:text-sm text-slate-600">入場</span>
+                            <span class="mx-1">|</span>
+                            08:30 <span class="text-xs sm:text-sm text-slate-600">正式開始</span>
+                        </p>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="font-serif text-xs sm:text-sm font-bold text-slate-700 tracking-widest mb-1">【 地 點 】</span>
+                        <p id="displayLocation" class="font-serif text-base sm:text-xl text-brandNavy font-bold leading-tight">
+                            國立中央大學 大禮堂
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Footnote / Organizers Information -->
+                <div class="w-full text-center space-y-1 sm:space-y-1.5 text-[10px] sm:text-xs font-serif text-slate-700">
+                    <!-- Main Organizers (Updated according to user prompt) -->
+                    <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-0.5">
+                        <p><strong>主辦單位：</strong><span id="displayOrganizer">真耶穌教會西區辦事處、真耶穌教會西區聖樂推展小組</span></p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-0.5">
+                        <p><strong>承辦單位：</strong><span id="displayContractor">真耶穌教會西區復興小區</span></p>
+                        <p><strong>指導單位：</strong><span id="displayAdvisor">真耶穌教會臺灣總會</span></p>
+                    </div>
+
+                    <!-- Performers -->
+                    <div class="pt-1 border-t border-slate-200/50 w-3/4 mx-auto space-y-0.5">
+                        <p><strong>獻唱詩班：</strong><span id="displayChoir">西區各牧區聯合詩班、西區傳道夫婦詩班、西大團契詩班</span></p>
+                        <p><strong>樂器演奏：</strong><span id="displayOrchestra">亞古珥管弦樂團</span></p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Event Info & Countdown Footer Bar -->
+    <section class="no-print w-full max-w-5xl mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Countdown Card -->
+        <div class="bg-white p-4 rounded-2xl shadow border border-slate-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">距離音樂會倒數</span>
+                <i class="fa-solid fa-hourglass-half text-amber-500"></i>
+            </div>
+            <div id="countdown" class="text-2xl font-bold font-cinzel text-brandNavy my-1">
+                -- 天 -- 時 -- 分
+            </div>
+            <p class="text-[11px] text-slate-400">目標日期：2026 年 11 月 1 日 (日)</p>
+        </div>
+
+        <!-- Venue Map Quick Link Card -->
+        <div class="bg-white p-4 rounded-2xl shadow border border-slate-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">活動地點指引</span>
+                <i class="fa-solid fa-location-dot text-red-500"></i>
+            </div>
+            <div>
+                <p class="font-bold text-slate-800 text-sm">國立中央大學 大禮堂</p>
+                <p class="text-xs text-slate-500 mt-0.5">320 桃園市中壢區中大路300號</p>
+            </div>
+            <a href="https://maps.google.com/?q=國立中央大學大禮堂" target="_blank" class="mt-2 text-xs text-blue-600 hover:underline flex items-center gap-1 font-medium">
+                <span>開啟 Google 地圖導航</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+        </div>
+
+        <!-- Print & Share Tips -->
+        <div class="bg-white p-4 rounded-2xl shadow border border-slate-200 flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">海報宣傳提示</span>
+                <i class="fa-solid fa-share-nodes text-blue-500"></i>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                點擊頂部「下載高清 PNG」即可下載圖檔發佈至 LINE 群組、教會週報或 FB 網頁宣傳。
+            </p>
+            <div class="mt-2 text-xs text-slate-400">
+                150 PPI RGB 網路宣傳高清優化版
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Toggle Edit Drawer Panel
+        function toggleEditPanel() {
+            const panel = document.getElementById('editPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        // Live Update Poster Text from Inputs
+        function updatePosterText() {
+            document.getElementById('displayMainTitle').innerText = document.getElementById('inputMainTitle').value;
+            document.getElementById('displaySubTitle').innerText = document.getElementById('inputSubTitle').value;
+            
+            // Format line breaks for header quote
+            const headerVal = document.getElementById('inputHeaderTag').value;
+            document.getElementById('displayHeaderTag').innerHTML = headerVal.replace(/\n/g, '<br/>');
+
+            document.getElementById('displayDate').innerHTML = document.getElementById('inputDate').value;
+            
+            // Format time display
+            const timeVal = document.getElementById('inputTime').value;
+            document.getElementById('displayTime').innerHTML = timeVal;
+
+            document.getElementById('displayLocation').innerText = document.getElementById('inputLocation').value;
+            document.getElementById('displayOrganizer').innerText = document.getElementById('inputOrganizer').value;
+            document.getElementById('displayContractor').innerText = document.getElementById('inputContractor').value;
+            document.getElementById('displayAdvisor').innerText = document.getElementById('inputAdvisor').value;
+            document.getElementById('displayChoir').innerText = document.getElementById('inputChoir').value;
+            document.getElementById('displayOrchestra').innerText = document.getElementById('inputOrchestra').value;
+        }
+
+        // Reset text to default
+        function resetPosterText() {
+            document.getElementById('inputMainTitle').value = "重修牆垣 開展境界";
+            document.getElementById('inputSubTitle').value = "REBUILDING THE WALLS, EXTENDING THE BOUNDARY";
+            document.getElementById('inputHeaderTag').value = "福音在臺灣100年，是見證神的榮耀，\n我們齊聚一同高聲頌揚神，誠摯歡迎您。";
+            document.getElementById('inputDate').value = "2026 11/1 (日)";
+            document.getElementById('inputTime').value = "08:00 入場  08:30 正式開始";
+            document.getElementById('inputLocation').value = "國立中央大學 大禮堂";
+            document.getElementById('inputOrganizer').value = "真耶穌教會西區辦事處、真耶穌教會西區聖樂推展小組";
+            document.getElementById('inputContractor').value = "真耶穌教會西區復興小區";
+            document.getElementById('inputAdvisor').value = "真耶穌教會臺灣總會";
+            document.getElementById('inputChoir').value = "西區各牧區聯合詩班、西區傳道夫婦詩班、西大團契詩班";
+            document.getElementById('inputOrchestra').value = "亞古珥管弦樂團";
+            updatePosterText();
+        }
+
+        // High quality Canvas PNG download generator
+        function downloadAsImage() {
+            const poster = document.getElementById('posterCanvas');
+            
+            // Show loading toast or cursor
+            document.body.style.cursor = 'wait';
+
+            html2canvas(poster, {
+                scale: 3, // High DPI / Resolution
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            }).then(canvas => {
+                document.body.style.cursor = 'default';
+                const link = document.createElement('a');
+                link.download = '真耶穌教會西區百周年詩歌音樂會海報.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+            }).catch(err => {
+                document.body.style.cursor = 'default';
+                console.error("生成海報圖片失敗:", err);
+                alert("生成圖片時發生錯誤，請直接使用瀏覽器截圖或列印功能。");
+            });
+        }
+
+        // Countdown Timer to Event Date: Nov 1, 2026
+        function initCountdown() {
+            const eventDate = new Date("2026-11-01T08:00:00").getTime();
+
+            function update() {
+                const now = new Date().getTime();
+                const diff = eventDate - now;
+
+                if (diff <= 0) {
+                    document.getElementById('countdown').innerText = "音樂會已隆重舉行";
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+                document.getElementById('countdown').innerText = `${days} 天 ${hours} 小時 ${minutes} 分`;
+            }
+
+            update();
+            setInterval(update, 60000); // Refresh every minute
+        }
+
+        window.onload = function() {
+            initCountdown();
+        };
+    </script>
+</body>
+</html>
