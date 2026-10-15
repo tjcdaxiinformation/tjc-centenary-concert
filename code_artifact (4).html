@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真耶穌教會 臺灣傳教百年 西區教會傳教史</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 圖示庫 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google 字體 Inter & Noto Serif/Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0f172a',
+                            deepBlue: '#1e3a8a',
+                            royalBlue: '#1d4ed8',
+                            gold: '#d97706',
+                            accentGold: '#f59e0b',
+                            lightGold: '#fef3c7',
+                            cardBg: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Noto Serif TC', 'serif'],
+                        sans: ['Noto Sans TC', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .font-serif-tc {
+            font-family: 'Noto Serif TC', serif;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fef3c7 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-border-glow {
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 15px rgba(217, 119, 6, 0.15);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card:hover {
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #d97706;
+        }
+    </style>
+</head>
+<body class="bg-brand-navy text-slate-100 min-h-screen flex flex-col justify-between selection:bg-brand-gold selection:text-white">
+
+    <!-- 頂部導覽列 Navbar -->
+    <nav class="sticky top-0 z-40 bg-brand-navy/90 backdrop-blur-md border-b border-slate-800 transition-all duration-300 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- 品牌標誌 -->
+                <a href="#" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-gold to-yellow-200 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fas fa-church text-brand-navy text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs tracking-widest text-brand-accentGold block uppercase font-medium">115週年音樂會特輯</span>
+                        <span class="text-lg md:text-xl font-bold font-serif-tc text-white tracking-wide group-hover:text-brand-accentGold transition-colors">臺灣傳教百年 西區教會傳教史</span>
+                    </div>
+                </a>
+
+                <!-- 桌機版選單 -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#history-explorer" class="text-slate-300 hover:text-brand-accentGold font-medium transition-colors text-sm">
+                        <i class="fas fa-sitemap mr-1 text-brand-gold"></i> 各小區教會傳教史
+                    </a>
+                    <a href="#featured-stories" class="text-slate-300 hover:text-brand-accentGold font-medium transition-colors text-sm">
+                        <i class="fas fa-book-open mr-1 text-brand-gold"></i> 經典宣道足跡
+                    </a>
+                    <a href="https://tjcdaxiinformation.github.io/tjc-centenary-concert/map_dashboard.html" target="_blank" rel="noopener noreferrer" 
+                       class="px-4 py-2 rounded-full bg-gradient-to-r from-brand-gold to-amber-600 hover:from-amber-600 hover:to-brand-gold text-white font-bold text-sm shadow-md transition-all duration-300 flex items-center gap-2 hover:scale-105">
+                        <i class="fas fa-map-marked-alt"></i> 地圖儀表板
+                    </a>
+                </div>
+
+                <!-- 行動版選單開關 -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" type="button" class="text-slate-300 hover:text-white focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 行動版下拉選單 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-navy border-b border-slate-800 px-4 pt-2 pb-6 space-y-3">
+            <a href="#history-explorer" class="block py-2 text-slate-300 hover:text-brand-accentGold font-medium">
+                <i class="fas fa-sitemap mr-2 text-brand-gold"></i> 各小區教會傳教史
+            </a>
+            <a href="#featured-stories" class="block py-2 text-slate-300 hover:text-brand-accentGold font-medium">
+                <i class="fas fa-book-open mr-2 text-brand-gold"></i> 經典宣道足跡
+            </a>
+            <a href="https://tjcdaxiinformation.github.io/tjc-centenary-concert/map_dashboard.html" target="_blank" rel="noopener noreferrer" 
+               class="block text-center py-3 rounded-xl bg-gradient-to-r from-brand-gold to-amber-600 text-white font-bold shadow-md">
+                <i class="fas fa-map-marked-alt mr-2"></i> 探索動態地圖儀表板
+            </a>
+        </div>
+    </nav>
+
+    <!-- 頁頭 Hero Section -->
+    <header class="relative overflow-hidden pt-16 pb-24 border-b border-slate-800/80">
+        <!-- 背景光暈裝飾 -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-deepBlue/30 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+        <div class="absolute top-10 right-10 w-72 h-72 bg-brand-gold/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto px-4 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-gold/10 border border-brand-gold/30 text-brand-accentGold text-xs sm:text-sm font-semibold mb-6 animate-pulse">
+                <i class="fas fa-music"></i> 真耶穌教會 臺灣傳教百年 115周年音樂會紀念特輯
+            </div>
+            
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-black font-serif-tc tracking-wide leading-tight mb-6">
+                真耶穌教會 臺灣傳教百年<br>
+                <span class="gold-gradient-text block mt-2">西區教會傳教史</span>
+            </h1>
+            
+            <p class="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed mb-10 font-light">
+                銘刻信仰足跡，傳承百年恩典。彙整西區四大小區、十三個牧區、四十四間教會之信仰奇蹟與建會歷史，呈獻給每一位摯愛的弟兄姐妹。
+            </p>
+
+            <!-- 兩大重點按鈕 -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 max-w-xl mx-auto">
+                <a href="https://tjcdaxiinformation.github.io/tjc-centenary-concert/map_dashboard.html" target="_blank" rel="noopener noreferrer"
+                   class="px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-gold via-amber-500 to-amber-600 hover:from-amber-500 hover:to-brand-gold text-brand-navy font-extrabold text-base sm:text-lg shadow-xl shadow-brand-gold/20 hover:shadow-brand-gold/40 transition-all duration-300 flex items-center justify-center gap-3 transform hover:-translate-y-1">
+                    <i class="fas fa-map-marked-alt text-xl"></i> 探索「西區地圖儀表板」
+                </a>
+                <a href="#history-explorer" 
+                   class="px-8 py-4 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-amber-200 border border-amber-500/30 font-bold text-base sm:text-lg transition-all duration-300 flex items-center justify-center gap-3 hover:-translate-y-1">
+                    <i class="fas fa-scroll text-brand-gold"></i> 瀏覽各教會傳教史
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 經典歷史特刊 / 神蹟見證故事集區塊 -->
+    <section id="featured-stories" class="py-16 bg-slate-900/60 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-3 h-8 bg-brand-gold rounded-full"></div>
+                <h2 class="text-2xl sm:text-3xl font-bold font-serif-tc text-white">✨ 經典宣道足跡與恩典見證</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- 特色見證卡片 1：博愛村奇蹟 -->
+                <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-slate-700/50 flex flex-col justify-between">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-brand-gold/10 rounded-bl-full pointer-events-none"></div>
+                    <div>
+                        <div class="flex items-center gap-2 text-brand-accentGold text-xs font-semibold mb-3 uppercase tracking-wider">
+                            <span class="px-2.5 py-1 bg-brand-gold/20 rounded-md">1948 年大甲溪開道神蹟</span>
+                            <span>中苗小區 · 大甲溪牧區</span>
+                        </div>
+                        <h3 class="text-2xl font-bold font-serif-tc text-amber-100 mb-4">博愛村奇病痊癒與大甲溪福音開墾</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6 font-light">
+                            1948 年總會舉開第一次神學先修班時，由山里教會毛親傳等人向臺中縣和平鄉博愛村患奇病的女人彭阿滿證道，其相信後只靠同工切切禱告神蹟痊癒並受浸。回鄉後，總會派傳道者深入山林部落佈道，奠定大甲溪流域宣道基石。
+                        </p>
+                    </div>
+                    <button onclick="openChurchModal('博愛教會')" class="self-start px-5 py-2.5 rounded-xl bg-brand-gold/20 hover:bg-brand-gold text-amber-200 hover:text-brand-navy font-bold text-sm transition-all duration-300 flex items-center gap-2">
+                        閱讀完整傳教史紀錄 <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <!-- 特色見證卡片 2：大溪教會 -->
+                <div class="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden transition-all duration-300 border border-slate-700/50 flex flex-col justify-between">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-bl-full pointer-events-none"></div>
+                    <div>
+                        <div class="flex items-center gap-2 text-blue-400 text-xs font-semibold mb-3 uppercase tracking-wider">
+                            <span class="px-2.5 py-1 bg-blue-500/20 rounded-md">前山山麓開道奇蹟</span>
+                            <span>復興小區 · 前山牧區</span>
+                        </div>
+                        <h3 class="text-2xl font-bold font-serif-tc text-blue-100 mb-4">大溪教會：復興山區宣道之樞紐</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6 font-light">
+                            大溪教會作為復興山區宣道之重要樞紐，自早期門徒披荊斬棘傳揚真道起，見證無數病患得醫治、受聖靈之神蹟奇事，帶動周邊八德、崎頂及前山山地部落之開道與發酵。
+                        </p>
+                    </div>
+                    <button onclick="openChurchModal('大溪教會')" class="self-start px-5 py-2.5 rounded-xl bg-blue-600/20 hover:bg-blue-600 text-blue-200 hover:text-white font-bold text-sm transition-all duration-300 flex items-center gap-2">
+                        閱讀完整傳教史紀錄 <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 小區與牧區動態階層導覽區塊 -->
+    <main id="history-explorer" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <!-- 區塊標題與搜尋篩選 -->
+        <div class="mb-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold font-serif-tc text-white mb-2">📜 西區小區與教會傳教史</h2>
+                    <p class="text-slate-400 text-sm">請選擇小區或直接點選教會，深入了解各教會之宣道歷史足跡</p>
+                </div>
+
+                <!-- 即時搜尋列 -->
+                <div class="relative w-full md:w-80">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="search-input" placeholder="搜尋教會或牧區名稱..." 
+                           class="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-800 border border-slate-700 text-slate-100 placeholder-slate-400 focus:outline-none focus:border-brand-gold transition-colors text-sm">
+                </div>
+            </div>
+
+            <!-- 小區篩選按鈕列 (Tab 鍵) -->
+            <div class="flex flex-wrap gap-2 sm:gap-3 border-b border-slate-800 pb-4" id="district-tabs">
+                <button class="district-tab active px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-brand-gold text-brand-navy shadow-md" data-district="all">
+                    全西區 (44間)
+                </button>
+                <button class="district-tab px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white" data-district="復興小區">
+                    🌲 復興小區 (11間)
+                </button>
+                <button class="district-tab px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white" data-district="竹苗小區">
+                    🎋 竹苗小區 (13間)
+                </button>
+                <button class="district-tab px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white" data-district="中苗小區">
+                    🏞️ 中苗小區 (11間)
+                </button>
+                <button class="district-tab px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white" data-district="南投小區">
+                    🏔️ 南投小區 (11間)
+                </button>
+            </div>
+        </div>
+
+        <!-- 教會動態渲染區域 Container -->
+        <div id="church-cards-container" class="space-y-12">
+            <!-- JavaScript 動態輸出內容 -->
+        </div>
+    </main>
+
+    <!-- 音樂會宣傳與典藏專區 (QR Code 引導) -->
+    <section class="py-16 bg-gradient-to-b from-slate-900 to-brand-navy border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <div class="glass-card rounded-3xl p-8 md:p-12 border border-brand-gold/20 relative overflow-hidden">
+                <div class="max-w-2xl mx-auto space-y-6">
+                    <span class="px-3 py-1 bg-brand-gold/20 text-brand-accentGold rounded-full text-xs font-semibold uppercase tracking-wider">音樂會現場活動指南</span>
+                    <h3 class="text-2xl sm:text-3xl font-bold font-serif-tc text-white">參與歷史典藏，留下珍貴信仰記憶</h3>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        音樂會現場特設「宣道歷史資料收集站」，若您手邊留有各教會早期設教之歷史相片、文獻或口述見證影片，歡迎掃描下方連結進行數位上傳。
+                    </p>
+
+                    <div class="pt-4 flex flex-col sm:flex-row justify-center items-center gap-4">
+                        <a href="https://tjcdaxiinformation.github.io/TJC-West-History/" target="_blank" rel="noopener noreferrer"
+                           class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-brand-gold/40 text-amber-200 font-bold text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fab fa-github"></i> 前往 GitHub 西區歷史典藏系統
+                        </a>
+                        <a href="https://line.me/ti/p/U3XGjc8GKN" target="_blank" rel="noopener noreferrer"
+                           class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fab fa-line text-lg"></i> 聯繫籌備會公關宣傳組 LINE
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800/80 py-12 text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <div class="flex justify-center items-center space-x-2">
+                <i class="fas fa-church text-brand-gold text-lg"></i>
+                <span class="font-serif-tc font-bold text-white text-base">真耶穌教會 臺灣傳教百年 西區教會傳教史</span>
+            </div>
+            <p class="text-slate-400 font-medium">
+                真耶穌教會台灣傳教百年115西區音樂會籌備會公關宣傳小組 敬製
+            </p>
+            <p class="text-xs text-slate-500">
+                &copy; 2026 True Jesus Church West District Centenary Concert Committee. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- 教會傳教史 Modal 彈窗 -->
+    <div id="church-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-opacity">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <!-- Modal 頂部黑標 -->
+            <div class="px-6 py-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+                <div>
+                    <span id="modal-district-tag" class="text-xs font-semibold px-2.5 py-1 bg-brand-gold/20 text-brand-accentGold rounded-md mr-2">小區</span>
+                    <h3 id="modal-title" class="text-2xl font-bold font-serif-tc text-white inline-block">教會名稱</h3>
+                </div>
+                <button onclick="closeChurchModal()" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Modal 內容內文 (內建客製化滾動條) -->
+            <div id="modal-body" class="p-6 sm:p-8 overflow-y-auto custom-scrollbar space-y-6 text-slate-200 leading-relaxed font-light text-base">
+                <!-- 動態注入內容 -->
+            </div>
+
+            <!-- Modal 底部按鈕區 -->
+            <div class="px-6 py-4 border-t border-slate-800 bg-slate-950/50 flex justify-end gap-3">
+                <button onclick="closeChurchModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm transition-colors">
+                    關閉視窗
+                </button>
+                <a href="https://line.me/ti/p/U3XGjc8GKN" target="_blank" class="px-5 py-2.5 rounded-xl bg-brand-gold hover:bg-amber-600 text-brand-navy font-bold text-sm transition-colors flex items-center gap-2">
+                    <i class="fab fa-line"></i> 提供歷史資料
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 核心邏輯 -->
+    <script>
+        // 1. 全西區 44 間教會完整結構資料庫
+        const churchData = [
+            {
+                district: "復興小區",
+                pastorates: [
+                    { name: "前山牧區", churches: ["八德教會", "崎頂教會", "大溪教會", "復興教會"] },
+                    { name: "中山牧區", churches: ["義盛教會", "大灣教會", "雪霧鬧教會"] },
+                    { name: "後山牧區", churches: ["上巴陵教會", "中巴陵教會", "三光教會", "光華教會"] }
+                ]
+            },
+            {
+                district: "竹苗小區",
+                pastorates: [
+                    { name: "五峰牧區", churches: ["花園教會", "五峰教會", "桃山教會", "清泉教會"] },
+                    { name: "尖石前牧區", churches: ["義興教會", "錦屏教會", "尖石教會"] },
+                    { name: "中港溪牧區", churches: ["頭份教會", "東江教會", "東河教會"] },
+                    { name: "尖石後牧區", churches: ["養老教會", "李埔教會", "那羅教會"] }
+                ]
+            },
+            {
+                district: "中苗小區",
+                pastorates: [
+                    { name: "東達牧區", churches: ["東勢教會", "自由教會", "雙崎教會", "達觀教會"] },
+                    { name: "大甲溪牧區", churches: ["南勢教會", "裡冷教會", "博愛教會", "環山教會"] },
+                    { name: "泰安牧區", churches: ["士林教會", "永安教會", "大興教會"] }
+                ]
+            },
+            {
+                district: "南投小區",
+                pastorates: [
+                    { name: "力行線牧區", churches: ["翠巒教會", "力行教會", "紅香教會", "慈峰教會"] },
+                    { name: "親春線牧區", churches: ["精英教會", "廬山教會", "春陽教會", "親愛教會"] },
+                    { name: "新望愛牧區", churches: ["新生教會", "望美教會", "仁愛教會"] }
+                ]
+            }
+        ];
+
+        // 2. 特殊已有詳細資料的教會內容 (未在其中的教會將自動顯示建構中 Modal)
+        const detailedHistory = {
+            "博愛教會": {
+                district: "中苗小區 · 大甲溪牧區",
+                hasData: true,
+                content: `
+                    <div class="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl mb-4 text-amber-200 text-sm">
+                        <i class="fas fa-fire mr-2"></i> <strong>1948 年大甲溪宣教歷史關鍵見證</strong>
+                    </div>
+                    <p class="mb-4">
+                        1948 年總會舉開第一次神學先修班時，由山里教會毛親傳等人向臺中縣和平鄉博愛村患奇病的女人<strong>彭阿滿姐妹</strong>證道，彭姐妹在絕望中聽聞真道，憑著單純純潔的信心，相信後只靠同工切切禱告，蒙主憐憫奇病痊癒並受浸歸入主名。
+                    </p>
+                    <p class="mb-4">
+                        回鄉後，神的恩典與神蹟在大甲溪流域迅速傳開，總會隨即派遣傳道者深入山林部落，於鄰近各村落佈道。神的道大大的興旺，奠定了今日大甲溪流域與中苗小區多處教會開墾成立之基石。
+                    </p>
+                    <div class="border-t border-slate-800 pt-4 mt-6 text-xs text-slate-400">
+                        資料來源：真耶穌教會臺灣傳教百年簡史與博愛教會典藏史料
+                    </div>
+                `
+            },
+            "大溪教會": {
+                district: "復興小區 · 前山牧區",
+                hasData: true,
+                content: `
+                    <div class="bg-blue-500/10 border border-blue-500/30 p-4 rounded-2xl mb-4 text-blue-200 text-sm">
+                        <i class="fas fa-monument mr-2"></i> <strong>復興山區開道樞紐</strong>
+                    </div>
+                    <p class="mb-4">
+                        大溪教會歷史悠久，自早期傳道者與同工於大溪地區建立聚會點起，即成為福音進入復興區泰雅族部落的重要橋樑。
+                    </p>
+                    <p class="mb-4">
+                        早期弟兄姐妹在艱難環境中守道，蒙主賞賜聖靈與醫病神蹟，信仰火種隨後延伸至八德、崎頂及前山、後山各大部落，見證主的聖名在西區大展威嚴。
+                    </p>
+                    <div class="border-t border-slate-800 pt-4 mt-6 text-xs text-slate-400">
+                        資料來源：西區宣道歷史研究小組
+                    </div>
+                `
+            }
+        };
+
+        // 3. 頁面初始化渲染
+        let currentDistrictFilter = "all";
+        let currentSearchQuery = "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderChurchCards();
+            setupTabListeners();
+            setupSearchListener();
+            setupMobileMenu();
+        });
+
+        // 渲染教會卡片函數
+        function renderChurchCards() {
+            const container = document.getElementById("church-cards-container");
+            container.innerHTML = "";
+
+            let totalMatches = 0;
+
+            churchData.forEach(distData => {
+                // 如果有小區篩選且不符合，則跳過
+                if (currentDistrictFilter !== "all" && currentDistrictFilter !== distData.district) {
+                    return;
+                }
+
+                // 檢查該小區底下是否有符合搜尋條件的教會
+                let districtHasMatch = false;
+                
+                const filteredPastorates = distData.pastorates.map(pastorate => {
+                    const matchedChurches = pastorate.churches.filter(church => {
+                        const q = currentSearchQuery.toLowerCase();
+                        return church.toLowerCase().includes(q) || 
+                               pastorate.name.toLowerCase().includes(q) || 
+                               distData.district.toLowerCase().includes(q);
+                    });
+
+                    if (matchedChurches.length > 0) {
+                        districtHasMatch = true;
+                        totalMatches += matchedChurches.length;
+                    }
+
+                    return {
+                        name: pastorate.name,
+                        churches: matchedChurches
+                    };
+                }).filter(p => p.churches.length > 0);
+
+                if (districtHasMatch) {
+                    // 建立小區 HTML 區塊
+                    const districtEl = document.createElement("div");
+                    districtEl.className = "glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-8";
+
+                    let pastoratesHTML = "";
+                    filteredPastorates.forEach(pastorate => {
+                        let churchesHTML = pastorate.churches.map(church => {
+                            const isDetailed = detailedHistory[church] ? true : false;
+                            return `
+                                <button onclick="openChurchModal('${church}')" 
+                                        class="group text-left p-4 rounded-2xl bg-slate-800/80 hover:bg-slate-700/90 border border-slate-700/60 hover:border-brand-gold/50 transition-all duration-200 flex items-center justify-between shadow-sm">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 rounded-xl ${isDetailed ? 'bg-brand-gold/20 text-brand-accentGold' : 'bg-slate-700 text-slate-400'} flex items-center justify-center text-xs group-hover:scale-110 transition-transform">
+                                            <i class="fas ${isDetailed ? 'fa-star' : 'fa-church'}"></i>
+                                        </div>
+                                        <span class="font-bold text-slate-100 group-hover:text-amber-200 transition-colors">${church}</span>
+                                    </div>
+                                    <span class="text-xs ${isDetailed ? 'text-amber-400 bg-amber-400/10' : 'text-slate-400 bg-slate-700/50'} px-2.5 py-1 rounded-md">
+                                        ${isDetailed ? '完整歷史' : '建構中'}
+                                    </span>
+                                </button>
+                            `;
+                        }).join("");
+
+                        pastoratesHTML += `
+                            <div>
+                                <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                    <i class="fas fa-map-marker-alt text-brand-gold"></i> ${pastorate.name}
+                                </h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    ${churchesHTML}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    districtEl.innerHTML = `
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                            <h3 class="text-2xl font-bold font-serif-tc gold-gradient-text flex items-center gap-3">
+                                <span>${distData.district}</span>
+                            </h3>
+                        </div>
+                        <div class="space-y-6">
+                            ${pastoratesHTML}
+                        </div>
+                    `;
+
+                    container.appendChild(districtEl);
+                }
+            });
+
+            // 無查無結果時
+            if (totalMatches === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-slate-400 glass-card rounded-3xl">
+                        <i class="fas fa-search text-4xl mb-3 text-slate-600"></i>
+                        <p class="text-lg font-medium">找不到符合「${currentSearchQuery}」的教會或牧區</p>
+                        <p class="text-sm text-slate-500 mt-1">請嘗試輸入其他關鍵字（如：大溪、博愛、復興）</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 4. Tab 鍵切換事件
+        function setupTabListeners() {
+            const tabs = document.querySelectorAll(".district-tab");
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    tabs.forEach(t => {
+                        t.classList.remove("bg-brand-gold", "text-brand-navy", "shadow-md");
+                        t.classList.add("bg-slate-800/80", "text-slate-300");
+                    });
+
+                    tab.classList.remove("bg-slate-800/80", "text-slate-300");
+                    tab.classList.add("bg-brand-gold", "text-brand-navy", "shadow-md");
+
+                    currentDistrictFilter = tab.getAttribute("data-district");
+                    renderChurchCards();
+                });
+            });
+        }
+
+        // 5. 搜尋框監聽
+        function setupSearchListener() {
+            const searchInput = document.getElementById("search-input");
+            searchInput.addEventListener("input", (e) => {
+                currentSearchQuery = e.target.value.trim();
+                renderChurchCards();
+            });
+        }
+
+        // 6. 行動版選單開關
+        function setupMobileMenu() {
+            const btn = document.getElementById("mobile-menu-btn");
+            const menu = document.getElementById("mobile-menu");
+            btn.addEventListener("click", () => {
+                menu.classList.toggle("hidden");
+            });
+        }
+
+        // 7. 開啟 Modal 彈窗機制
+        function openChurchModal(churchName) {
+            const modal = document.getElementById("church-modal");
+            const titleEl = document.getElementById("modal-title");
+            const districtTag = document.getElementById("modal-district-tag");
+            const bodyEl = document.getElementById("modal-body");
+
+            titleEl.textContent = churchName;
+
+            if (detailedHistory[churchName]) {
+                // 已有詳細資料
+                const info = detailedHistory[churchName];
+                districtTag.textContent = info.district;
+                bodyEl.innerHTML = info.content;
+            } else {
+                // 無資料，顯示建構中 Modal
+                districtTag.textContent = "西區教會數位典藏計畫";
+                bodyEl.innerHTML = `
+                    <div class="text-center py-8 space-y-4">
+                        <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 text-brand-accentGold flex items-center justify-center mx-auto text-2xl">
+                            <i class="fas fa-hard-hat"></i>
+                        </div>
+                        <h4 class="text-xl font-bold font-serif-tc text-white">🚧 傳教史頁面建構中</h4>
+                        <p class="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
+                            <strong>${churchName}</strong> 之宣道歷史與設教紀錄目前正由籌備會進行資料整理與編撰中，敬請期待音樂會後續更新！
+                        </p>
+                        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 text-left text-xs text-slate-300 space-y-2">
+                            <p class="font-bold text-amber-200 flex items-center gap-1.5">
+                                <i class="fas fa-lightbulb"></i> 誠摯邀約共同紀錄歷史：
+                            </p>
+                            <p>若您手邊留有該教會早期之老照片、設教紀念特刊文稿或耆老口述見證影片，歡迎點選下方按鈕聯絡音樂會籌備組進行上傳提供。</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            modal.classList.remove("hidden");
+            document.body.style.overflow = "hidden"; // 阻止背景滾動
+        }
+
+        // 8. 關閉 Modal 彈窗
+        function closeChurchModal() {
+            const modal = document.getElementById("church-modal");
+            modal.classList.add("hidden");
+            document.body.style.overflow = "";
+        }
+
+        // 點擊 Modal 外圍關閉
+        document.getElementById("church-modal").addEventListener("click", (e) => {
+            if (e.target.id === "church-modal") {
+                closeChurchModal();
+            }
+        });
+    </script>
+</body>
+</html>
