@@ -203,10 +203,26 @@
         // 加入右下角縮放控制
         L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-        // 使用 CartoDB 淺色簡潔地圖，凸顯自訂的範圍與旗標
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            maxZoom: 15,
-        }).addTo(map);
+        // 建立 Google Maps 地形圖圖層
+        const googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+
+        // 建立 Google Maps 衛星混合圖層 (包含衛星影像與道路地標)
+        const googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+        });
+
+        // 預設將地形圖加入地圖中 (能清晰呈現山脈起伏且文字易讀)
+        googleTerrain.addTo(map);
+
+        // 加入底圖切換控制器，放置於右上角
+        L.control.layers({
+            "⛰️ Google 地形圖": googleTerrain,
+            "🛰️ Google 衛星圖": googleHybrid
+        }, null, { position: 'topright' }).addTo(map);
 
         // 隱藏 Loader
         setTimeout(() => {
