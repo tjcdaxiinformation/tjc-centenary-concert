@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TJC 西區教會 - 傳教史空間分佈地圖</title>
+    
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 載入 Leaflet 地圖套件 CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
+        
+        /* 隱藏 Leaflet 官方版權標籤以保持版面乾淨 */
+        .leaflet-control-attribution { display: none !important; }
+        
+        /* 自訂地圖彈出視窗樣式 */
+        .leaflet-popup-content-wrapper { border-radius: 1rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); padding: 0; overflow: hidden; }
+        .leaflet-popup-content { margin: 0; line-height: 1.5; }
+        .leaflet-popup-tip { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        
+        /* 自訂旗標動畫 */
+        .marker-bounce { animation: bounce 1.5s infinite; transform-origin: bottom center; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .map-transition { transition: all 0.5s ease-in-out; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-slate-900 text-white shadow-xl shrink-0 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center p-0.5 shadow-md">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/True_Jesus_Church_Logo.svg/512px-True_Jesus_Church_Logo.svg.png" alt="TJC Logo" class="w-full h-full object-contain p-1" onerror="this.outerHTML='<span class=\'text-slate-900 font-black text-xs\'>100th</span>'" />
+                </div>
+                <div>
+                    <p class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] leading-none mb-1">Western District Geographic System</p>
+                    <h1 class="text-xl font-black leading-tight text-white">西半部教會分佈互動地圖</h1>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-2">
+                <span class="text-[10px] bg-slate-800 text-slate-300 px-3 py-1.5 rounded-full border border-slate-700 font-bold flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span> 系統連線正常
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto w-full px-6 py-8 flex-grow flex flex-col lg:flex-row gap-6">
+        
+        <!-- 左側面板：數據與控制項 -->
+        <aside class="w-full lg:w-80 shrink-0 flex flex-col gap-5">
+            
+            <div class="bg-white rounded-[2rem] p-6 shadow-lg border border-slate-100">
+                <h2 class="text-lg font-black text-slate-800 mb-1 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    地圖視角控制器
+                </h2>
+                <p class="text-xs text-slate-500 font-bold mb-4">點擊下方按鈕，系統將自動跳轉至該牧區範圍並顯示地理疆界。</p>
+                
+                <div class="space-y-2.5">
+                    <button onclick="changeView('all')" class="w-full text-left px-4 py-3 rounded-xl bg-slate-800 text-white font-black text-sm hover:bg-slate-700 transition-all flex justify-between items-center group shadow-md active:scale-95">
+                        <span class="flex items-center gap-2"><span class="text-xl">🇹🇼</span> 西半部全區鳥瞰</span>
+                        <span class="text-slate-400 group-hover:text-white transition-colors">➔</span>
+                    </button>
+                    
+                    <button onclick="changeView('fuxing')" class="w-full text-left px-4 py-3 rounded-xl bg-amber-50 text-amber-900 font-black text-sm hover:bg-amber-100 border border-amber-200 transition-all flex justify-between items-center group active:scale-95">
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span> 復興小區範圍</span>
+                        <span class="text-[10px] bg-amber-200/50 px-2 py-0.5 rounded-md text-amber-700">15處</span>
+                    </button>
+                    
+                    <button onclick="changeView('zhumiao')" class="w-full text-left px-4 py-3 rounded-xl bg-emerald-50 text-emerald-900 font-black text-sm hover:bg-emerald-100 border border-emerald-200 transition-all flex justify-between items-center group active:scale-95">
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span> 竹苗小區範圍</span>
+                        <span class="text-[10px] bg-emerald-200/50 px-2 py-0.5 rounded-md text-emerald-700">13處</span>
+                    </button>
+                    
+                    <button onclick="changeView('zhongmiao')" class="w-full text-left px-4 py-3 rounded-xl bg-purple-50 text-purple-900 font-black text-sm hover:bg-purple-100 border border-purple-200 transition-all flex justify-between items-center group active:scale-95">
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span> 中苗小區範圍</span>
+                        <span class="text-[10px] bg-purple-200/50 px-2 py-0.5 rounded-md text-purple-700">14處</span>
+                    </button>
+                    
+                    <button onclick="changeView('nantou')" class="w-full text-left px-4 py-3 rounded-xl bg-rose-50 text-rose-900 font-black text-sm hover:bg-rose-100 border border-rose-200 transition-all flex justify-between items-center group active:scale-95">
+                        <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span> 南投小區範圍</span>
+                        <span class="text-[10px] bg-rose-200/50 px-2 py-0.5 rounded-md text-rose-700">12處</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-indigo-900 rounded-[2rem] p-6 shadow-lg text-white border border-indigo-800 flex-grow flex flex-col justify-center relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 opacity-10">
+                    <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                </div>
+                <h3 class="text-[10px] font-black text-indigo-300 tracking-[0.2em] uppercase mb-1">Total Churches</h3>
+                <div class="text-5xl font-black mb-2 relative z-10 text-amber-400">54<span class="text-lg font-bold text-indigo-200 ml-1">處</span></div>
+                <p class="text-xs text-indigo-200 leading-relaxed font-medium relative z-10">
+                    橫跨桃園、新竹、苗栗、台中、南投，串聯西半部百年的傳教歷史足跡。
+                </p>
+            </div>
+
+        </aside>
+
+        <section class="flex-grow bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden relative flex flex-col min-h-[500px] lg:min-h-0 h-[600px] lg:h-auto">
+            <!-- Loading 遮罩 -->
+            <div id="map-loader" class="absolute inset-0 bg-white/80 backdrop-blur-sm z-40 flex flex-col items-center justify-center transition-opacity duration-500">
+                <div class="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mb-4"></div>
+                <p class="text-sm font-black text-slate-600 tracking-widest">地圖圖資載入中...</p>
+            </div>
+            
+            <!-- Leaflet 容器 -->
+            <div id="map" class="w-full h-full z-10"></div>
+        </section>
+
+    </main>
+
+    <!-- 載入 Leaflet 核心 JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script>
+        // ----------------------------------------------------
+        // 1. 資料庫建置：54間教會的近似地理坐標與詳細資訊
+        // ----------------------------------------------------
+        const churchesData = [
+            // --- 復興小區 (桃園山區一帶) ---
+            { zone: 'fuxing', name: '八德', note: '前山牧區', address: '桃園市八德區瑞發街107巷5弄2號', lat: 24.939, lng: 121.293, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '崎頂', note: '前山牧區', address: '桃園市大溪區員林路一段142巷82號', lat: 24.903, lng: 121.272, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '大溪', note: '前山牧區', address: '桃園市大溪區民權東路185巷31號', lat: 24.881, lng: 121.286, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '復興', note: '前山牧區', address: '桃園市復興區詩朗7之1號', lat: 24.818, lng: 121.353, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '霞雲', note: '前山牧區', address: '桃園市復興區志繼31號', lat: 24.805, lng: 121.378, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '義盛', note: '中山牧區', address: '桃園市復興區義興15號', lat: 24.786, lng: 121.401, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '卡普', note: '中山牧區', address: '桃園市復興區義盛里4鄰10號', lat: 24.775, lng: 121.412, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '大灣', note: '中山牧區', address: '桃園市復興區高坡62號', lat: 24.793, lng: 121.365, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '奎輝', note: '中山牧區', address: '桃園市復興區羅馬路三段397号之1', lat: 24.795, lng: 121.321, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '雪霧鬧', note: '中山牧區', address: '桃園市復興區雪霧鬧12號', lat: 24.721, lng: 121.376, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '上巴陵', note: '後山牧區', address: '桃園市復興區華陵里9鄰40號', lat: 24.673, lng: 121.411, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '中巴陵', note: '後山牧區', address: '桃園市復興區華陵里8鄰39之3號', lat: 24.685, lng: 121.398, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '三光', note: '後山牧區', address: '桃園市復興區三光里6鄰5之1號', lat: 24.678, lng: 121.362, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '高義', note: '後山牧區', address: '桃園市復興區高義里4鄰33之7號', lat: 24.731, lng: 121.385, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+            { zone: 'fuxing', name: '光華', note: '後山牧區', address: '桃園市復興區華陵里6鄰18之3號', lat: 24.646, lng: 121.423, color: '#f59e0b', bgClass: 'bg-amber-500', textClass: 'text-amber-700' },
+
+            // --- 竹苗小區 (新竹/苗栗山區一帶) ---
+            { zone: 'zhumiao', name: '養老', note: '尖石後牧區', address: '新竹縣尖石鄉秀巒村立園4號', lat: 24.582, lng: 121.321, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '李埔', note: '尖石後牧區', address: '新竹縣尖石鄉玉峰村李埔16號', lat: 24.641, lng: 121.298, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '那羅', note: '尖石後牧區', address: '新竹縣尖石鄉錦屏村那羅104號', lat: 24.685, lng: 121.231, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '錦屏', note: '尖石前牧區', address: '新竹縣尖石鄉錦屏村45號', lat: 24.682, lng: 121.215, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '尖石', note: '尖石前牧區', address: '新竹縣尖石鄉嘉樂村麥樹仁272號', lat: 24.704, lng: 121.196, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '義興', note: '尖石前牧區', address: '新竹縣尖石鄉義興村馬胎68號', lat: 24.718, lng: 121.178, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '花園', note: '五峰牧區', address: '新竹縣五峰鄉花園村126之1號', lat: 24.643, lng: 121.141, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '五峰', note: '五峰牧區', address: '新竹縣五峰鄉大隘村五峰191號', lat: 24.631, lng: 121.125, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '桃山', note: '五峰牧區', address: '新竹縣五峰鄉桃山村6號', lat: 24.588, lng: 121.101, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '清泉', note: '五峰牧區', address: '新竹縣五峰鄉清泉228之2號', lat: 24.575, lng: 121.105, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '頭份', note: '中港溪牧區', address: '苗栗縣頭份市光華街48號', lat: 24.687, lng: 120.912, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '東江', note: '中港溪牧區', address: '苗栗縣南庄鄉東江新邨50號', lat: 24.596, lng: 120.998, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+            { zone: 'zhumiao', name: '東河', note: '中港溪牧區', address: '苗栗縣南庄鄉東興新邨129之3號', lat: 24.585, lng: 121.025, color: '#10b981', bgClass: 'bg-emerald-500', textClass: 'text-emerald-700' },
+
+            // --- 中苗小區 (台中/苗栗山區一帶) ---
+            { zone: 'zhongmiao', name: '永安', note: '泰安牧區', address: '苗栗縣泰安鄉象鼻村永安34號', lat: 24.412, lng: 120.941, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '大安', note: '泰安牧區', address: '苗栗縣泰安鄉大安38號', lat: 24.425, lng: 120.952, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '士林', note: '泰安牧區', address: '苗栗縣泰安鄉士林村15之2號', lat: 24.368, lng: 120.938, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '大興', note: '泰安牧區', address: '苗栗縣泰安鄉大興村南灣28號', lat: 24.432, lng: 120.915, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '達觀', note: '東達牧區', address: '台中市和平區東崎路一段香川巷2號', lat: 24.331, lng: 120.935, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '竹林', note: '東達牧區', address: '台中市和平區東崎路一段竹林巷78號', lat: 24.325, lng: 120.925, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '雙崎', note: '東達牧區', address: '台中市和平區東崎路二段62之1號', lat: 24.312, lng: 120.912, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '自由', note: '東達牧區', address: '台中市和平區東崎路二段三叉巷6號', lat: 24.305, lng: 120.895, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '東勢', note: '東達牧區', address: '台中市東勢區泰昌二街91號', lat: 24.258, lng: 120.827, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '南勢', note: '大甲溪牧區', address: '台中市和平區東關路三段51之2號', lat: 24.215, lng: 120.901, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '裡冷', note: '大甲溪牧區', address: '台中市和平區東關路一段裡冷巷15之2號', lat: 24.168, lng: 120.952, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '博愛', note: '大甲溪牧區', address: '台中市和平區松鶴3巷71號', lat: 24.162, lng: 120.985, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '環山', note: '大甲溪牧區', address: '臺中市和平區中興路三段環山2巷48號', lat: 24.311, lng: 121.282, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+            { zone: 'zhongmiao', name: '佳陽', note: '大甲溪牧區', address: '台中市和平區和平路二段24號', lat: 24.251, lng: 121.221, color: '#a855f7', bgClass: 'bg-purple-500', textClass: 'text-purple-700' },
+
+            // --- 南投小區 (南投山區一帶) ---
+            { zone: 'nantou', name: '翠巒', note: '力行線牧區', address: '南投縣仁愛鄉翠巒路34號', lat: 24.185, lng: 121.185, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '力行', note: '力行線牧區', address: '南投縣仁愛鄉新望洋130號', lat: 24.131, lng: 121.168, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '紅香', note: '力行線牧區', address: '南投縣仁愛鄉仁盛路1號', lat: 24.105, lng: 121.152, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '慈峰', note: '力行線牧區', address: '南投縣仁愛鄉慈峰巷21號', lat: 24.085, lng: 121.165, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '親愛', note: '親春線牧區', address: '南投縣仁愛鄉親和巷松林17號', lat: 23.951, lng: 121.115, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '春陽', note: '親春線牧區', address: '南投縣仁愛鄉源泉巷24號', lat: 24.025, lng: 121.162, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '廬山', note: '親春線牧區', address: '南投縣仁愛鄉富貴路53號', lat: 24.022, lng: 121.185, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '精英', note: '親春線牧區', address: '南投縣仁愛鄉平靜法治巷31號', lat: 24.035, lng: 121.205, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '新生', note: '新望愛牧區', address: '南投縣仁愛鄉山林巷眉原182號', lat: 24.062, lng: 120.955, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '仁愛', note: '新望愛牧區', address: '南投縣埔里鎮青田街42號', lat: 23.965, lng: 120.968, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '武界', note: '新望愛牧區', address: '南投縣仁愛鄉武安路21號', lat: 23.911, lng: 121.045, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' },
+            { zone: 'nantou', name: '望美', note: '新望愛牧區', address: '南投縣信義鄉美信巷3之2號', lat: 23.615, lng: 120.885, color: '#f43f5e', bgClass: 'bg-rose-500', textClass: 'text-rose-700' }
+        ];
+
+        // ----------------------------------------------------
+        // 2. 地圖初始化設定
+        // ----------------------------------------------------
+        const map = L.map('map', {
+            center: [24.2, 120.9], // 預設視角：西半部中心點
+            zoom: 9,
+            zoomControl: false // 自訂位置
+        });
+        
+        // 加入右下角縮放控制
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // 使用 CartoDB 淺色簡潔地圖，凸顯自訂的範圍與旗標
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            maxZoom: 15,
+        }).addTo(map);
+
+        // 隱藏 Loader
+        setTimeout(() => {
+            document.getElementById('map-loader').style.opacity = '0';
+            setTimeout(() => document.getElementById('map-loader').style.display = 'none', 500);
+        }, 800);
+
+        // ----------------------------------------------------
+        // 3. 建立自訂旗標 (SVG HTML Icon) 與 Popup 樣板
+        // ----------------------------------------------------
+        function createFlagIcon(color) {
+            return L.divIcon({
+                className: 'custom-flag-icon bg-transparent border-0',
+                html: `
+                    <div class="marker-bounce text-center drop-shadow-md">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="${color}" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                            <line x1="4" y1="22" x2="4" y2="15"></line>
+                        </svg>
+                    </div>
+                `,
+                iconSize: [32, 32],
+                iconAnchor: [16, 32], // 將錨點設在旗桿底部
+                popupAnchor: [0, -32]
+            });
+        }
+
+        // 建立 Popup 內容結構
+        function generatePopupContent(church) {
+            return `
+                <div class="w-64 bg-white m-0 p-0">
+                    <div class="${church.bgClass} px-4 py-3 text-white flex justify-between items-center">
+                        <span class="font-black text-lg tracking-wider">${church.name}教會</span>
+                        <span class="text-[9px] font-bold bg-white/20 px-2 py-1 rounded-full">${church.note}</span>
+                    </div>
+                    <div class="p-4 bg-slate-50">
+                        <p class="text-xs text-slate-500 font-bold mb-1 uppercase tracking-widest">實體地址</p>
+                        <p class="text-sm font-black text-slate-700 leading-snug">${church.address}</p>
+                        
+                        <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                            <span class="text-[10px] ${church.textClass} font-bold">● TJC 西區小區編制</span>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(church.address)}" target="_blank" class="text-[10px] bg-slate-800 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-indigo-600 transition-colors">
+                                地圖導航 ↗
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ----------------------------------------------------
+        // 4. 將教會資料分類載入圖層 (LayerGroups)
+        // ----------------------------------------------------
+        const zoneLayers = {
+            fuxing: L.featureGroup(),
+            zhumiao: L.featureGroup(),
+            zhongmiao: L.featureGroup(),
+            nantou: L.featureGroup(),
+            all: L.featureGroup() // 用於全覽縮放
+        };
+
+        const zoneColors = {
+            fuxing: '#f59e0b',   // Amber
+            zhumiao: '#10b981',  // Emerald
+            zhongmiao: '#a855f7', // Purple
+            nantou: '#f43f5e'    // Rose
+        };
+
+        // 遍歷資料生成 Marker
+        churchesData.forEach(church => {
+            const marker = L.marker([church.lat, church.lng], {
+                icon: createFlagIcon(church.color)
+            }).bindPopup(generatePopupContent(church), {
+                closeButton: false,
+                className: 'custom-popup'
+            });
+            
+            // 加入對應的圖層組
+            zoneLayers[church.zone].addLayer(marker);
+            zoneLayers['all'].addLayer(marker); // 全覽用副本
+        });
+
+        // 預設在地圖上顯示所有小區
+        zoneLayers.fuxing.addTo(map);
+        zoneLayers.zhumiao.addTo(map);
+        zoneLayers.zhongmiao.addTo(map);
+        zoneLayers.nantou.addTo(map);
+
+        // ----------------------------------------------------
+        // 5. 繪製牧區地理範圍 (Polygons / Bounding Boxes)
+        // ----------------------------------------------------
+        // 利用 Leaflet 的 Convex Hull 概念，簡單繪製包含該區標記的圓形或多邊形區域
+        const zoneBoundsOverlays = {};
+        
+        function createZoneOverlay(zoneId) {
+            const bounds = zoneLayers[zoneId].getBounds();
+            // 繪製一個覆蓋邊界的矩形，設定顏色與透明度以表示「範圍」
+            const rect = L.rectangle(bounds, {
+                color: zoneColors[zoneId],
+                weight: 2,
+                dashArray: '5, 10',
+                fillColor: zoneColors[zoneId],
+                fillOpacity: 0.1
+            });
+            return rect;
+        }
+
+        // ----------------------------------------------------
+        // 6. 視角切換功能 (動態濾鏡與縮放)
+        // ----------------------------------------------------
+        let currentActiveOverlay = null;
+
+        function changeView(zoneId) {
+            // 1. 關閉目前所有開啟的彈出視窗
+            map.closePopup();
+
+            if (zoneId === 'all') {
+                // 如果是全覽，顯示所有點位，移除範圍覆蓋
+                ['fuxing', 'zhumiao', 'zhongmiao', 'nantou'].forEach(z => {
+                    if (!map.hasLayer(zoneLayers[z])) map.addLayer(zoneLayers[z]);
+                });
+                if (currentActiveOverlay && map.hasLayer(currentActiveOverlay)) {
+                    map.removeLayer(currentActiveOverlay);
+                    currentActiveOverlay = null;
+                }
+                // 飛回全覽視角
+                map.flyToBounds(zoneLayers['all'].getBounds(), { padding: [50, 50], duration: 1.5 });
+            } else {
+                // 如果是單獨小區，隱藏其他小區，只顯示該區點位與範圍覆蓋
+                ['fuxing', 'zhumiao', 'zhongmiao', 'nantou'].forEach(z => {
+                    if (z === zoneId) {
+                        if (!map.hasLayer(zoneLayers[z])) map.addLayer(zoneLayers[z]);
+                    } else {
+                        if (map.hasLayer(zoneLayers[z])) map.removeLayer(zoneLayers[z]);
+                    }
+                });
+
+                // 移除舊的範圍圖層，加入新的範圍圖層
+                if (currentActiveOverlay && map.hasLayer(currentActiveOverlay)) {
+                    map.removeLayer(currentActiveOverlay);
+                }
+                currentActiveOverlay = createZoneOverlay(zoneId);
+                map.addLayer(currentActiveOverlay);
+
+                // 流暢縮放至該區範圍
+                map.flyToBounds(zoneLayers[zoneId].getBounds(), { padding: [80, 80], maxZoom: 11, duration: 1.5 });
+            }
+        }
+        
+        // 初始化載入時縮放至全區
+        setTimeout(() => {
+            map.fitBounds(zoneLayers['all'].getBounds(), { padding: [30, 30] });
+        }, 1000);
+
+    </script>
+</body>
+</html>
