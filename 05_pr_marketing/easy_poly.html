@@ -91,8 +91,13 @@
     <!-- 主海報本體 (720x1800 像素，1:2.5 標準易拉寶比例) -->
     <div id="poster" class="poster-canvas bg-slate-950 rounded-2xl overflow-hidden relative border-4 border-slate-800/80 flex flex-col justify-between shrink-0 select-none">
         
-        <!-- 背景星空光暈與氛圍底圖 -->
-        <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/90 via-slate-950/80 to-slate-950 z-10 pointer-events-none"></div>
+        <!-- 背景星空光暈與主視覺底圖 -->
+        <div class="absolute inset-0 bg-slate-950 z-0"></div>
+        <!-- 嵌入本地 主視覺.png / 直版主視覺.png 背景圖 -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity pointer-events-none z-0" style="background-image: url('直版主視覺.png'), url('主視覺.png');"></div>
+        
+        <!-- 漸變遮罩層，確保文字與內容清晰度 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/90 via-slate-950/70 to-slate-950/95 z-10 pointer-events-none"></div>
         <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/15 rounded-full blur-[120px] z-10 pointer-events-none"></div>
         <div class="absolute bottom-10 right-0 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[140px] z-10 pointer-events-none"></div>
 
@@ -148,7 +153,7 @@
                 <!-- 大溪教會 -->
                 <div class="frameless-photo relative transform -rotate-6 translate-x-2 hover:rotate-0 w-[240px]">
                     <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="大溪教會.jpeg" alt="大溪教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%A4%A7%E6%BA%AA%E6%95%99%E6%9C%83'">
+                        <img src="大溪教會.jpg" alt="大溪教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%A4%A7%E6%BA%AA%E6%95%99%E6%9C%83'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
                             <span class="text-xs font-black text-white tracking-wide">大溪教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 桃園大溪</span>
@@ -159,7 +164,7 @@
                 <!-- 崎頂教會 -->
                 <div class="frameless-photo relative transform rotate-4 translate-x-12 hover:rotate-0 w-[230px]">
                     <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="崎頂教會_2.jpg" alt="崎頂教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%B4%8E%E9%A0%82%E6%95%99%E6%9C%83'">
+                        <img src="崎頂教會.jpg" alt="崎頂教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%B4%8E%E9%A0%82%E6%95%99%E6%9C%83'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
                             <span class="text-xs font-black text-white tracking-wide">崎頂教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 員林路</span>
@@ -170,7 +175,7 @@
                 <!-- 八德教會 -->
                 <div class="frameless-photo relative transform -rotate-3 translate-x-4 hover:rotate-0 w-[235px]">
                     <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="八德教會.jpg" alt="八德教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%85%AB%E5%BE%B7%E6%95%99%E6%9C%83'">
+                        <img src="八德教會.jpg" alt="八德教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%85%AB%E5%BE%B7%E6%95%99%E6%9C%83'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
                             <span class="text-xs font-black text-white tracking-wide">八德教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 瑞發街</span>
@@ -181,7 +186,7 @@
                 <!-- 復興教會 -->
                 <div class="frameless-photo relative transform rotate-5 translate-x-16 hover:rotate-0 w-[240px]">
                     <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="復興教會_2.jpg" alt="復興教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%BE%A9%E8%B2%B0%E6%95%99%E6%9C%83'">
+                        <img src="復興教會.jpg" alt="復興教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%BE%A9%E8%B2%B0%E6%95%99%E6%9C%83'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
                             <span class="text-xs font-black text-white tracking-wide">復興教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 詩朗部落</span>
@@ -192,7 +197,7 @@
                 <!-- 義盛教會 -->
                 <div class="frameless-photo relative transform -rotate-5 translate-x-6 hover:rotate-0 w-[230px]">
                     <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="義盛教會_2.jpg" alt="義盛教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E7%BE%A9%E7%9B%9B%E6%95%99%E6%9C%83'">
+                        <img src="義盛教會.jpg" alt="義盛教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E7%BE%A9%E7%9B%9B%E6%95%99%E6%9C%83'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
                             <span class="text-xs font-black text-white tracking-wide">義盛教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">中山牧區 · 義興部落</span>
@@ -203,7 +208,7 @@
                 <!-- 上巴陵教會 -->
                 <div class="frameless-photo relative transform rotate-3 translate-x-14 hover:rotate-0 w-[235px]">
                     <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="上巴陵教會.jpg" alt="上巴陵教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%8A%E5%B7%B4%E9%99%B5%E6%95%99%E6%9C%83'">
+                        <img src="上巴陵教會.jpg" alt="上巴陵教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%8A%E5%B7%B4%E9%99%B5%E6%95%99%E6%9C%83'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
                             <span class="text-xs font-black text-white tracking-wide">上巴陵教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 華陵村</span>
@@ -214,7 +219,7 @@
                 <!-- 三光教會 -->
                 <div class="frameless-photo relative transform -rotate-4 translate-x-2 hover:rotate-0 w-[240px]">
                     <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="三光教會.jpg" alt="三光教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%89%E5%85%89%E6%95%99%E6%9C%83'">
+                        <img src="三光教會.jpg" alt="三光教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%83%E5%85%89%E6%95%99%E6%9C%83'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
                             <span class="text-xs font-black text-white tracking-wide">三光教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 武道能敢</span>
