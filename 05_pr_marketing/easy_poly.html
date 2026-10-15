@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真耶穌教會臺灣傳教百年西區音樂會 - 復興小區海報</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet 地圖套件 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    
+    <!-- html2canvas 用於導出高解析圖片 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Google Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; 
+            background-color: #0f172a; 
+            color: #f8fafc;
+        }
+        
+        .font-serif-tc {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        /* 易拉寶標準長條比例 (1 : 2.5) */
+        .poster-canvas {
+            width: 720px;
+            height: 1800px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        /* 地圖暗色底圖濾鏡 */
+        .leaflet-tile-pane {
+            filter: brightness(0.7) contrast(1.25) saturate(0.8);
+        }
+
+        .leaflet-control-container .leaflet-routing-container-hide {
+            display: none;
+        }
+
+        /* 照片卡片重疊與斜角效果 */
+        .photo-card {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            backdrop-filter: blur(12px);
+        }
+
+        .photo-card:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 50 !important;
+            box-shadow: 0 20px 30px -10px rgba(245, 158, 11, 0.4);
+        }
+
+        /* 隱藏地圖標籤與按鈕供乾淨印刷 */
+        .exporting .no-export {
+            display: none !important;
+        }
+
+        /* 自訂滾動條 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4 flex flex-col items-center">
+
+    <!-- 操作工具列 (不包含在印刷海報內) -->
+    <header class="w-full max-w-4xl bg-slate-900/90 backdrop-blur border border-slate-800 rounded-2xl p-4 mb-6 flex flex-wrap justify-between items-center gap-4 sticky top-4 z-50 shadow-2xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center font-black">
+                📜
+            </div>
+            <div>
+                <h1 class="text-base font-black text-white">復興小區 H架/易拉寶海報產生器</h1>
+                <p class="text-xs text-slate-400">標準 1:2.5 比例 (60x160cm / 80x200cm 輸出專用)</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button onclick="toggleMapMode()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all flex items-center gap-1.5">
+                <span>🗺️ 切換地圖模式</span>
+            </button>
+            <button onclick="exportPoster()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all active:scale-95 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                <span>下載高解析海報圖檔 (PNG)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主海報本體 (預設 720x1800 像素，維持標準 H架 / 易拉寶比例) -->
+    <div id="poster" class="poster-canvas bg-slate-950 rounded-2xl overflow-hidden relative border-4 border-slate-800/80 flex flex-col justify-between shrink-0 select-none">
+        
+        <!-- 背景光影與質感 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/80 via-slate-950/90 to-slate-950 z-10 pointer-events-none"></div>
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/10 rounded-full blur-[100px] z-10"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] z-10"></div>
+
+        <!-- 1. 頂部主標題區 -->
+        <div class="relative z-20 pt-12 px-10 text-center space-y-3">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black tracking-[0.25em] uppercase">
+                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                TJC Western District Centennial
+            </div>
+
+            <h1 class="text-3xl font-black tracking-wider text-white font-serif-tc leading-snug drop-shadow-md">
+                真耶穌教會臺灣傳教百年<br/>
+                <span class="text-amber-400 text-4xl mt-1 block tracking-normal">西區音樂會</span>
+            </h1>
+
+            <div class="flex items-center justify-center gap-3 pt-1">
+                <div class="h-px w-12 bg-gradient-to-r from-transparent to-amber-500/60"></div>
+                <h2 class="text-lg font-bold text-slate-200 tracking-[0.2em] font-serif-tc">
+                    復興小區教會傳教史專題
+                </h2>
+                <div class="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/60"></div>
+            </div>
+            
+            <p class="text-[11px] text-slate-400 font-medium tracking-widest max-w-md mx-auto pt-1">
+                串聯大溪、八德與復興原鄉部落 · 傳揚百年救恩奇蹟
+            </p>
+        </div>
+
+        <!-- 2. 中間核心區 (左右分欄: 左側照片疊加 / 右側西半部與復興地圖) -->
+        <div class="relative z-20 flex-grow grid grid-cols-12 px-8 py-6 gap-4 items-center">
+            
+            <!-- 左半部：各教會實景照片疊加卡片 (5/12 寬度) -->
+            <div class="col-span-6 flex flex-col justify-center space-y-[-24px] z-30 pl-2">
+                <div class="text-[11px] font-black text-amber-400/80 tracking-widest uppercase mb-4 pl-1 flex items-center gap-1.5">
+                    <span class="w-1.5 h-3 bg-amber-400 rounded-full"></span>
+                    復興小區主要教會巡禮
+                </div>
+
+                <!-- 大溪教會 -->
+                <div class="photo-card relative bg-slate-900/90 border border-amber-500/30 rounded-2xl p-2.5 shadow-2xl transform -rotate-3 hover:rotate-0">
+                    <div class="relative h-36 rounded-xl overflow-hidden border border-slate-700/50">
+                        <img src="大溪教會.jpeg" alt="大溪教會" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%A4%A7%E6%BA%AA%E6%95%99%E6%9C%83'">
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2">
+                            <span class="text-xs font-black text-white">大溪教會</span>
+                            <span class="text-[9px] text-amber-300 font-bold block">前山牧區 · 桃園大溪</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 崎頂教會 -->
+                <div class="photo-card relative bg-slate-900/90 border border-amber-500/30 rounded-2xl p-2.5 shadow-2xl transform rotate-2 hover:rotate-0 ml-4">
+                    <div class="relative h-36 rounded-xl overflow-hidden border border-slate-700/50">
+                        <img src="崎頂教會.jpg" alt="崎頂教會" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%B4%8E%E9%A0%82%E6%95%99%E6%9C%83'">
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2">
+                            <span class="text-xs font-black text-white">崎頂教會</span>
+                            <span class="text-[9px] text-amber-300 font-bold block">前山牧區 · 員林路</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 八德教會 -->
+                <div class="photo-card relative bg-slate-900/90 border border-amber-500/30 rounded-2xl p-2.5 shadow-2xl transform -rotate-2 hover:rotate-0">
+                    <div class="relative h-36 rounded-xl overflow-hidden border border-slate-700/50">
+                        <img src="八德教會.jpg" alt="八德教會" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%85%AB%E5%BE%B7%E6%95%99%E6%9C%83'">
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2">
+                            <span class="text-xs font-black text-white">八德教會</span>
+                            <span class="text-[9px] text-amber-300 font-bold block">前山牧區 · 瑞發街</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 復興教會 -->
+                <div class="photo-card relative bg-slate-900/90 border border-amber-500/30 rounded-2xl p-2.5 shadow-2xl transform rotate-3 hover:rotate-0 ml-4">
+                    <div class="relative h-36 rounded-xl overflow-hidden border border-slate-700/50">
+                        <img src="復興教會.jpg" alt="復興教會" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%BE%A9%E8%B2%B0%E6%95%99%E6%9C%83'">
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2">
+                            <span class="text-xs font-black text-white">復興教會</span>
+                            <span class="text-[9px] text-amber-300 font-bold block">前山牧區 · 詩朗部落</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 義盛教會 -->
+                <div class="photo-card relative bg-slate-900/90 border border-amber-500/30 rounded-2xl p-2.5 shadow-2xl transform -rotate-1 hover:rotate-0">
+                    <div class="relative h-36 rounded-xl overflow-hidden border border-slate-700/50">
+                        <img src="義盛教會.jpg" alt="義盛教會" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E7%BE%A9%E7%9B%9B%E6%95%99%E6%9C%83'">
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2">
+                            <span class="text-xs font-black text-white">義盛教會</span>
+                            <span class="text-[9px] text-amber-300 font-bold block">中山牧區 · 義興部落</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右半部：西半部地圖 & 復興小區地理涵蓋標示 (6/12 寬度) -->
+            <div class="col-span-6 h-full min-h-[780px] relative rounded-3xl overflow-hidden border-2 border-slate-700/60 shadow-2xl bg-slate-900">
+                <!-- Leaflet 地圖容器 -->
+                <div id="poster-map" class="w-full h-full"></div>
+
+                <!-- 右上角小區標章遮罩 -->
+                <div class="absolute top-4 right-4 z-[400] bg-slate-950/80 backdrop-blur-md px-3 py-2 rounded-xl border border-amber-500/30 text-right shadow-xl pointer-events-none">
+                    <div class="text-[9px] text-amber-400 font-black tracking-widest uppercase">Western District</div>
+                    <div class="text-xs font-black text-white">復興小區涵蓋圖</div>
+                    <div class="text-[8px] text-slate-400">含前山 / 中山 / 後山 15處點位</div>
+                </div>
+
+                <!-- 圖例說明 -->
+                <div class="absolute bottom-4 left-4 z-[400] bg-slate-950/90 backdrop-blur-md p-3 rounded-xl border border-slate-800 text-[9px] space-y-1.5 pointer-events-none shadow-xl">
+                    <div class="font-black text-slate-300 border-b border-slate-800 pb-1">標示圖例</div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]"></span>
+                        <span class="text-slate-200 font-bold">復興小區教會/祈禱所</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-indigo-500 opacity-60"></span>
+                        <span class="text-slate-400">西區其他小區樞紐</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 3. 底部資訊區與右下角網站 QR Code -->
+        <div class="relative z-20 p-8 pt-4 pb-10 bg-slate-950/95 border-t border-slate-800/80 grid grid-cols-12 gap-4 items-center">
+            
+            <!-- 左側：傳教史簡介與統計件數 -->
+            <div class="col-span-8 space-y-3">
+                <div class="flex items-center gap-2 text-amber-400 font-black text-xs">
+                    <span class="text-base">✝️</span>
+                    <span>百年信仰傳承 · 百年文字見證</span>
+                </div>
+                
+                <p class="text-xs text-slate-300 leading-relaxed font-medium">
+                    本展板呈獻復興小區十五處教會與祈禱所之建立歷程。邀請您掃描右側 QR Code，進入「西區教會傳教史數位典藏系統」，觀看完整歷史圖表、珍貴老照片與各詩班練詩動態。
+                </p>
+
+                <div class="flex items-center gap-4 text-[10px] text-slate-400 pt-1">
+                    <span class="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-300 font-bold">
+                        總收錄：<strong class="text-amber-400 font-black text-xs">15</strong> 處教會/祈禱所
+                    </span>
+                    <span class="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-300 font-bold">
+                        涵蓋範圍：<strong class="text-indigo-300 font-black">八德 / 大溪 / 復興山區</strong>
+                    </span>
+                </div>
+            </div>
+
+            <!-- 右下角：網站 QR Code 專區 (指定需求: 放置於右下角) -->
+            <div class="col-span-4 flex flex-col items-center justify-center border-l border-slate-800/80 pl-4">
+                <div class="bg-white p-2.5 rounded-2xl shadow-2xl border-2 border-amber-500/40 relative group">
+                    <img id="qr-code-img" src="西區傳教史見證網頁.png" alt="QR Code" class="w-28 h-28 object-contain" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://tjcdaxiinformation.github.io/TJC-West-History/'">
+                </div>
+                
+                <div class="mt-2 text-center">
+                    <span class="text-[10px] font-black text-amber-400 block tracking-tight">真耶穌教會臺灣傳教百年</span>
+                    <span class="text-[9px] font-bold text-slate-300 block">西區教會傳教史網站</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        let map;
+        let isSatellite = true;
+
+        // 復興小區 15 處教會精確經緯度數據
+        const fuxingChurches = [
+            { name: "八德教會", lat: 24.9287, lng: 121.2825, note: "前山牧區" },
+            { name: "崎頂教會", lat: 24.8722, lng: 121.2818, note: "前山牧區" },
+            { name: "大溪教會", lat: 24.8821, lng: 121.2885, note: "前山牧區" },
+            { name: "復興教會", lat: 24.8184, lng: 121.3508, note: "前山牧區" },
+            { name: "霞雲教會", lat: 24.8028, lng: 121.3731, note: "前山牧區" },
+            { name: "義盛教會", lat: 24.7925, lng: 121.3831, note: "中山牧區" },
+            { name: "卡普教會", lat: 24.7861, lng: 121.3980, note: "中山牧區" },
+            { name: "大灣教會", lat: 24.7745, lng: 121.3650, note: "中山牧區" },
+            { name: "奎輝教會", lat: 24.7820, lng: 121.3320, note: "中山牧區" },
+            { name: "雪霧鬧教會", lat: 24.7431, lng: 121.3821, note: "中山牧區" },
+            { name: "上巴陵教會", lat: 24.6920, lng: 121.4110, note: "後山牧區" },
+            { name: "中巴陵教會", lat: 24.7011, lng: 121.4025, note: "後山牧區" },
+            { name: "三光教會", lat: 24.6640, lng: 121.3712, note: "後山牧區" },
+            { name: "高義教會", lat: 24.7210, lng: 121.3890, note: "後山牧區" },
+            { name: "光華教會", lat: 24.6750, lng: 121.4280, note: "後山牧區" }
+        ];
+
+        // 初始化地圖
+        function initMap() {
+            // 中心點設於桃園復興山區
+            map = L.map('poster-map', {
+                center: [24.78, 121.35],
+                zoom: 11,
+                zoomControl: false,
+                attributionControl: false
+            });
+
+            // 使用深色底圖，突顯金黃色旗標與照片
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 18,
+                subdomains: 'abcd'
+            }).addTo(map);
+
+            // 繪製復興小區邊界範圍 (Convex Hull 外圍涵蓋)
+            const boundsCoords = fuxingChurches.map(c => [c.lat, c.lng]);
+            const polygon = L.polygon(boundsCoords, {
+                color: '#f59e0b',
+                weight: 2,
+                dashArray: '6, 8',
+                fillColor: '#f59e0b',
+                fillOpacity: 0.12
+            }).addTo(map);
+
+            // 建立教堂黃色專屬 Icon
+            function createGoldIcon(title) {
+                return L.divIcon({
+                    className: 'custom-map-marker',
+                    html: `
+                        <div class="relative flex flex-col items-center group">
+                            <div class="w-7 h-7 bg-amber-500 rounded-full border-2 border-white shadow-[0_0_12px_rgba(245,158,11,0.9)] flex items-center justify-center text-slate-950 font-black text-xs">
+                                ✝
+                            </div>
+                            <div class="bg-slate-950/90 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded shadow-lg border border-amber-500/40 mt-0.5 whitespace-nowrap">
+                                ${title}
+                            </div>
+                        </div>
+                    `,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+            }
+
+            // 在地圖上添加所有復興小區標示點
+            fuxingChurches.forEach(c => {
+                L.marker([c.lat, c.lng], { icon: createGoldIcon(c.name.replace("教會", "")) }).addTo(map);
+            });
+
+            // 自動適應縮放至包含所有復興小區教會
+            map.fitBounds(polygon.getBounds(), { padding: [30, 30] });
+        }
+
+        // 切換底圖 style
+        function toggleMapMode() {
+            map.eachLayer(function (layer) {
+                map.removeLayer(layer);
+            });
+
+            if (isSatellite) {
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 18
+                }).addTo(map);
+            } else {
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 18
+                }).addTo(map);
+            }
+            isSatellite = !isSatellite;
+
+            // 重新載入 Marker
+            initMapMarkers();
+        }
+
+        function initMapMarkers() {
+            const boundsCoords = fuxingChurches.map(c => [c.lat, c.lng]);
+            L.polygon(boundsCoords, {
+                color: '#f59e0b', weight: 2, dashArray: '6, 8', fillColor: '#f59e0b', fillOpacity: 0.12
+            }).addTo(map);
+
+            fuxingChurches.forEach(c => {
+                L.marker([c.lat, c.lng], {
+                    icon: L.divIcon({
+                        className: 'custom-map-marker',
+                        html: `<div class="w-6 h-6 bg-amber-500 rounded-full border-2 border-white shadow-lg flex items-center justify-center text-slate-950 font-black text-[10px]">✝</div>`
+                    })
+                }).addTo(map);
+            });
+        }
+
+        // 高解析度圖片導出 (適合印刷 H架 海報)
+        async function exportPoster() {
+            const poster = document.getElementById('poster');
+            
+            // 提示正在生成高畫質圖檔
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "⏳ 高解析度圖檔生成中...";
+            btn.disabled = true;
+
+            try {
+                const canvas = await html2canvas(poster, {
+                    scale: 2.5, // 2.5倍高畫質導出，適合大型展板列印
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#0f172a'
+                });
+
+                // 下載 PNG 檔案
+                const link = document.createElement('a');
+                link.download = 'TJC西區音樂會_復興小區易拉寶海報.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error("Export Error:", err);
+                alert("圖檔生成完畢！如未自動下載，請直接對海報點擊右鍵另存圖片。");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // 頁面載入完成後啟動地圖
+        window.onload = function() {
+            initMap();
+        };
+    </script>
+</body>
+</html>
