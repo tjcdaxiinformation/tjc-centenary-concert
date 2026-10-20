@@ -91,14 +91,26 @@
                 size: A4 landscape; /* Force A4 Landscape Print */
                 margin: 0mm; /* 消除所有預設列印邊界 */
             }
-            body {
+            html, body {
                 background: white !important;
                 color: black !important;
                 margin: 0 !important;
                 padding: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                overflow: hidden !important;
             }
             header, .no-print, #toast, footer {
                 display: none !important;
+            }
+            /* 徹底解除主排版 Grid 與間距，防止撐開多餘頁面 */
+            main {
+                display: block !important;
+                width: 100% !important;
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                gap: 0 !important;
             }
             .print-container {
                 display: block !important;
@@ -107,7 +119,7 @@
                 padding: 0 !important;
             }
             
-            /* 解除 3D 結構，避免產生多餘的隱形高度 */
+            /* 解除 3D 結構與 Padding，避免產生多餘的隱形高度 */
             .card-container, .flipper {
                 perspective: none !important;
                 transform: none !important;
@@ -115,19 +127,23 @@
                 width: 297mm !important;
                 height: auto !important;
                 display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
-            /* 強制將兩面圖版固定為精準的 A4 尺寸 */
+            /* 強制將兩面圖版固定為精準的 A4 尺寸，並隱藏溢出 */
             .spread-card {
                 position: relative !important;
                 width: 297mm !important;
-                height: 210mm !important;
+                height: 209.5mm !important; /* 扣除 0.5mm 絕對防止溢出到下一頁 */
                 border: none !important;
                 box-shadow: none !important;
                 margin: 0 !important;
+                padding: 0 !important;
                 transform: none !important;
                 backface-visibility: visible !important;
                 page-break-inside: avoid !important;
+                overflow: hidden !important;
             }
 
             /* 第一面印完後強制換頁 */
