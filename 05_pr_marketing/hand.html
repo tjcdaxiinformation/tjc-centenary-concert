@@ -475,20 +475,29 @@
 
             showToast(`⏳ 正在繪製 ${side === 'front' ? '正面' : '反面'} 高解析度舉手牌圖檔，請稍候...`);
 
+            // 【關鍵修正】暫時移除反面的 3D 翻轉效果，確保轉出的圖檔文字為「正向」好閱讀（不會被 CSS 鏡射）
+            const originalTransform = targetEl.style.transform;
+            targetEl.style.transform = 'none';
+
             html2canvas(targetEl, {
                 scale: 3, // High Resolution Print Quality
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null,
             }).then(canvas => {
+                // 截圖完成後立即恢復原始的 3D 設定
+                targetEl.style.transform = originalTransform;
+
                 const link = document.createElement('a');
                 link.download = `音樂會舉手牌_${side === 'front' ? '正面' : '反面'}_${textVal}.png`;
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
 
-                showToast('🎉 高解析度圖檔下載成功！可直接送交卡板切割印刷廠。');
+                showToast('🎉 高解析度圖檔下載成功！正反面可直接貼合對位。');
             }).catch(err => {
                 console.error(err);
+                // 若發生錯誤也必須恢復設定
+                targetEl.style.transform = originalTransform;
                 showToast('❌ 圖檔匯出失敗，請嘗試使用列印功能。');
             });
         }
