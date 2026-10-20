@@ -36,25 +36,27 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
         }
 
-        /* Leaflet 地圖深色質感風格與去邊框整合 */
+        /* 地形圖無邊框透明融和效果 (Blend terrain map naturally into background) */
         .leaflet-tile-pane {
-            filter: brightness(0.65) contrast(1.3) saturate(0.85);
+            filter: brightness(0.7) contrast(1.25) saturate(1.1) hue-rotate(-10deg);
         }
 
         .leaflet-control-container, .leaflet-popup-content-wrapper, .leaflet-popup-tip {
             display: none !important;
         }
 
-        /* 無框線照片疊加樣式 */
-        .frameless-photo {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6));
+        /* 自然羽化無框相片融合樣式 (Soft radial mask for seamless cross-fading) */
+        .blended-photo-card {
+            mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 88%);
+            -webkit-mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 88%);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .frameless-photo:hover {
-            transform: scale(1.12) rotate(0deg) translateZ(0) !important;
-            z-index: 50 !important;
-            filter: drop-shadow(0 25px 35px rgba(245, 158, 11, 0.5));
+        .blended-photo-card:hover {
+            transform: scale(1.15) zIndex(50) !important;
+            mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+            -webkit-mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+            filter: drop-shadow(0 15px 30px rgba(245, 158, 11, 0.6));
         }
 
         /* 自訂細滾動條 */
@@ -72,14 +74,14 @@
                 📜
             </div>
             <div>
-                <h1 class="text-base font-black text-white">復興小區 H架/易拉寶海報 (1:2.5 印刷版)</h1>
-                <p class="text-xs text-slate-400">720x1800px 無邊框照片疊加與地圖背板整合</p>
+                <h1 class="text-base font-black text-white">復興小區 H架/易拉寶海報 (1:2.5 地形圖自然融合版)</h1>
+                <p class="text-xs text-slate-400">720x1800px 地形底圖與無框羽化相片自然疊加</p>
             </div>
         </div>
 
         <div class="flex items-center gap-3">
             <button onclick="toggleMapTile()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl border border-slate-700 transition-all flex items-center gap-1.5">
-                <span>🗺️ 切換地圖底圖</span>
+                <span>⛰️ 切換地形風格</span>
             </button>
             <button onclick="exportPoster()" class="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 transition-all active:scale-95 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
@@ -91,24 +93,30 @@
     <!-- 主海報本體 (720x1800 像素，1:2.5 標準易拉寶比例) -->
     <div id="poster" class="poster-canvas bg-slate-950 rounded-2xl overflow-hidden relative border-4 border-slate-800/80 flex flex-col justify-between shrink-0 select-none">
         
-        <!-- 背景星空光暈與主視覺底圖 -->
+        <!-- 背景星空光暈與主視覺底圖 (嵌入地圖與主視覺淡入淡出) -->
         <div class="absolute inset-0 bg-slate-950 z-0"></div>
-        <!-- 嵌入本地 主視覺.png / 直版主視覺.png 背景圖 -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-luminosity pointer-events-none z-0" style="background-image: url('直版主視覺.png'), url('主視覺.png');"></div>
+        <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-screen pointer-events-none z-0" style="background-image: url('直版主視覺.png'), url('主視覺.png');"></div>
         
-        <!-- 漸變遮罩層，確保文字與內容清晰度 -->
-        <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/90 via-slate-950/70 to-slate-950/95 z-10 pointer-events-none"></div>
-        <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/15 rounded-full blur-[120px] z-10 pointer-events-none"></div>
-        <div class="absolute bottom-10 right-0 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[140px] z-10 pointer-events-none"></div>
+        <!-- 全幅地形圖底層：無外框直融主視覺與星空 -->
+        <div class="absolute inset-0 z-10 opacity-70 mix-blend-lighten pointer-events-none">
+            <div id="poster-map" class="w-full h-full scale-105"></div>
+        </div>
+
+        <!-- 全局羽化淡入遮罩，使地形圖與兩側主題自然對齊融和 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/90 via-slate-950/50 to-slate-950/95 z-10 pointer-events-none"></div>
+        <div class="absolute inset-0 bg-radial-gradient from-transparent via-slate-950/40 to-slate-950 z-10 pointer-events-none"></div>
+
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/20 rounded-full blur-[120px] z-10 pointer-events-none"></div>
+        <div class="absolute bottom-10 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[140px] z-10 pointer-events-none"></div>
 
         <!-- 1. 頂部主標題區 -->
         <div class="relative z-30 pt-12 px-10 text-center space-y-3">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black tracking-[0.25em] uppercase">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black tracking-[0.25em] uppercase shadow-md backdrop-blur-md">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                 TJC Western District Centennial
             </div>
 
-            <h1 class="text-3xl font-black tracking-wider text-white font-serif-tc leading-snug drop-shadow-lg">
+            <h1 class="text-3xl font-black tracking-wider text-white font-serif-tc leading-snug drop-shadow-2xl">
                 真耶穌教會臺灣傳教百年<br/>
                 <span class="text-amber-400 text-4xl mt-1 block tracking-normal drop-shadow-md">西區音樂會</span>
             </h1>
@@ -121,107 +129,94 @@
                 <div class="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/60"></div>
             </div>
             
-            <p class="text-[11px] text-slate-400 font-medium tracking-widest max-w-md mx-auto pt-1">
+            <p class="text-[11px] text-slate-300 font-medium tracking-widest max-w-md mx-auto pt-1 drop-shadow-md">
                 串聯大溪、八德與復興原鄉部落 · 傳揚百年救恩奇蹟
             </p>
         </div>
 
-        <!-- 2. 中間核心區域 (右半部：嵌入地圖背板 / 左半部：無框線透明疊加照片牆) -->
-        <div class="relative z-20 flex-grow grid grid-cols-12 px-6 py-4 gap-2 items-center my-2">
+        <!-- 2. 中間核心區域：羽化無框交疊教會照片牆 (自然融合地圖地形與主視覺背景) -->
+        <div class="relative z-30 flex-grow my-auto px-6 py-2 flex flex-col justify-center">
             
-            <!-- 右半部地圖底層：嵌入地圖背板 (涵蓋右側第 5~12 欄，擴展至邊緣) -->
-            <div class="absolute right-4 top-2 bottom-2 w-[52%] rounded-3xl overflow-hidden shadow-2xl border border-slate-700/40 z-10 opacity-90">
-                <div id="poster-map" class="w-full h-full"></div>
-                <!-- 覆蓋微漸變使地圖完美融於背景 -->
-                <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-transparent to-transparent pointer-events-none"></div>
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40 pointer-events-none"></div>
-                
-                <!-- 地圖右上方專屬微型標章 -->
-                <div class="absolute top-4 right-4 z-[400] bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-amber-500/30 text-right pointer-events-none">
-                    <div class="text-[8px] text-amber-400 font-black tracking-widest uppercase">Fuxing Zone Map</div>
-                    <div class="text-xs font-black text-white">復興小區涵蓋範圍</div>
-                </div>
+            <div class="text-[11px] font-black text-amber-300 tracking-widest uppercase mb-4 pl-4 flex items-center gap-2 drop-shadow-lg">
+                <span class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping"></span>
+                <span>復興小區主要教會與原鄉巡禮</span>
             </div>
 
-            <!-- 左半部照片牆：無框線透明亂數疊加照片 (覆蓋左側與中間) -->
-            <div class="col-span-7 flex flex-col justify-center space-y-[-28px] z-30 pl-2">
-                <div class="text-[11px] font-black text-amber-400 tracking-widest uppercase mb-6 pl-2 flex items-center gap-1.5 drop-shadow-md">
-                    <span class="w-2 h-2 bg-amber-400 rounded-full animate-ping"></span>
-                    復興小區主要教會巡禮
-                </div>
+            <!-- 自然羽化多層交疊相片叢集 (Overlap with soft radial fade) -->
+            <div class="relative h-[820px] w-full flex flex-col justify-between items-center">
 
                 <!-- 大溪教會 -->
-                <div class="frameless-photo relative transform -rotate-6 translate-x-2 hover:rotate-0 w-[240px]">
-                    <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="大溪教會.jpg" alt="大溪教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%A4%A7%E6%BA%AA%E6%95%99%E6%9C%83'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white tracking-wide">大溪教會</span>
+                <div class="blended-photo-card absolute top-0 left-2 w-[280px] h-36 z-20">
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img src="大溪教會.jpg" alt="大溪教會" class="w-full h-full object-cover opacity-90 hover:opacity-100" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%A4%A7%E6%BA%AA%E6%95%99%E6%9C%83'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
+                            <span class="text-xs font-black text-white drop-shadow-md">大溪教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 桃園大溪</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 崎頂教會 -->
-                <div class="frameless-photo relative transform rotate-4 translate-x-12 hover:rotate-0 w-[230px]">
-                    <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="崎頂教會.jpg" alt="崎頂教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%B4%8E%E9%A0%82%E6%95%99%E6%9C%83'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white tracking-wide">崎頂教會</span>
+                <div class="blended-photo-card absolute top-24 right-4 w-[270px] h-36 z-20">
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img src="崎頂教會.jpg" alt="崎頂教會" class="w-full h-full object-cover opacity-90 hover:opacity-100" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%B4%8E%E9%A0%82%E6%95%99%E6%9C%83'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
+                            <span class="text-xs font-black text-white drop-shadow-md">崎頂教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 員林路</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 八德教會 -->
-                <div class="frameless-photo relative transform -rotate-3 translate-x-4 hover:rotate-0 w-[235px]">
-                    <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="八德教會.jpg" alt="八德教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%85%AB%E5%BE%B7%E6%95%99%E6%9C%83'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white tracking-wide">八德教會</span>
+                <div class="blended-photo-card absolute top-52 left-6 w-[275px] h-36 z-25">
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img src="八德教會.jpg" alt="八德教會" class="w-full h-full object-cover opacity-90 hover:opacity-100" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%85%AB%E5%BE%B7%E6%95%99%E6%9C%83'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
+                            <span class="text-xs font-black text-white drop-shadow-md">八德教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 瑞發街</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 復興教會 -->
-                <div class="frameless-photo relative transform rotate-5 translate-x-16 hover:rotate-0 w-[240px]">
-                    <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="復興教會.jpg" alt="復興教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%BE%A9%E8%B2%B0%E6%95%99%E6%9C%83'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white tracking-wide">復興教會</span>
+                <div class="blended-photo-card absolute top-80 right-2 w-[285px] h-36 z-25">
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img src="復興教會.jpg" alt="復興教會" class="w-full h-full object-cover opacity-90 hover:opacity-100" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E5%BE%A9%E8%B2%B0%E6%95%99%E6%9C%83'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
+                            <span class="text-xs font-black text-white drop-shadow-md">復興教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 詩朗部落</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 義盛教會 -->
-                <div class="frameless-photo relative transform -rotate-5 translate-x-6 hover:rotate-0 w-[230px]">
-                    <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="義盛教會.jpg" alt="義盛教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E7%BE%A9%E7%9B%9B%E6%95%99%E6%9C%83'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white tracking-wide">義盛教會</span>
+                <div class="blended-photo-card absolute top-[430px] left-3 w-[270px] h-36 z-30">
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img src="義盛教會.jpg" alt="義盛教會" class="w-full h-full object-cover opacity-90 hover:opacity-100" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E7%BE%A9%E7%9B%9B%E6%95%99%E6%9C%83'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
+                            <span class="text-xs font-black text-white drop-shadow-md">義盛教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">中山牧區 · 義興部落</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 上巴陵教會 -->
-                <div class="frameless-photo relative transform rotate-3 translate-x-14 hover:rotate-0 w-[235px]">
-                    <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="上巴陵教會.jpg" alt="上巴陵教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%8A%E5%B7%B4%E9%99%B5%E6%95%99%E6%9C%83'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white tracking-wide">上巴陵教會</span>
+                <div class="blended-photo-card absolute top-[550px] right-5 w-[280px] h-36 z-30">
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img src="上巴陵教會.jpg" alt="上巴陵教會" class="w-full h-full object-cover opacity-90 hover:opacity-100" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%8A%E5%B7%B4%E9%99%B5%E6%95%99%E6%9C%83'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
+                            <span class="text-xs font-black text-white drop-shadow-md">上巴陵教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 華陵村</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- 三光教會 -->
-                <div class="frameless-photo relative transform -rotate-4 translate-x-2 hover:rotate-0 w-[240px]">
-                    <div class="relative h-32 rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 backdrop-blur-sm">
-                        <img src="三光教會.jpg" alt="三光教會" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%83%E5%85%89%E6%95%99%E6%9C%83'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-2.5 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white tracking-wide">三光教會</span>
+                <div class="blended-photo-card absolute top-[660px] left-8 w-[285px] h-36 z-35">
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img src="三光教會.jpg" alt="三光教會" class="w-full h-full object-cover opacity-90 hover:opacity-100" onerror="this.onerror=null; this.src='https://placehold.co/400x300/1e293b/f59e0b?text=%E4%B8%83%E5%85%89%E6%95%99%E6%9C%83'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
+                            <span class="text-xs font-black text-white drop-shadow-md">三光教會</span>
                             <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 武道能敢</span>
                         </div>
                     </div>
@@ -242,7 +237,7 @@
                 </div>
                 
                 <p class="text-xs text-slate-300 leading-relaxed font-medium">
-                    本展板展示復興小區十五處教會與祈禱所之建立歷程。邀請您掃描右側 QR Code，進入「西區教會傳教史數位典藏系統」，瀏覽完整歷史圖表與空間分佈地圖。
+                    本展板展示復興小區十五處教會與祈禱所之建立歷程。邀請您掃描右側 QR Code，進入「西區教會傳教史數位典藏系統」，瀏覽完整歷史圖表與空間地形動態分佈。
                 </p>
 
                 <div class="flex items-center gap-3 text-[10px] text-slate-400 pt-1">
@@ -255,7 +250,7 @@
                 </div>
             </div>
 
-            <!-- 右下角：網站 QR Code 專區 (乾淨內嵌，無邊框彈窗) -->
+            <!-- 右下角：網站 QR Code 專區 (乾淨內嵌) -->
             <div class="col-span-4 flex flex-col items-center justify-center border-l border-slate-800/80 pl-4">
                 <div class="bg-white p-2.5 rounded-2xl shadow-2xl border border-amber-500/40 relative">
                     <img id="qr-code-img" src="西區傳教史見證網頁.png" alt="QR Code" class="w-26 h-26 object-contain" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://tjcdaxiinformation.github.io/TJC-West-History/'">
@@ -275,10 +270,20 @@
         let map;
         let currentTileIndex = 0;
 
-        // 地圖圖層切換 (CartoDB 暗色底圖 / Esri 衛星圖)
-        const tileLayers = [
-            'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-            'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+        // 台灣山脈地形圖底圖 (Esri World Terrain / OpenTopoMap 衛星與高程地形圖)
+        const terrainTileLayers = [
+            {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
+                attribution: 'Esri Terrain'
+            },
+            {
+                url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+                attribution: 'OpenTopoMap'
+            },
+            {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                attribution: 'Esri Satellite'
+            }
         ];
 
         // 復興小區 15 處教會與祈禱所地理座標數據
@@ -300,7 +305,7 @@
             { name: "光華", lat: 24.6750, lng: 121.4280 }
         ];
 
-        // 初始化嵌入型地圖
+        // 初始化全幅無邊框地形圖
         function initMap() {
             map = L.map('poster-map', {
                 center: [24.78, 121.36],
@@ -312,54 +317,54 @@
                 doubleClickZoom: false
             });
 
-            L.tileLayer(tileLayers[0], { maxZoom: 18 }).addTo(map);
+            L.tileLayer(terrainTileLayers[0].url, { maxZoom: 18 }).addTo(map);
 
-            // 繪製復興小區外圍範圍連線 (虛線)
+            // 復興山區範圍幾何連線 (金色地形脈絡)
             const boundsCoords = fuxingChurches.map(c => [c.lat, c.lng]);
             const polygon = L.polygon(boundsCoords, {
                 color: '#f59e0b',
-                weight: 2,
-                dashArray: '5, 8',
+                weight: 1.5,
+                dashArray: '4, 6',
                 fillColor: '#f59e0b',
-                fillOpacity: 0.15
+                fillOpacity: 0.12
             }).addTo(map);
 
-            // 自訂純金屬十字架 Icon (去標籤、去對話框)
+            // 自訂發光金屬標示 (無框融入地形)
             function createPinIcon(title) {
                 return L.divIcon({
                     className: 'custom-map-pin',
                     html: `
-                        <div class="relative flex flex-col items-center">
-                            <div class="w-6 h-6 bg-amber-500 rounded-full border-2 border-white shadow-[0_0_12px_rgba(245,158,11,0.9)] flex items-center justify-center text-slate-950 font-black text-[10px]">
+                        <div class="relative flex flex-col items-center group">
+                            <div class="w-5 h-5 bg-amber-500/90 rounded-full border border-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.9)] flex items-center justify-center text-slate-950 font-black text-[9px]">
                                 ✝
                             </div>
-                            <div class="bg-slate-950/80 text-amber-300 text-[8px] font-black px-1 rounded mt-0.5 whitespace-nowrap border border-amber-500/30">
+                            <div class="bg-slate-950/80 text-amber-300 text-[8px] font-black px-1.5 py-0.5 rounded mt-0.5 whitespace-nowrap border border-amber-500/40 shadow-lg">
                                 ${title}
                             </div>
                         </div>
                     `,
-                    iconSize: [30, 30],
-                    iconAnchor: [15, 15]
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
                 });
             }
 
-            // 標示地圖點位
+            // 標示點位
             fuxingChurches.forEach(c => {
                 L.marker([c.lat, c.lng], { icon: createPinIcon(c.name) }).addTo(map);
             });
 
-            map.fitBounds(polygon.getBounds(), { padding: [20, 20] });
+            map.fitBounds(polygon.getBounds(), { padding: [30, 30] });
         }
 
-        // 切換底圖 estilo
+        // 切換地形風格
         function toggleMapTile() {
-            currentTileIndex = (currentTileIndex + 1) % tileLayers.length;
+            currentTileIndex = (currentTileIndex + 1) % terrainTileLayers.length;
             map.eachLayer(layer => {
                 if (layer instanceof L.TileLayer) {
                     map.removeLayer(layer);
                 }
             });
-            L.tileLayer(tileLayers[currentTileIndex], { maxZoom: 18 }).addTo(map);
+            L.tileLayer(terrainTileLayers[currentTileIndex].url, { maxZoom: 18 }).addTo(map);
         }
 
         // 導出高解析 PNG 圖片
@@ -372,14 +377,14 @@
 
             try {
                 const canvas = await html2canvas(poster, {
-                    scale: 2.5, // 2.5倍解析度，專為大型易拉寶展板印刷設計
+                    scale: 2.5,
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: '#0b1120'
                 });
 
                 const link = document.createElement('a');
-                link.download = 'TJC西區音樂會_復興小區易拉寶海報.png';
+                link.download = 'TJC西區音樂會_復興小區地形融合海報.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (err) {
