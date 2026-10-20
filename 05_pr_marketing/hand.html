@@ -470,34 +470,42 @@
 
         // Export High-Res Image (Front or Back)
         function downloadSignImage(side) {
-            const targetEl = side === 'front' ? document.getElementById('signCardFront') : document.getElementById('signCardBack');
+            const sourceEl = side === 'front' ? document.getElementById('signCardFront') : document.getElementById('signCardBack');
             const textVal = side === 'front' ? inFrontText.value : inBackText.value;
 
             showToast(`⏳ 正在繪製 ${side === 'front' ? '正面' : '反面'} 高解析度舉手牌圖檔，請稍候...`);
 
-            // 【關鍵修正】暫時移除反面的 3D 翻轉效果，確保轉出的圖檔文字為「正向」好閱讀（不會被 CSS 鏡射）
-            const originalTransform = targetEl.style.transform;
-            targetEl.style.transform = 'none';
+            // 【終極修復】：建立一個乾淨的實體分身，徹底脫離 3D 動畫父層的干擾
+            const clone = sourceEl.cloneNode(true);
+            clone.classList.remove('back', 'front'); // 移除含有 3D 屬性的類別
+            clone.style.transform = 'none'; // 強制清空所有變形
+            
+            // 將分身放入隱藏的獨立容器中，讓截圖引擎能單純讀取平面樣式
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'absolute';
+            wrapper.style.top = '-9999px';
+            wrapper.style.left = '-9999px';
+            wrapper.appendChild(clone);
+            document.body.appendChild(wrapper);
 
-            html2canvas(targetEl, {
+            html2canvas(clone, {
                 scale: 3, // High Resolution Print Quality
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null,
             }).then(canvas => {
-                // 截圖完成後立即恢復原始的 3D 設定
-                targetEl.style.transform = originalTransform;
+                // 截圖完成，銷毀分身
+                document.body.removeChild(wrapper);
 
                 const link = document.createElement('a');
                 link.download = `音樂會舉手牌_${side === 'front' ? '正面' : '反面'}_${textVal}.png`;
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
 
-                showToast('🎉 高解析度圖檔下載成功！正反面可直接貼合對位。');
+                showToast('🎉 高解析度圖檔下載成功！(版面已自動對齊，可直接送廠)');
             }).catch(err => {
                 console.error(err);
-                // 若發生錯誤也必須恢復設定
-                targetEl.style.transform = originalTransform;
+                if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
                 showToast('❌ 圖檔匯出失敗，請嘗試使用列印功能。');
             });
         }
