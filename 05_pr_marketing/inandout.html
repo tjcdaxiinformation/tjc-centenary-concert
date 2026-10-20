@@ -24,7 +24,7 @@
         /* Standard A3 Vertical Ratio (297mm x 420mm -> 1 : 1.414) */
         .a3-vertical-ratio {
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
             aspect-ratio: 1 / 1.414;
         }
 
@@ -32,7 +32,7 @@
         .writing-vertical-rl {
             writing-mode: vertical-rl;
             text-orientation: upright;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
         }
 
         .text-stroke-navy-glow {
@@ -78,12 +78,12 @@
             .sign-poster-card {
                 position: relative !important;
                 width: 297mm !important;
-                height: 418mm !important; /* Slight 2mm buffer to prevent page bleed */
+                height: 418mm !important; /* Buffer to avoid page bleed */
                 border: none !important;
                 box-shadow: none !important;
                 border-radius: 0 !important;
                 margin: 0 !important;
-                padding: 10mm 12mm !important;
+                padding: 8mm 10mm !important;
                 page-break-after: avoid !important;
                 page-break-inside: avoid !important;
                 overflow: hidden !important;
@@ -110,10 +110,10 @@
             真耶穌教會臺灣傳教百週年 ‧ 西區音樂會現場引導維護小組
         </div>
         <h1 class="text-2xl md:text-4xl font-black tracking-wider gold-gradient-text">
-            A3 直式現場入口指引立牌產生器
+            A3 直式現場入口指引立牌產生器 (大字版)
         </h1>
         <p class="text-xs md:text-sm text-gray-400 mt-1.5 max-w-2xl mx-auto">
-            專為音樂會現場「一樓觀眾入口」、「二樓觀眾入口」、「詩班進場預備席入口」、「詩班退場出口」量身打造。版面經最佳化配置，絕不切邊。
+            已優化「兩行豎排自動換行技術」。較長文字（如詩班進場預備席入口）將自動拆分為兩行極大字體，大幅提昇現場遠看辨識度！
         </p>
     </header>
 
@@ -126,7 +126,7 @@
                     <span>🚪</span>
                     <span>快速選擇指引標語或自訂</span>
                 </h2>
-                <span class="text-[11px] bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">A3 直式 300DPI 規格</span>
+                <span class="text-[11px] bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">A3 高辨識度大字版</span>
             </div>
 
             <!-- Presets -->
@@ -152,7 +152,7 @@
                     <button onclick="selectPreset('詩班進場預備席入口', '限獻唱詩班與演出人員進入', '➡️')" id="btnPreset3" class="preset-btn bg-[#081120] text-gray-300 hover:text-white font-bold p-3 rounded-xl transition border border-blue-900 flex items-center justify-between">
                         <div class="text-left">
                             <div class="text-sm font-bold text-amber-300">詩班進場預備席入口</div>
-                            <div class="text-[11px] text-gray-400 font-mono">限獻唱詩班與演出人員進入</div>
+                            <div class="text-[11px] text-gray-400 font-mono">限獻唱詩班與演出人員進入 (自動拆雙行超大字)</div>
                         </div>
                         <span class="text-xl">🎵</span>
                     </button>
@@ -212,9 +212,9 @@
         <!-- Right Preview Canvas Area (Right 7 cols) -->
         <div class="lg:col-span-7 flex flex-col items-center print-container">
             
-            <div class="w-full max-w-[420px] flex justify-between items-center mb-2 no-print">
+            <div class="w-full max-w-[440px] flex justify-between items-center mb-2 no-print">
                 <div class="text-xs uppercase tracking-widest text-amber-400/90 font-mono flex items-center gap-1.5">
-                    <span>🖼️ A3 直式入口指引海報實體視覺預覽</span>
+                    <span>🖼️ A3 直式大字入口指引立牌視覺預覽</span>
                 </div>
                 <span class="text-[10px] bg-blue-950 text-amber-300 px-2 py-0.5 rounded border border-blue-800 font-mono">比例 1 : 1.414</span>
             </div>
@@ -222,7 +222,7 @@
             <!-- A3 Printable Sign Poster Card Container -->
             <div class="w-full flex justify-center py-1">
                 
-                <div id="signPosterArea" class="sign-poster-card a3-vertical-ratio relative bg-cover bg-center border-4 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col justify-between p-4 md:p-5 text-slate-900 transition-all duration-300" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+                <div id="signPosterArea" class="sign-poster-card a3-vertical-ratio relative bg-cover bg-center border-4 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col justify-between p-3.5 md:p-4 text-slate-900 transition-all duration-300" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
                     
                     <!-- Soft translucent mask -->
                     <div class="absolute inset-0 bg-white/40 backdrop-blur-[0.5px] pointer-events-none"></div>
@@ -232,25 +232,25 @@
                         <div class="inline-block bg-emerald-950/90 text-amber-200 text-[10px] md:text-xs font-bold px-3 py-0.5 rounded-full border border-amber-400 shadow-md">
                             真耶穌教會臺灣傳教百週年 ‧ 西區音樂會
                         </div>
-                        <div class="text-[8.5px] font-mono tracking-widest font-bold text-slate-800 uppercase pt-0.5">
+                        <div class="text-[8px] font-mono tracking-widest font-bold text-slate-800 uppercase pt-0.5">
                             2026.11.01 ‧ 國立中央大學大禮堂
                         </div>
                     </div>
 
-                    <!-- 2. CENTER: Main Vertical Chinese Text (Optimized height and sizing) -->
-                    <div class="relative z-10 my-auto flex justify-center items-center py-1 shrink-0">
-                        <div class="bg-white/90 backdrop-blur-xs px-4 py-3 md:px-5 md:py-4 rounded-3xl border-4 border-[#102a45] shadow-xl flex justify-center items-center min-h-[190px] max-h-[250px] w-full max-w-[85%]">
-                            <h1 id="outMainTitle" class="writing-vertical-rl text-4xl md:text-5xl font-black font-serif text-[#102a45] tracking-widest leading-none text-stroke-navy-glow my-auto">
-                                一樓觀眾入口
-                            </h1>
+                    <!-- 2. CENTER: Main Vertical Text Box (Maximized text size with multi-line support) -->
+                    <div class="relative z-10 my-auto flex justify-center items-center py-1 shrink-0 w-full">
+                        <div class="bg-white/95 backdrop-blur-xs px-3 py-3 md:px-4 md:py-3.5 rounded-3xl border-4 border-[#102a45] shadow-xl flex justify-center items-center min-h-[220px] max-h-[270px] w-full max-w-[92%] overflow-hidden">
+                            <div id="outMainTitle" class="flex flex-row-reverse justify-center items-center gap-2 md:gap-3 my-auto w-full">
+                                <!-- Dynamic vertical text columns injected here -->
+                            </div>
                         </div>
                     </div>
 
                     <!-- 3. FOOTER: Sub-description, Arrow & Credits -->
-                    <div class="relative z-10 space-y-1.5 shrink-0">
+                    <div class="relative z-10 space-y-1 shrink-0">
                         
                         <!-- Directional Arrow and Sub-title Box -->
-                        <div class="bg-white/95 backdrop-blur-md px-2.5 py-2 rounded-2xl border-2 border-[#102a45] shadow-lg text-center space-y-0.5">
+                        <div class="bg-white/95 backdrop-blur-md px-2 py-1.5 rounded-2xl border-2 border-[#102a45] shadow-lg text-center space-y-0.5">
                             <div id="outArrow" class="text-xl md:text-2xl animate-bounce leading-none">
                                 ⬇️
                             </div>
@@ -260,7 +260,7 @@
                         </div>
 
                         <!-- Bottom Credits & Logo Bar -->
-                        <div class="flex items-center justify-between text-[8px] md:text-[9px] font-bold text-slate-800 bg-white/90 p-1.5 rounded-xl border border-slate-300 shadow-xs">
+                        <div class="flex items-center justify-between text-[8px] md:text-[8.5px] font-bold text-slate-800 bg-white/90 p-1.5 rounded-xl border border-slate-300 shadow-xs">
                             <div class="leading-tight">
                                 <div>主辦單位：真耶穌教會西區辦事處</div>
                                 <div class="text-[#102a45]">現場接待與入場維護組</div>
@@ -303,24 +303,57 @@
             if (!inputEl || !outputEl) return;
             inputEl.addEventListener('input', (e) => {
                 const val = e.target.value;
-                outputEl.textContent = val;
-                if (adjustFn) adjustFn(val);
+                if (adjustFn) {
+                    adjustFn(val);
+                } else {
+                    outputEl.textContent = val;
+                }
             });
         }
 
-        bindText(inMainTitle, outMainTitle, adjustFontSize);
+        bindText(inMainTitle, outMainTitle, renderVerticalTitle);
         bindText(inSubTitle, outSubTitle);
 
-        function adjustFontSize(text) {
+        /* Split text intelligently into 1 or 2 vertical columns for maximum readability and font size */
+        function renderVerticalTitle(text) {
+            if (!text) {
+                outMainTitle.innerHTML = '';
+                return;
+            }
+
             const len = text.length;
-            if (len <= 4) {
-                outMainTitle.className = "writing-vertical-rl text-4xl md:text-5xl font-black font-serif text-[#102a45] tracking-widest leading-none text-stroke-navy-glow my-auto";
-            } else if (len <= 6) {
-                outMainTitle.className = "writing-vertical-rl text-3xl md:text-4xl font-black font-serif text-[#102a45] tracking-wider leading-none text-stroke-navy-glow my-auto";
-            } else if (len <= 8) {
-                outMainTitle.className = "writing-vertical-rl text-2xl md:text-3xl font-black font-serif text-[#102a45] tracking-wide leading-none text-stroke-navy-glow my-auto";
+
+            if (len <= 6) {
+                // Single column vertical layout for short titles
+                let fontSizeClass = "text-5xl md:text-6xl";
+                if (len === 5 || len === 6) {
+                    fontSizeClass = "text-4xl md:text-5xl";
+                }
+
+                outMainTitle.innerHTML = `
+                    <h1 class="writing-vertical-rl ${fontSizeClass} font-black font-serif text-[#102a45] tracking-widest leading-none text-stroke-navy-glow my-auto">
+                        ${text}
+                    </h1>
+                `;
             } else {
-                outMainTitle.className = "writing-vertical-rl text-xl md:text-2xl font-black font-serif text-[#102a45] tracking-tight leading-none text-stroke-navy-glow my-auto";
+                // Split long text into TWO vertical columns side-by-side to maximize font size!
+                const mid = Math.ceil(len / 2);
+                const col1 = text.substring(0, mid);
+                const col2 = text.substring(mid);
+
+                let fontSizeClass = "text-3xl md:text-4xl";
+                if (len > 10) {
+                    fontSizeClass = "text-2xl md:text-3xl";
+                }
+
+                outMainTitle.innerHTML = `
+                    <h1 class="writing-vertical-rl ${fontSizeClass} font-black font-serif text-[#102a45] tracking-wider leading-none text-stroke-navy-glow my-auto">
+                        ${col1}
+                    </h1>
+                    <h1 class="writing-vertical-rl ${fontSizeClass} font-black font-serif text-[#102a45] tracking-wider leading-none text-stroke-navy-glow my-auto">
+                        ${col2}
+                    </h1>
+                `;
             }
         }
 
@@ -333,10 +366,9 @@
             inSubTitle.value = subText;
             arrowSelect.value = arrowVal;
 
-            outMainTitle.textContent = mainText;
             outSubTitle.textContent = subText;
             changeArrow(arrowVal);
-            adjustFontSize(mainText);
+            renderVerticalTitle(mainText);
 
             if (mainText === '一樓觀眾入口') document.getElementById('btnPreset1').className = "preset-btn bg-amber-500 text-slate-950 font-black p-3 rounded-xl transition border border-amber-400 shadow flex items-center justify-between hover:brightness-110";
             if (mainText === '二樓觀眾入口') document.getElementById('btnPreset2').className = "preset-btn bg-amber-500 text-slate-950 font-black p-3 rounded-xl transition border border-amber-400 shadow flex items-center justify-between hover:brightness-110";
@@ -366,11 +398,11 @@
             }).then(canvas => {
                 const link = document.createElement('a');
                 const titleVal = inMainTitle.value || '入口指引';
-                link.download = `傳教百年西區音樂會_A3指引立牌_${titleVal}.png`;
+                link.download = `傳教百年西區音樂會_A3大字指引立牌_${titleVal}.png`;
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
 
-                showToast('🎉 A3 高解析圖檔下載成功！');
+                showToast('🎉 A3 高解析大字圖檔下載成功！');
             }).catch(err => {
                 console.error(err);
                 showToast('❌ 圖檔匯出失敗，請嘗試直接使用列印功能。');
@@ -384,6 +416,9 @@
                 toast.classList.add('hidden');
             }, 3500);
         }
+
+        // Initialize default view
+        renderVerticalTitle(inMainTitle.value);
     </script>
 </body>
 </html>
