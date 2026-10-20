@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真耶穌教會臺灣傳教百週年 - 官方雙面折頁邀請卡產生器</title>
+    <title>真耶穌教會臺灣傳教百週年 - 官方橫式上下翻折頁邀請卡產生器</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
@@ -21,13 +21,13 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Standard Spread Proportion (Two A5 Landscape = A4 Spread, Ratio ~ 1.414 : 1) */
-        .spread-ratio-landscape {
+        /* Standard Top-Fold Portrait Spread Aspect Ratio (e.g. 2 x A5 Landscape stacked vertically = A4 Portrait Spread ~ 1 : 1.414) */
+        .spread-ratio-portrait {
             width: 100%;
-            aspect-ratio: 1.414 / 1;
+            aspect-ratio: 1 / 1.414;
         }
 
-        /* 3D Flip Card Effect */
+        /* 3D Vertical Flip Effect for Top-Folding Card */
         .card-container {
             perspective: 1600px;
         }
@@ -39,7 +39,7 @@
         }
 
         .flipper.flipped {
-            transform: rotateY(180deg);
+            transform: rotateX(180deg);
         }
 
         .front-spread, .back-spread {
@@ -48,21 +48,21 @@
         }
 
         .back-spread {
-            transform: rotateY(180deg);
+            transform: rotateX(180deg);
             position: absolute;
             top: 0;
             left: 0;
         }
 
-        /* Fold Crease Center Indicator Line */
-        .fold-crease-line {
+        /* Horizontal Fold Crease Center Line */
+        .fold-crease-horizontal {
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 2px;
-            background: linear-gradient(to bottom, rgba(218, 165, 32, 0.1), rgba(218, 165, 32, 0.6) 50%, rgba(218, 165, 32, 0.1));
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 2px;
+            background: linear-gradient(to right, rgba(218, 165, 32, 0.1), rgba(218, 165, 32, 0.7) 50%, rgba(218, 165, 32, 0.1));
+            transform: translateY(-50%);
             z-index: 30;
             pointer-events: none;
         }
@@ -78,7 +78,7 @@
             border-radius: 3px;
         }
 
-        /* Print Mode Setup: Two Distinct Spreads for Double-sided Printing */
+        /* Print Mode Setup: Two Sheets for Top-Opening Landscape Double-Sided Printing (Flip on Short Edge) */
         @media print {
             body {
                 background: white !important;
@@ -113,7 +113,7 @@
                 border-radius: 0 !important;
                 margin: 0 !important;
             }
-            .fold-crease-line {
+            .fold-crease-horizontal {
                 display: none !important;
             }
         }
@@ -128,10 +128,10 @@
             真耶穌教會臺灣傳教百週年 ‧ 西區音樂會籌備小組
         </div>
         <h1 class="text-2xl md:text-4xl font-black tracking-wider gold-gradient-text">
-            雙面折頁邀請卡產生器 (封面/封底 + 內頁雙面對開)
+            橫式上下翻頁折頁邀請卡產生器 (短邊翻轉 ‧ 雙面列印)
         </h1>
         <p class="text-xs md:text-sm text-gray-400 mt-1.5 max-w-2xl mx-auto">
-            專為雙面列印與中折 (Half-Fold) 設計。外頁包含封底 (左) + 封面 (右)；內頁對開包含主題經文 (左) + 尊榮邀請內文與資訊 (右)。
+            專為「橫式上下翻開 (Top-Opening Landscape Card)」設計。外頁為封底 (上) + 封面 (下)；內頁對開為主題經文 (上) + 尊榮邀請內文 (下)，正面字體好閱讀。
         </p>
     </header>
 
@@ -143,9 +143,9 @@
             <div class="flex items-center justify-between border-b border-blue-900/60 pb-3">
                 <h2 class="text-base font-bold text-amber-200 flex items-center gap-2">
                     <span>✉️</span>
-                    <span>雙面邀請函對象與內容設定</span>
+                    <span>橫式對折邀請函內容設定</span>
                 </h2>
-                <span class="text-[11px] bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">雙面長邊翻轉</span>
+                <span class="text-[11px] bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">短边翻轉/上下開</span>
             </div>
 
             <!-- Recipient Inputs -->
@@ -193,7 +193,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">邀請內文敘述 (內頁右頁)</label>
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">邀請內文敘述 (內頁下頁)</label>
                     <textarea id="inBodyText" rows="3" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl p-2.5 text-xs text-gray-300 focus:outline-none focus:border-amber-400 transition leading-relaxed">謹訂於主後 2026 年 11 月 1 日舉開傳教百週年西區詩歌音樂會。同心以詩歌頌揚主恩、重修信仰牆垣，敬備貴賓專屬席位，誠摯盼望您的蒞臨共襄盛舉，同沐主恩！</textarea>
                 </div>
 
@@ -207,23 +207,23 @@
             <div class="pt-2 space-y-2">
                 <button onclick="toggleFlipSpread()" class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black py-3 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
                     <span>🔄</span>
-                    <span>翻轉模擬觀看 (外頁 ↔ 內頁)</span>
+                    <span>上下翻轉模擬觀看 (外頁 ↔ 內頁)</span>
                 </button>
 
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="downloadSpreadImage('outer')" class="bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-2.5 px-3 rounded-xl border border-blue-800 transition text-xs flex items-center justify-center gap-1.5">
                         <span>📥</span>
-                        <span>下載外頁圖檔 (A)</span>
+                        <span>下載外頁圖檔 (Side A)</span>
                     </button>
                     <button onclick="downloadSpreadImage('inner')" class="bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-2.5 px-3 rounded-xl border border-blue-800 transition text-xs flex items-center justify-center gap-1.5">
                         <span>📥</span>
-                        <span>下載內頁圖檔 (B)</span>
+                        <span>下載內頁圖檔 (Side B)</span>
                     </button>
                 </div>
 
                 <button onclick="window.print()" class="w-full bg-[#0c1b33] hover:bg-[#112240] text-amber-300 font-bold py-2.5 px-4 rounded-xl border border-blue-800 transition text-xs flex items-center justify-center gap-2">
                     <span>🖨️</span>
-                    <span>雙面列印 / 存為標準雙面 PDF 檔</span>
+                    <span>短邊翻轉列印 / 存為標準 PDF 檔</span>
                 </button>
             </div>
         </div>
@@ -234,88 +234,88 @@
             <!-- Controls & Side Switch Indicator Header -->
             <div class="w-full flex justify-between items-center mb-3 no-print">
                 <div class="text-xs uppercase tracking-widest text-amber-400/90 font-mono flex items-center gap-2">
-                    <span>🖼️ 雙面邀請卡實體折頁模擬預覽</span>
+                    <span>🖼️ 橫式上下翻邀請卡實體折頁預覽</span>
                     <span id="sideLabel" class="bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded border border-amber-500/40">目前顯示：外頁 ( Side A ‧ 封底 + 封面 )</span>
                 </div>
 
                 <button onclick="toggleFlipSpread()" class="text-xs text-amber-300 hover:text-amber-100 font-bold flex items-center gap-1 bg-blue-950/80 px-3 py-1 rounded-full border border-blue-800 transition">
-                    <span>🔄 翻轉觀看對開內頁</span>
+                    <span>🔄 上下翻轉觀看內頁</span>
                 </button>
             </div>
 
             <!-- Card 3D Flip Stage Container -->
-            <div class="card-container w-full max-w-[760px] flex justify-center items-center">
+            <div class="card-container w-full max-w-[540px] flex justify-center items-center">
                 
                 <div id="spreadFlipper" class="flipper w-full">
                     
-                    <!-- SIDE A: OUTER SPREAD (PAGE 4 BACK COVER on Left | PAGE 1 FRONT COVER on Right) -->
-                    <div id="spreadOuter" class="front-spread spread-card spread-ratio-landscape relative bg-cover bg-center border-2 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden text-slate-900 select-none" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+                    <!-- SIDE A: OUTER SPREAD (PAGE 4 BACK COVER on Top | PAGE 1 FRONT COVER on Bottom) -->
+                    <div id="spreadOuter" class="front-spread spread-card spread-ratio-portrait relative bg-cover bg-center border-2 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden text-slate-900 select-none" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
                         
-                        <!-- Fold Crease Line Center Marker -->
-                        <div class="fold-crease-line"></div>
+                        <!-- Horizontal Crease Line Center Marker -->
+                        <div class="fold-crease-horizontal"></div>
 
                         <div class="absolute inset-0 bg-white/35 backdrop-blur-[0.5px] pointer-events-none"></div>
 
-                        <!-- 2-Column Grid Layout for Outer Side Spread -->
-                        <div class="relative z-10 w-full h-full grid grid-cols-2 p-6 md:p-8 gap-6">
+                        <!-- 2-Row Vertical Grid Layout for Top-Fold Outer Spread -->
+                        <div class="relative z-10 w-full h-full grid grid-rows-2 p-6 md:p-8 gap-6">
                             
-                            <!-- LEFT HALF: PAGE 4 (BACK COVER 封底) -->
-                            <div class="flex flex-col justify-between pr-4 border-r border-amber-900/10">
-                                <!-- Top Title -->
-                                <div class="text-center border-b border-slate-300 pb-2">
+                            <!-- TOP HALF: PAGE 4 (BACK COVER 封底 - Standard Orientation) -->
+                            <div class="flex flex-col justify-between pb-4 border-b border-amber-900/15">
+                                <!-- Top Header Title -->
+                                <div class="text-center border-b border-slate-300/80 pb-2">
                                     <div class="text-[10px] font-mono font-bold text-slate-700">1926 — 2026 CENTENARY</div>
                                     <div class="text-xs font-serif font-black text-emerald-950 tracking-wider">真耶穌教會臺灣傳教百週年 ‧ 西區音樂會</div>
                                 </div>
 
-                                <!-- QR Code Box -->
-                                <div class="my-auto bg-white/90 p-4 rounded-2xl border border-amber-400 shadow-sm flex items-center gap-4">
-                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://www.instagram.com/tjc100_west_concert/" alt="IG QR Code" class="w-20 h-20 shrink-0 object-contain bg-white p-1 rounded-xl border border-slate-300 shadow-xs">
+                                <!-- Center QR Code Banner Box -->
+                                <div class="my-auto bg-white/90 p-4 rounded-2xl border border-amber-400 shadow-sm flex items-center justify-center gap-5">
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://www.instagram.com/tjc100_west_concert/" alt="IG QR Code" class="w-16 h-16 shrink-0 object-contain bg-white p-1 rounded-xl border border-slate-300 shadow-xs">
                                     
                                     <div class="space-y-1 text-left">
                                         <div class="text-xs font-bold text-emerald-950">關注音樂會 IG 官方網站</div>
                                         <div class="text-[11px] font-mono font-bold text-amber-700">@tjc100_west_concert</div>
                                         <p class="text-[10px] text-slate-600 leading-snug">
-                                            獲取最新盛會消息與各教會歷史短影音。
+                                            獲取最新盛會消息與西區各教會歷史短影音。
                                         </p>
                                     </div>
                                 </div>
 
-                                <!-- Footer -->
-                                <div class="flex justify-between items-center text-[8.5px] text-slate-700 bg-white/70 p-2 rounded-lg border border-slate-300">
+                                <!-- Bottom Info Credit -->
+                                <div class="flex justify-between items-center text-[9px] text-slate-700 bg-white/70 p-2 rounded-lg border border-slate-300">
                                     <div>主辦單位：真耶穌教會西區辦事處</div>
                                     <div class="font-bold text-emerald-950">憑邀請函對號入場</div>
                                 </div>
                             </div>
 
-                            <!-- RIGHT HALF: PAGE 1 (FRONT COVER 封面) -->
-                            <div class="flex flex-col justify-between pl-4">
-                                <!-- Top Header Row -->
+                            <!-- BOTTOM HALF: PAGE 1 (FRONT COVER 封面) -->
+                            <div class="flex flex-col justify-between pt-4">
+                                <!-- Top Row -->
                                 <div class="flex justify-between items-center border-b border-amber-900/20 pb-2">
                                     <div class="text-[10px] font-mono font-bold text-[#102a45]">1926 — 2026 傳教百週年</div>
                                     <div class="text-base font-serif text-[#1a2b4c] font-black tracking-wider">2026.11.01</div>
                                 </div>
 
-                                <!-- Center Title Block -->
-                                <div class="my-auto space-y-2 text-left">
-                                    <h2 id="outCoverSlogan" class="text-xl md:text-2xl font-black font-serif text-[#102a45] leading-tight">
-                                        重修牆垣<br>開展境界
+                                <!-- Center Front Cover Titles -->
+                                <div class="my-auto space-y-2 text-center">
+                                    <h2 id="outCoverSlogan" class="text-2xl md:text-3xl font-black font-serif text-[#102a45] tracking-wider leading-tight">
+                                        重修牆垣 開展境界
                                     </h2>
-                                    <p class="text-[8px] font-mono font-bold text-[#2a4365] tracking-widest uppercase">
+                                    <p class="text-[9px] font-mono font-bold text-[#2a4365] tracking-widest uppercase">
                                         REBUILDING THE WALLS, EXTENDING THE BOUNDARY
                                     </p>
-                                    <div id="outCoverMainTitle" class="text-xs font-black text-[#102a45] font-serif pt-1">
+                                    <div id="outCoverMainTitle" class="text-xs md:text-sm font-black text-[#102a45] font-serif pt-1">
                                         真耶穌教會臺灣傳教百年 西區詩歌音樂會
                                     </div>
                                     
                                     <div class="pt-2">
-                                        <span class="inline-block bg-[#1a3a2a] text-amber-200 px-5 py-2 rounded-xl border border-amber-400 font-serif font-black text-sm tracking-widest shadow-md">
+                                        <span class="inline-block bg-[#1a3a2a] text-amber-200 px-6 py-2 rounded-xl border border-amber-400 font-serif font-black text-sm tracking-widest shadow-md">
                                             官方邀請卡
                                         </span>
                                     </div>
                                 </div>
 
                                 <!-- Bottom Info Bar -->
-                                <div class="flex justify-between items-center bg-white/80 px-3 py-2 rounded-xl border border-white/90 shadow-xs text-[10.5px]">
+                                <div class="flex justify-between items-center bg-white/85 px-4 py-2 rounded-xl border border-white/90 shadow-xs text-[11px]">
                                     <div id="outCoverEventTime" class="font-mono font-bold text-[#102a45]">
                                         ⏰ 2026.11.01 (日) 08:30
                                     </div>
@@ -328,19 +328,19 @@
                         </div>
                     </div>
 
-                    <!-- SIDE B: INNER SPREAD (PAGE 2 SCRIPTURE on Left | PAGE 3 RECIPIENT & DETAILS on Right) -->
-                    <div id="spreadInner" class="back-spread spread-card spread-ratio-landscape relative bg-cover bg-center border-2 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden text-slate-900 select-none" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+                    <!-- SIDE B: INNER SPREAD (PAGE 2 SCRIPTURE on Top | PAGE 3 RECIPIENT & DETAILS on Bottom) -->
+                    <div id="spreadInner" class="back-spread spread-card spread-ratio-portrait relative bg-cover bg-center border-2 border-amber-500/50 rounded-2xl shadow-2xl overflow-hidden text-slate-900 select-none" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
                         
-                        <!-- Fold Crease Line Center Marker -->
-                        <div class="fold-crease-line"></div>
+                        <!-- Horizontal Crease Line Center Marker -->
+                        <div class="fold-crease-horizontal"></div>
 
                         <div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] pointer-events-none"></div>
 
-                        <!-- 2-Column Grid Layout for Inner Side Spread -->
-                        <div class="relative z-10 w-full h-full grid grid-cols-2 p-6 md:p-8 gap-6">
+                        <!-- 2-Row Vertical Grid Layout for Top-Fold Inner Spread -->
+                        <div class="relative z-10 w-full h-full grid grid-rows-2 p-6 md:p-8 gap-6">
                             
-                            <!-- LEFT HALF: PAGE 2 (INNER LEFT SCRIPTURE 內頁左頁) -->
-                            <div class="flex flex-col justify-between pr-4 border-r border-amber-900/15">
+                            <!-- TOP HALF: PAGE 2 (INNER TOP SCRIPTURE 內頁上頁) -->
+                            <div class="flex flex-col justify-between pb-4 border-b border-amber-900/15">
                                 <div class="flex justify-between items-center border-b border-amber-800/30 pb-2">
                                     <span class="text-[8.5px] font-mono tracking-widest text-emerald-950 uppercase bg-amber-100 px-2 py-0.5 rounded border border-amber-300 font-bold">
                                         CENTENARY THEME ‧ 主題宣告
@@ -348,15 +348,15 @@
                                     <span class="text-[10px] font-mono text-slate-600 font-bold">1926 — 2026</span>
                                 </div>
 
-                                <div class="my-auto space-y-3">
-                                    <div class="text-left">
+                                <div class="my-auto space-y-3 text-center">
+                                    <div>
                                         <span class="text-amber-800 font-serif text-xl">✝️</span>
                                         <h3 class="text-xl font-serif font-black text-[#102a45] leading-snug mt-1">
                                             重修牆垣 ‧ 開展境界
                                         </h3>
                                     </div>
 
-                                    <div class="bg-amber-50/90 p-4 rounded-2xl border border-amber-300 shadow-sm space-y-2">
+                                    <div class="bg-amber-50/90 p-4 rounded-2xl border border-amber-300 shadow-sm space-y-2 max-w-lg mx-auto">
                                         <p class="text-xs md:text-sm font-serif font-bold text-emerald-950 leading-relaxed italic">
                                             「以色列啊，日子必到，你的牆垣必重修；到那日，你的境界必開展」
                                         </p>
@@ -371,16 +371,16 @@
                                 </div>
                             </div>
 
-                            <!-- RIGHT HALF: PAGE 3 (INNER RIGHT DETAILS 內頁右頁) -->
-                            <div class="flex flex-col justify-between pl-4 space-y-2">
+                            <!-- BOTTOM HALF: PAGE 3 (INNER BOTTOM DETAILS 內頁下頁) -->
+                            <div class="flex flex-col justify-between pt-4 space-y-3">
                                 <!-- Recipient Header Line -->
-                                <div class="bg-white/90 p-3 rounded-xl border-2 border-[#1a3a2a] shadow-sm space-y-0.5">
-                                    <div id="outSalutation" class="text-[10.5px] font-bold text-emerald-900">
+                                <div class="bg-white/90 p-3.5 rounded-xl border-2 border-[#1a3a2a] shadow-sm space-y-0.5">
+                                    <div id="outSalutation" class="text-[11px] font-bold text-emerald-900">
                                         主內平安！誠摯邀請您蒞臨指導：
                                     </div>
                                     <div class="flex items-baseline gap-2 border-b-2 border-dashed border-emerald-900/60 pb-1 pt-0.5">
-                                        <span class="text-[11px] text-slate-600 font-bold">敬邀：</span>
-                                        <span id="outRecipientName" class="text-lg font-serif font-black text-emerald-950 tracking-wider">
+                                        <span class="text-xs text-slate-600 font-bold">敬邀：</span>
+                                        <span id="outRecipientName" class="text-xl font-serif font-black text-emerald-950 tracking-wider">
                                             張大衛
                                         </span>
                                         <span id="outRecipientTitle" class="text-xs font-bold text-emerald-900">
@@ -392,28 +392,28 @@
 
                                 <!-- Body Text -->
                                 <div class="my-auto">
-                                    <p id="outBodyText" class="text-[11px] md:text-xs text-slate-800 leading-relaxed font-serif p-3 bg-white/80 rounded-xl border border-slate-200 text-justify shadow-xs">
+                                    <p id="outBodyText" class="text-xs text-slate-800 leading-relaxed font-serif p-3.5 bg-white/85 rounded-xl border border-slate-200 text-justify shadow-xs">
                                         謹訂於主後 2026 年 11 月 1 日舉開傳教百週年西區詩歌音樂會。同心以詩歌頌揚主恩、重修信仰牆垣，敬備貴賓專屬席位，誠摯盼望您的蒞臨共襄盛舉，同沐主恩！
                                     </p>
                                 </div>
 
                                 <!-- Footer Event Details & Sign Off -->
-                                <div class="space-y-1.5">
-                                    <div class="p-2 bg-white/90 border border-emerald-900/30 rounded-xl shadow-xs text-center">
-                                        <div class="flex justify-around items-center text-[10.5px] font-bold text-emerald-950">
+                                <div class="space-y-2">
+                                    <div class="p-2.5 bg-white/90 border border-emerald-900/30 rounded-xl shadow-xs text-center">
+                                        <div class="flex justify-around items-center text-xs font-bold text-emerald-950">
                                             <div>
-                                                <span class="text-[8.5px] text-slate-500 block">時間</span>
+                                                <span class="text-[9px] text-slate-500 block">時間</span>
                                                 <span id="outInnerEventTime" class="font-mono font-black text-church-navy">2026.11.01 08:30</span>
                                             </div>
                                             <div class="h-4 w-0.5 bg-emerald-900/20"></div>
                                             <div>
-                                                <span class="text-[8.5px] text-slate-500 block">地點</span>
+                                                <span class="text-[9px] text-slate-500 block">地點</span>
                                                 <span id="outInnerLocation" class="font-bold text-emerald-950">國立中央大學 大禮堂</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div id="outSignOff" class="text-right text-[10.5px] font-bold text-slate-900 font-serif leading-tight">
+                                    <div id="outSignOff" class="text-right text-xs font-bold text-slate-900 font-serif leading-tight">
                                         真耶穌教會西區辦事處<br>音樂會籌備小組 敬邀
                                     </div>
                                 </div>
@@ -476,7 +476,7 @@
                 targets.forEach(t => {
                     if (t) {
                         if (t === outCoverSlogan) {
-                            t.innerHTML = val.replace(/\s+/g, '<br>');
+                            t.innerHTML = val;
                         } else if (t === outSignOff) {
                             t.innerHTML = val.replace(/\s+‧\s+/g, '<br>');
                         } else {
@@ -511,19 +511,19 @@
             }
         }
 
-        // 3D Flip Card Action
+        // 3D Flip Card Action (Vertical X-Axis Flip)
         function toggleFlipSpread() {
             isFlipped = !isFlipped;
             if (isFlipped) {
                 spreadFlipper.classList.add('flipped');
-                sideLabel.textContent = '目前顯示：內頁對開 ( Side B ‧ 主題經文 + 邀請尊榮內文 )';
+                sideLabel.textContent = '目前顯示：內頁對開 ( Side B ‧ 上方主題經文 + 下方尊榮內文 )';
             } else {
                 spreadFlipper.classList.remove('flipped');
-                sideLabel.textContent = '目前顯示：外頁 ( Side A ‧ 封底 + 封面 )';
+                sideLabel.textContent = '目前顯示：外頁 ( Side A ‧ 上方封底 + 下方封面 )';
             }
         }
 
-        // High Res Image Download (Outer Spread Side A or Inner Spread Side B)
+        // High Res Image Download
         function downloadSpreadImage(side) {
             const targetEl = side === 'outer' ? document.getElementById('spreadOuter') : document.getElementById('spreadInner');
             const sideName = side === 'outer' ? '外頁(封底+封面)' : '內頁(經文+尊榮內文)';
@@ -531,21 +531,21 @@
             showToast(`⏳ 正在繪製 ${sideName} 高解析度邀請函圖檔，請稍候...`);
 
             html2canvas(targetEl, {
-                scale: 3, // 3x high resolution print quality
+                scale: 3, // 3x print resolution
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: null,
             }).then(canvas => {
                 const link = document.createElement('a');
                 const recipient = inRecipientName.value || '手寫版';
-                link.download = `傳教百年西區音樂會_雙面邀請函_${sideName}_${recipient}.png`;
+                link.download = `傳教百年西區音樂會_橫式上下折邀請函_${sideName}_${recipient}.png`;
                 link.href = canvas.toDataURL('image/png', 1.0);
                 link.click();
 
                 showToast(`🎉 ${sideName} 高解析度 PNG 圖檔下載成功！`);
             }).catch(err => {
                 console.error(err);
-                showToast('❌ 圖檔匯出失敗，請嘗試直接使用雙面列印功能。');
+                showToast('❌ 圖檔匯出失敗，請嘗試直接使用短邊翻轉列印功能。');
             });
         }
 
