@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>真耶穌教會臺灣傳教百年西區音樂會 - 復興小區易拉寶海報</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Leaflet 地圖套件 -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    
-    <!-- html2canvas 用於高解析圖片導出 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
+<!-- ... existing code ... -->
     <!-- Google Fonts -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap');
@@ -36,27 +20,33 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
         }
 
-        /* 地形圖無邊框透明融和效果 */
+        /* 地質地形風格圖 */
         .leaflet-tile-pane {
-            filter: brightness(0.75) contrast(1.2) saturate(1.1) hue-rotate(-10deg);
+            filter: brightness(0.85) contrast(1.15) saturate(1.1);
         }
 
         .leaflet-control-container, .leaflet-popup-content-wrapper, .leaflet-popup-tip {
             display: none !important;
         }
 
-        /* 自然羽化無框相片融合樣式 */
+        /* 直書文字樣式 */
+        .writing-mode-vertical {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            letter-spacing: 0.15em;
+        }
+
+        /* 縮圖優化與羽化相片 */
         .blended-photo-card {
-            mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 90%);
-            -webkit-mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 90%);
-            transition: all 0.4s ease-in-out;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);
+            transition: all 0.3s ease-in-out;
         }
 
         .blended-photo-card:hover {
-            transform: scale(1.12) zIndex(50) !important;
-            mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
-            -webkit-mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
-            filter: drop-shadow(0 15px 30px rgba(245, 158, 11, 0.6));
+            transform: scale(1.05);
+            z-index: 40 !important;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.5);
         }
 
         /* 自訂細滾動條 */
@@ -74,8 +64,8 @@
                 📜
             </div>
             <div>
-                <h1 class="text-base font-black text-white">復興小區 H架/易拉寶海報 (1:2.5 地形圖自然融合版)</h1>
-                <p class="text-xs text-slate-400">720x1800px 直版主視覺底圖與 GitHub 專案資源連動版</p>
+                <h1 class="text-base font-black text-white">復興小區 H架/易拉寶海報 (無字底圖與左右分欄版)</h1>
+                <p class="text-xs text-slate-400">720x1800px 直版·中央直書「復興小區」·左地圖右照片</p>
             </div>
         </div>
 
@@ -93,153 +83,130 @@
     <!-- 主海報本體 (720x1800 像素，1:2.5 標準易拉寶比例) -->
     <div id="poster" class="poster-canvas bg-slate-950 rounded-2xl overflow-hidden relative border-4 border-slate-800/80 flex flex-col justify-between shrink-0 select-none">
         
-        <!-- 背景星空光暈與主視覺底圖 (連結 GitHub Raw 直版主視覺.png) -->
-        <div class="absolute inset-0 bg-slate-950 z-0"></div>
-        <div class="absolute inset-0 bg-cover bg-center opacity-45 mix-blend-screen pointer-events-none z-0" 
-             style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E7%9B%B4%E7%89%88%E4%B8%BB%E8%A6%96%E8%A6%BA.png'), url('直版主視覺.png');"></div>
-        
-        <!-- 全幅地形圖底層：無外框直融主視覺與星空 -->
-        <div class="absolute inset-0 z-10 opacity-65 mix-blend-lighten pointer-events-none">
-            <div id="poster-map" class="w-full h-full scale-105"></div>
+        <!-- 背景底圖：指定無字的「主視覺.jpg」作為背景層，不阻擋地圖與地標 -->
+        <div class="absolute inset-0 z-0 bg-slate-950">
+            <img src="主視覺.jpg" 
+                 alt="主視覺底圖" 
+                 class="w-full h-full object-cover opacity-35 mix-blend-screen pointer-events-none"
+                 onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.jpg';">
         </div>
 
-        <!-- 全局羽化淡入遮罩，使地形圖與兩側主題自然對齊融和 -->
-        <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/85 via-slate-950/40 to-slate-950/95 z-10 pointer-events-none"></div>
+        <!-- 漸層柔和遮罩 -->
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/20 to-slate-950/95 z-0 pointer-events-none"></div>
 
-        <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/20 rounded-full blur-[120px] z-10 pointer-events-none"></div>
-        <div class="absolute bottom-10 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[140px] z-10 pointer-events-none"></div>
-
-        <!-- 1. 頂部主標題區 -->
-        <div class="relative z-30 pt-12 px-10 text-center space-y-3">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black tracking-[0.25em] uppercase shadow-md backdrop-blur-md">
+        <!-- 1. 頂部標題區 -->
+        <div class="relative z-30 pt-10 px-8 text-center space-y-2">
+            <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-black tracking-[0.2em] uppercase shadow-md backdrop-blur-md">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                 TJC Western District Centennial
             </div>
 
-            <h1 class="text-3xl font-black tracking-wider text-white font-serif-tc leading-snug drop-shadow-2xl">
-                真耶穌教會臺灣傳教百年<br/>
-                <span class="text-amber-400 text-4xl mt-1 block tracking-normal drop-shadow-md">西區音樂會</span>
+            <h1 class="text-2xl font-black tracking-wider text-white font-serif-tc leading-snug drop-shadow-2xl">
+                真耶穌教會臺灣傳教百年<span class="text-amber-400 ml-2">西區音樂會</span>
             </h1>
 
-            <div class="flex items-center justify-center gap-3 pt-1">
-                <div class="h-px w-12 bg-gradient-to-r from-transparent to-amber-500/60"></div>
-                <h2 class="text-lg font-bold text-slate-200 tracking-[0.2em] font-serif-tc">
-                    復興小區教會傳教史專題展
-                </h2>
-                <div class="h-px w-12 bg-gradient-to-l from-transparent to-amber-500/60"></div>
-            </div>
-            
-            <p class="text-[11px] text-slate-300 font-medium tracking-widest max-w-md mx-auto pt-1 drop-shadow-md">
-                串聯大溪、八德與復興原鄉部落 · 傳揚百年救恩奇蹟
+            <p class="text-[11px] text-slate-300 font-bold tracking-widest pt-0.5">
+                大溪 · 八德 · 復興原鄉部落 巡禮專題展
             </p>
         </div>
 
-        <!-- 2. 中間核心區域：羽化無框交疊教會照片牆 -->
-        <div class="relative z-30 flex-grow my-auto px-6 py-2 flex flex-col justify-center">
+        <!-- 2. 中間核心內容區：左地圖 / 中直書標題 / 右教會照片 -->
+        <div class="relative z-20 flex-grow grid grid-cols-12 px-6 py-4 items-center gap-2 my-auto h-[1220px]">
             
-            <div class="text-[11px] font-black text-amber-300 tracking-widest uppercase mb-4 pl-4 flex items-center gap-2 drop-shadow-lg">
-                <span class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping"></span>
-                <span>復興小區主要教會與原鄉巡禮</span>
+            <!-- 左半部 (5/12)：復興小區地形圖 -->
+            <div class="col-span-5 h-[1150px] relative rounded-2xl overflow-hidden border border-amber-500/30 bg-slate-900/60 shadow-2xl backdrop-blur-sm">
+                <div class="absolute top-3 left-3 z-30 bg-slate-950/80 border border-amber-500/40 px-2.5 py-1 rounded-lg text-amber-300 text-[10px] font-black tracking-wider flex items-center gap-1.5 shadow-lg">
+                    <span>🗺️</span>
+                    <span>復興小區 15處點位地圖</span>
+                </div>
+                <!-- 地圖元件 -->
+                <div id="poster-map" class="w-full h-full"></div>
             </div>
 
-            <!-- 自然羽化多層交疊相片叢集 -->
-            <div class="relative h-[820px] w-full flex flex-col justify-between items-center">
+            <!-- 正中央 (2/12)：「復興小區」大字直書 -->
+            <div class="col-span-2 flex flex-col items-center justify-center h-full z-30 pointer-events-none py-6">
+                <div class="bg-slate-950/70 border border-amber-500/50 backdrop-blur-md py-10 px-3 rounded-full shadow-[0_0_35px_rgba(245,158,11,0.25)] flex flex-col items-center">
+                    <span class="text-amber-400 text-xs font-black tracking-widest writing-mode-vertical mb-2 opacity-80">
+                        西區傳教史專題
+                    </span>
+                    <h2 class="text-4xl md:text-5xl font-black text-amber-300 font-serif-tc writing-mode-vertical drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] tracking-widest my-4">
+                        復興小區
+                    </h2>
+                    <div class="w-1.5 h-12 bg-gradient-to-b from-amber-400 to-transparent rounded-full my-2"></div>
+                    <span class="text-slate-300 text-[9px] font-bold writing-mode-vertical tracking-widest">
+                        教會與祈禱所
+                    </span>
+                </div>
+            </div>
+
+            <!-- 右半部 (5/12)：各教會照片 (精緻小圖牆) -->
+            <div class="col-span-5 h-[1150px] flex flex-col justify-between py-1 space-y-2.5 overflow-hidden">
+                
+                <div class="text-[10px] font-black text-amber-300 tracking-wider bg-slate-900/80 border border-amber-500/30 py-1 px-2.5 rounded-lg flex items-center gap-1.5 shadow-md">
+                    <span>🏛️</span>
+                    <span>復興小區代表性教會</span>
+                </div>
 
                 <!-- 大溪教會 -->
-                <div class="blended-photo-card absolute top-0 left-2 w-[280px] h-36 z-20">
-                    <div class="relative w-full h-full overflow-hidden">
-                        <img src="大溪教會.jpg" 
-                             alt="大溪教會" 
-                             class="w-full h-full object-cover opacity-90 hover:opacity-100" 
-                             onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%A4%A7%E6%BA%AA%E6%95%99%E6%9C%83.jpg';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white drop-shadow-md">大溪教會</span>
-                            <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 桃園大溪</span>
-                        </div>
+                <div class="blended-photo-card relative h-[145px] rounded-xl overflow-hidden border border-slate-700/80 bg-slate-900/80 shadow-lg">
+                    <img src="大溪教會.jpg" alt="大溪教會" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%A4%A7%E6%BA%AA%E6%95%99%E6%9C%83.jpg';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                        <span class="text-xs font-black text-white drop-shadow-md">大溪教會</span>
+                        <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 桃園大溪</span>
                     </div>
                 </div>
 
                 <!-- 崎頂教會 -->
-                <div class="blended-photo-card absolute top-24 right-4 w-[270px] h-36 z-20">
-                    <div class="relative w-full h-full overflow-hidden">
-                        <img src="崎頂教會.jpg" 
-                             alt="崎頂教會" 
-                             class="w-full h-full object-cover opacity-90 hover:opacity-100" 
-                             onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%B4%8E%E9%A0%82%E6%95%99%E6%9C%83.jpg';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white drop-shadow-md">崎頂教會</span>
-                            <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 員林路</span>
-                        </div>
+                <div class="blended-photo-card relative h-[145px] rounded-xl overflow-hidden border border-slate-700/80 bg-slate-900/80 shadow-lg">
+                    <img src="崎頂教會.jpg" alt="崎頂教會" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%B4%8E%E9%A0%82%E6%95%99%E6%9C%83.jpg';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                        <span class="text-xs font-black text-white drop-shadow-md">崎頂教會</span>
+                        <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 員林路</span>
                     </div>
                 </div>
 
                 <!-- 八德教會 -->
-                <div class="blended-photo-card absolute top-52 left-6 w-[275px] h-36 z-25">
-                    <div class="relative w-full h-full overflow-hidden">
-                        <img src="八德教會.jpg" 
-                             alt="八德教會" 
-                             class="w-full h-full object-cover opacity-90 hover:opacity-100" 
-                             onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%85%AB%E5%BE%B7%E6%95%99%E6%9C%83.jpg';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white drop-shadow-md">八德教會</span>
-                            <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 瑞發街</span>
-                        </div>
+                <div class="blended-photo-card relative h-[145px] rounded-xl overflow-hidden border border-slate-700/80 bg-slate-900/80 shadow-lg">
+                    <img src="八德教會.jpg" alt="八德教會" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%85%AB%E5%BE%B7%E6%95%99%E6%9C%83.jpg';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                        <span class="text-xs font-black text-white drop-shadow-md">八德教會</span>
+                        <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 瑞發街</span>
                     </div>
                 </div>
 
                 <!-- 復興教會 -->
-                <div class="blended-photo-card absolute top-80 right-2 w-[285px] h-36 z-25">
-                    <div class="relative w-full h-full overflow-hidden">
-                        <img src="復興教會.jpg" 
-                             alt="復興教會" 
-                             class="w-full h-full object-cover opacity-90 hover:opacity-100" 
-                             onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%BE%A9%E8%B2%B0%E6%95%99%E6%9C%83.jpg';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white drop-shadow-md">復興教會</span>
-                            <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 詩朗部落</span>
-                        </div>
+                <div class="blended-photo-card relative h-[145px] rounded-xl overflow-hidden border border-slate-700/80 bg-slate-900/80 shadow-lg">
+                    <img src="復興教會.jpg" alt="復興教會" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E5%BE%A9%E8%B2%B0%E6%95%99%E6%9C%83.jpg';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                        <span class="text-xs font-black text-white drop-shadow-md">復興教會</span>
+                        <span class="text-[9px] text-amber-300 font-bold">前山牧區 · 詩朗部落</span>
                     </div>
                 </div>
 
                 <!-- 義盛教會 -->
-                <div class="blended-photo-card absolute top-[430px] left-3 w-[270px] h-36 z-30">
-                    <div class="relative w-full h-full overflow-hidden">
-                        <img src="義盛教會.jpg" 
-                             alt="義盛教會" 
-                             class="w-full h-full object-cover opacity-90 hover:opacity-100" 
-                             onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E7%BE%A9%E7%9B%9B%E6%95%99%E6%9C%83.jpg';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white drop-shadow-md">義盛教會</span>
-                            <span class="text-[9px] text-amber-300 font-bold">中山牧區 · 義興部落</span>
-                        </div>
+                <div class="blended-photo-card relative h-[145px] rounded-xl overflow-hidden border border-slate-700/80 bg-slate-900/80 shadow-lg">
+                    <img src="義盛教會.jpg" alt="義盛教會" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E7%BE%A9%E7%9B%9B%E6%95%99%E6%9C%83.jpg';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                        <span class="text-xs font-black text-white drop-shadow-md">義盛教會</span>
+                        <span class="text-[9px] text-amber-300 font-bold">中山牧區 · 義興部落</span>
                     </div>
                 </div>
 
                 <!-- 上巴陵教會 -->
-                <div class="blended-photo-card absolute top-[550px] right-5 w-[280px] h-36 z-30">
-                    <div class="relative w-full h-full overflow-hidden">
-                        <img src="上巴陵教會.jpg" 
-                             alt="上巴陵教會" 
-                             class="w-full h-full object-cover opacity-90 hover:opacity-100" 
-                             onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%8A%E5%B7%B4%E9%99%B5%E6%95%99%E6%9C%83.jpg';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white drop-shadow-md">上巴陵教會</span>
-                            <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 華陵村</span>
-                        </div>
+                <div class="blended-photo-card relative h-[145px] rounded-xl overflow-hidden border border-slate-700/80 bg-slate-900/80 shadow-lg">
+                    <img src="上巴陵教會.jpg" alt="上巴陵教會" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%8A%E5%B7%B4%E9%99%B5%E6%95%99%E6%9C%83.jpg';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                        <span class="text-xs font-black text-white drop-shadow-md">上巴陵教會</span>
+                        <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 華陵村</span>
                     </div>
                 </div>
 
                 <!-- 三光教會 -->
-                <div class="blended-photo-card absolute top-[660px] left-8 w-[285px] h-36 z-35">
-                    <div class="relative w-full h-full overflow-hidden">
-                        <img src="三光教會.jpg" 
-                             alt="三光教會" 
-                             class="w-full h-full object-cover opacity-90 hover:opacity-100" 
-                             onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%89%E5%85%89%E6%95%99%E6%9C%83.jpg';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-transparent to-transparent p-3 flex flex-col justify-end">
-                            <span class="text-xs font-black text-white drop-shadow-md">三光教會</span>
-                            <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 武道能敢</span>
-                        </div>
+                <div class="blended-photo-card relative h-[145px] rounded-xl overflow-hidden border border-slate-700/80 bg-slate-900/80 shadow-lg">
+                    <img src="三光教會.jpg" alt="三光教會" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%89%E5%85%89%E6%95%99%E6%9C%83.jpg';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-2.5 flex flex-col justify-end">
+                        <span class="text-xs font-black text-white drop-shadow-md">三光教會</span>
+                        <span class="text-[9px] text-amber-300 font-bold">後山牧區 · 武道能敢</span>
                     </div>
                 </div>
 
@@ -247,43 +214,43 @@
 
         </div>
 
-        <!-- 3. 底部資訊區與右下角網站 QR Code (內嵌 QR Code 與 GitHub 相容備份) -->
-        <div class="relative z-30 p-8 pt-4 pb-10 bg-slate-950/90 border-t border-slate-800/80 grid grid-cols-12 gap-4 items-center">
+        <!-- 3. 底部資訊區與右下角 QR Code -->
+        <div class="relative z-30 p-6 pt-4 pb-8 bg-slate-950/90 border-t border-slate-800/80 grid grid-cols-12 gap-4 items-center">
             
             <!-- 左側：傳教史簡介 -->
-            <div class="col-span-8 space-y-2.5">
+            <div class="col-span-8 space-y-1.5">
                 <div class="flex items-center gap-2 text-amber-400 font-black text-xs">
                     <span class="text-base">✝️</span>
                     <span>百年信仰傳承 · 雲端文字見證</span>
                 </div>
                 
                 <p class="text-xs text-slate-300 leading-relaxed font-medium">
-                    本展板展示復興小區十五處教會與祈禱所之建立歷程。邀請您掃描右側 QR Code，進入「西區教會傳教史數位典藏系統」，瀏覽完整歷史圖表與空間地形動態分佈。
+                    本展板展示復興小區十五處教會與祈禱所之建立歷程。歡迎掃描右側 QR Code，進入「西區教會傳教史數位典藏系統」，瀏覽完整歷史圖表與動態地圖。
                 </p>
 
-                <div class="flex items-center gap-3 text-[10px] text-slate-400 pt-1">
-                    <span class="bg-slate-900/80 border border-slate-800 px-3 py-1 rounded-lg text-slate-300 font-bold">
-                        收錄：<strong class="text-amber-400 font-black text-xs">15</strong> 處點位
+                <div class="flex items-center gap-2 text-[10px] text-slate-400 pt-0.5">
+                    <span class="bg-slate-900 border border-slate-800 px-2.5 py-0.5 rounded text-slate-300 font-bold">
+                        收錄：<strong class="text-amber-400 font-black">15</strong> 處點位
                     </span>
-                    <span class="bg-slate-900/80 border border-slate-800 px-3 py-1 rounded-lg text-slate-300 font-bold">
+                    <span class="bg-slate-900 border border-slate-800 px-2.5 py-0.5 rounded text-slate-300 font-bold">
                         涵蓋：<strong class="text-indigo-300 font-black">八德 / 大溪 / 復興山區</strong>
                     </span>
                 </div>
             </div>
 
-            <!-- 右下角：網站 QR Code 專區 (雙重備援圖源) -->
-            <div class="col-span-4 flex flex-col items-center justify-center border-l border-slate-800/80 pl-4">
-                <div class="bg-white p-2.5 rounded-2xl shadow-2xl border border-amber-500/40 relative">
+            <!-- 右下角：網站 QR Code 專區 -->
+            <div class="col-span-4 flex flex-col items-center justify-center border-l border-slate-800/80 pl-2">
+                <div class="bg-white p-2 rounded-xl shadow-xl border border-amber-500/40 relative">
                     <img id="qr-code-img" 
                          src="西區傳教史見證網頁.png" 
                          alt="QR Code" 
-                         class="w-26 h-26 object-contain" 
+                         class="w-22 h-22 object-contain" 
                          onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://tjcdaxiinformation.github.io/TJC-West-History/'">
                 </div>
                 
-                <div class="mt-2 text-center">
-                    <span class="text-[10px] font-black text-amber-400 block tracking-tight">真耶穌教會臺灣傳教百年</span>
-                    <span class="text-[9px] font-bold text-slate-300 block">西區教會傳教史網站</span>
+                <div class="mt-1.5 text-center">
+                    <span class="text-[10px] font-black text-amber-400 block tracking-tight">西區傳教史網站</span>
+                    <span class="text-[8px] font-bold text-slate-400 block">掃描線上觀看完整見證</span>
                 </div>
             </div>
 
@@ -295,7 +262,7 @@
         let map;
         let currentTileIndex = 0;
 
-        // 台灣山脈地形圖底圖 (Esri World Terrain / OpenTopoMap 衛星與高程地形圖)
+        // 台灣山脈地形圖底圖
         const terrainTileLayers = [
             {
                 url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}',
@@ -330,11 +297,11 @@
             { name: "光華", lat: 24.6750, lng: 121.4280 }
         ];
 
-        // 初始化全幅無邊框地形圖
+        // 初始化左半部地圖
         function initMap() {
             map = L.map('poster-map', {
-                center: [24.78, 121.36],
-                zoom: 11,
+                center: [24.78, 121.35],
+                zoom: 10.5,
                 zoomControl: false,
                 attributionControl: false,
                 dragging: false,
@@ -344,32 +311,32 @@
 
             L.tileLayer(terrainTileLayers[0].url, { maxZoom: 18 }).addTo(map);
 
-            // 復興山區範圍幾何連線 (金色地形脈絡)
+            // 復興山區範圍幾何連線
             const boundsCoords = fuxingChurches.map(c => [c.lat, c.lng]);
             const polygon = L.polygon(boundsCoords, {
                 color: '#f59e0b',
                 weight: 1.5,
-                dashArray: '4, 6',
+                dashArray: '3, 5',
                 fillColor: '#f59e0b',
-                fillOpacity: 0.12
+                fillOpacity: 0.15
             }).addTo(map);
 
-            // 自訂發光金屬標示 (無框融入地形)
+            // 自訂發光地標標示
             function createPinIcon(title) {
                 return L.divIcon({
                     className: 'custom-map-pin',
                     html: `
-                        <div class="relative flex flex-col items-center group">
-                            <div class="w-5 h-5 bg-amber-500/90 rounded-full border border-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.9)] flex items-center justify-center text-slate-950 font-black text-[9px]">
+                        <div class="relative flex flex-col items-center">
+                            <div class="w-4 h-4 bg-amber-500 rounded-full border border-amber-100 shadow-[0_0_12px_rgba(245,158,11,1)] flex items-center justify-center text-slate-950 font-black text-[8px]">
                                 ✝
                             </div>
-                            <div class="bg-slate-950/80 text-amber-300 text-[8px] font-black px-1.5 py-0.5 rounded mt-0.5 whitespace-nowrap border border-amber-500/40 shadow-lg">
+                            <div class="bg-slate-950/90 text-amber-300 text-[8px] font-black px-1 rounded mt-0.5 whitespace-nowrap border border-amber-500/50 shadow-md">
                                 ${title}
                             </div>
                         </div>
                     `,
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
                 });
             }
 
@@ -378,7 +345,7 @@
                 L.marker([c.lat, c.lng], { icon: createPinIcon(c.name) }).addTo(map);
             });
 
-            map.fitBounds(polygon.getBounds(), { padding: [30, 30] });
+            map.fitBounds(polygon.getBounds(), { padding: [20, 20] });
         }
 
         // 切換地形風格
@@ -409,7 +376,7 @@
                 });
 
                 const link = document.createElement('a');
-                link.download = 'TJC西區音樂會_復興小區地形融合海報.png';
+                link.download = 'TJC西區音樂會_復興小區海報.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (err) {
