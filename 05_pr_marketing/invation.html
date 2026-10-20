@@ -89,7 +89,7 @@
         @media print {
             @page {
                 size: A4 landscape; /* Force A4 Landscape Print */
-                margin: 0;
+                margin: 0mm; /* 消除所有預設列印邊界 */
             }
             body {
                 background: white !important;
@@ -97,36 +97,58 @@
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            header, .no-print {
+            header, .no-print, #toast, footer {
                 display: none !important;
             }
             .print-container {
                 display: block !important;
                 width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
-            .flipper {
+            
+            /* 解除 3D 結構，避免產生多餘的隱形高度 */
+            .card-container, .flipper {
+                perspective: none !important;
                 transform: none !important;
                 transform-style: flat !important;
+                width: 297mm !important;
+                height: auto !important;
+                display: block !important;
             }
-            .back-spread {
-                position: relative !important;
-                transform: none !important;
-                page-break-before: always;
-            }
-            .front-spread, .back-spread {
-                backface-visibility: visible !important;
-            }
+
+            /* 強制將兩面圖版固定為精準的 A4 尺寸 */
             .spread-card {
-                page-break-after: always;
+                position: relative !important;
                 width: 297mm !important;
                 height: 210mm !important;
                 border: none !important;
                 box-shadow: none !important;
-                border-radius: 0 !important;
-                margin: 0 auto !important;
+                margin: 0 !important;
+                transform: none !important;
+                backface-visibility: visible !important;
+                page-break-inside: avoid !important;
             }
+
+            /* 第一面印完後強制換頁 */
+            .front-spread {
+                page-break-after: always !important;
+            }
+
+            /* 第二面印完後「絕對禁止」換頁，消除第三張空白頁 */
+            .back-spread {
+                page-break-before: avoid !important;
+                page-break-after: avoid !important; 
+            }
+
+            /* 顯示精確的中心對折虛線，方便印出後手工對折 */
             .fold-crease-vertical {
-                display: none !important; /* Hide visual crease in final print */
+                display: block !important;
+                background: none !important;
+                border-left: 1px dashed #94a3b8 !important; /* 淺灰色虛線 */
+                width: 0 !important;
+                z-index: 50 !important;
+                opacity: 0.8 !important;
             }
         }
     </style>
