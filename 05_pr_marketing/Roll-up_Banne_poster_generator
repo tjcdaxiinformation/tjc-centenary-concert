@@ -174,58 +174,61 @@
         // ==========================================
         // 【重要】請將您辛苦生成的「教會名稱與座標」貼在下方對應的陣列中
         // ==========================================
-        const zonesData = {
-            fuxing: {
-                id: 'fuxing',
-                name: '復興區',
-                image: 'https://placehold.co/1200x500/1e293b/d4af37?text=Fuxing+History+Photo', // 請替換為本地照片路徑
+        const districtData = {
+       fuxing: {
+                name: "復興小區",
+                id: "fuxing",
                 churches: [
-                    { name: '霞雲教會', coord: '24.8028, 121.3851' },
-                    { name: '高義教會', coord: '24.7314, 121.3989' },
-                    { name: '三光教會', coord: '24.6781, 121.3542' },
-                    { name: '巴陵教會', coord: '24.6853, 121.3995' },
-                    { name: '長興教會', coord: '24.7912, 121.3115' },
-                    { name: '雪霧鬧教會', coord: '24.7225, 121.3788' }
-                    // ... 繼續添加
+                    { name: "八德教會", lat: 24.934632, lng: 121.299978, photo: "assets/photos/fuxing/bade.jpg", showPhoto: true },
+                    { name: "崎頂教會", lat: 24.900432, lng: 121.282682, photo: "assets/photos/fuxing/qiding.jpg", showPhoto: true },
+                    { name: "大溪教會", lat: 24.881231, lng: 121.294548, photo: "assets/photos/fuxing/daxi.jpg", showPhoto: true },
+                    { name: "復興教會", lat: 24.826416, lng: 121.356914, photo: "assets/photos/fuxing/fuxing.jpg", showPhoto: true },
+                    { name: "義盛教會", lat: 24.779475, lng: 121.365940, photo: "assets/photos/fuxing/yisheng.jpg", showPhoto: true },
+                    { name: "大灣祈禱所", lat: 24.760693, lng: 121.344903, photo: "assets/photos/fuxing/dawan.jpg", showPhoto: true },
+                    { name: "雪霧鬧祈禱所", lat: 24.741287, lng: 121.365961, photo: "assets/photos/fuxing/xuewunao.jpg", showPhoto: true },
+                    { name: "上巴陵教會", lat: 24.685697, lng: 121.396455, photo: "assets/photos/fuxing/shangbaling.jpg", showPhoto: true },
+                    { name: "中巴陵", lat: 24.679721, lng: 121.396892, showPhoto: false },
+                    { name: "三光", lat: 24.675178, lng: 121.366111, showPhoto: false },
+                    { name: "光華", lat: 24.665251, lng: 121.398561, showPhoto: false }
                 ]
             },
-            taochu: {
-                id: 'taochu',
-                name: '桃竹區',
-                image: 'https://placehold.co/1200x500/1e293b/d4af37?text=Taochu+History+Photo', // 請替換為本地照片路徑
+            zhumiao: {
+                name: "竹苗小區",
+                id: "zhumiao",
                 churches: [
-                    { name: '桃園教會', coord: '24.9931, 121.3010' },
-                    { name: '中壢教會', coord: '24.9538, 121.2256' },
-                    { name: '新竹教會', coord: '24.8066, 120.9686' },
-                    { name: '內壢教會', coord: '24.9723, 121.2589' },
-                    { name: '竹東教會', coord: '24.7358, 121.0894' }
-                    // ... 繼續添加
+                    { name: "花園教會", lat: 24.645038, lng: 121.151893, photo: "assets/photos/zhumiao/huayuan.jpg", showPhoto: true },
+                    { name: "五峰教會", lat: 24.629047, lng: 121.119750, photo: "assets/photos/zhumiao/wufeng.jpg", showPhoto: true },
+                    { name: "桃山教會", lat: 24.599219, lng: 121.109834, photo: "assets/photos/zhumiao/taoshan.jpg", showPhoto: true },
+                    { name: "清泉教會", lat: 24.578934, lng: 121.106060, photo: "assets/photos/zhumiao/qingquan.jpg", showPhoto: true },
+                    { name: "義興教會", lat: 24.683555, lng: 121.185258, photo: "assets/photos/zhumiao/yixing.jpg", showPhoto: true },
+                    { name: "錦屏教會", lat: 24.695765, lng: 121.227790, photo: "assets/photos/zhumiao/jinping.jpg", showPhoto: true },
+                    { name: "尖石教會", lat: 24.720930, lng: 121.214883, photo: "assets/photos/zhumiao/jianshi.jpg", showPhoto: true }
                 ]
             },
-            miaoli: {
-                id: 'miaoli',
-                name: '苗栗區',
-                image: 'https://placehold.co/1200x500/1e293b/d4af37?text=Miaoli+History+Photo', // 請替換為本地照片路徑
+            zhongmiao: {
+                name: "中苗小區",
+                id: "zhongmiao",
                 churches: [
-                    { name: '苗栗教會', coord: '24.5648, 120.8217' },
-                    { name: '竹南教會', coord: '24.6865, 120.8804' },
-                    { name: '頭份教會', coord: '24.6879, 120.9079' },
-                    { name: '卓蘭教會', coord: '24.3125, 120.8251' }
-                    // ... 繼續添加
+                    { name: "東勢教會", lat: 24.249405, lng: 120.832019, photo: "assets/photos/zhongmiao/dongshi.jpg", showPhoto: true },
+                    { name: "自由教會", lat: 24.270630, lng: 120.890200, photo: "assets/photos/zhongmiao/ziyou.jpg", showPhoto: true },
+                    { name: "雙崎教會", lat: 24.290980, lng: 120.908350, photo: "assets/photos/zhongmiao/shuangqi.jpg", showPhoto: true },
+                    { name: "達觀教會", lat: 24.321900, lng: 120.921956, photo: "assets/photos/zhongmiao/daguan.jpg", showPhoto: true },
+                    { name: "南勢教會", lat: 24.170876, lng: 120.896805, photo: "assets/photos/zhongmiao/nanshi.jpg", showPhoto: true },
+                    { name: "裡冷教會", lat: 24.164515, lng: 120.952551, photo: "assets/photos/zhongmiao/lileng.jpg", showPhoto: true },
+                    { name: "博愛教會", lat: 24.174447, lng: 120.978225, photo: "assets/photos/zhongmiao/boai.jpg", showPhoto: true }
                 ]
             },
-            taichung: {
-                id: 'taichung',
-                name: '台中區',
-                image: 'https://placehold.co/1200x500/1e293b/d4af37?text=Taichung+History+Photo', // 請替換為本地照片路徑
+            nantou: {
+                name: "南投小區",
+                id: "nantou",
                 churches: [
-                    { name: '台中教會', coord: '24.1432, 120.6785' },
-                    { name: '南台中教會', coord: '24.1205, 120.6698' },
-                    { name: '西台中教會', coord: '24.1487, 120.6483' },
-                    { name: '豐原教會', coord: '24.2523, 120.7208' },
-                    { name: '大里教會', coord: '24.1028, 120.6861' },
-                    { name: '東勢教會', coord: '24.2581, 120.8275' }
-                    // ... 繼續添加
+                    { name: "翠巒教會", lat: 24.182960, lng: 121.204100, photo: "assets/photos/nantou/cuiluan.jpg", showPhoto: true },
+                    { name: "力行教會", lat: 24.148459, lng: 121.190195, photo: "assets/photos/nantou/lixing.jpg", showPhoto: true },
+                    { name: "紅香教會", lat: 24.159071, lng: 121.176026, photo: "assets/photos/nantou/hongxiang.jpg", showPhoto: true },
+                    { name: "慈峰教會", lat: 24.131208, lng: 121.184243, photo: "assets/photos/nantou/cifeng.jpg", showPhoto: true },
+                    { name: "精英教會", lat: 24.061304, lng: 121.194630, photo: "assets/photos/nantou/jingying.jpg", showPhoto: true },
+                    { name: "廬山教會", lat: 24.033899, lng: 121.185267, photo: "assets/photos/nantou/lushan.jpg", showPhoto: true },
+                    { name: "春陽教會", lat: 24.027045, lng: 121.149445, photo: "assets/photos/nantou/chunyang.jpg", showPhoto: true }
                 ]
             }
         };
