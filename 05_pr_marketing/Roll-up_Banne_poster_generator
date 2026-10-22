@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>傳教百週年西區音樂會 - 易寶拉海報</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background-color: #1a1a2e;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #poster-container {
+            width: 800px;
+            height: 2000px; /* 1:2.5 aspect ratio typical for roll-up banners */
+            background: linear-gradient(135deg, #0b1021 0%, #1a2a40 50%, #0b1021 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform-origin: top center;
+            margin-top: 20px;
+        }
+
+        /* 偽主視覺背景紋理 */
+        .bg-texture {
+            position: absolute;
+            inset: 0;
+            opacity: 0.15;
+            background-image: radial-gradient(#d4af37 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+
+        .gold-text {
+            background: linear-gradient(to bottom, #fceabb, #f8b500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .irregular-photo {
+            position: absolute;
+            object-fit: cover;
+            border: 4px solid rgba(212, 175, 55, 0.8); /* Gold border */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+        
+        .blob-1 { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        .blob-2 { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        .blob-3 { border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%; }
+        .blob-4 { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            letter-spacing: 0.5em;
+        }
+
+        svg.arrow-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .map-marker {
+            position: absolute;
+            transform: translate(-50%, -100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body class="pb-10">
+
+    <div class="w-full bg-slate-900 p-4 sticky top-0 z-50 flex justify-center items-center gap-4 shadow-lg border-b border-amber-500/30">
+        <h1 class="text-xl font-bold text-amber-400">海報產生器 (預覽)</h1>
+        <select id="district-select" onchange="renderPoster(this.value)" class="bg-slate-800 text-amber-400 border border-amber-500/50 rounded-lg px-4 py-2 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-amber-500/50 cursor-pointer">
+            <option value="fuxing">復興小區</option>
+            <option value="zhumiao">竹苗小區</option>
+            <option value="zhongmiao">中苗小區</option>
+            <option value="nantou">南投小區</option>
+        </select>
+        <button onclick="zoomOut()" class="px-3 py-1 bg-slate-700 rounded hover:bg-slate-600">- 縮小</button>
+        <button onclick="zoomIn()" class="px-3 py-1 bg-slate-700 rounded hover:bg-slate-600">+ 放大</button>
+    </div>
+
+    <div id="scale-wrapper">
+        <div id="poster-container">
+            <div class="bg-texture"></div>
+            
+            <!-- Header / Title -->
+            <div class="absolute top-12 left-0 w-full text-center z-30 px-8">
+                <h2 class="text-3xl font-bold tracking-widest text-gray-300 mb-4">真耶穌教會臺灣傳教百週年</h2>
+                <h1 class="text-6xl font-black gold-text tracking-widest">西區音樂會</h1>
+                <div class="w-3/4 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mt-6"></div>
+            </div>
+
+            <!-- Center Vertical Text -->
+            <div class="absolute inset-0 flex justify-center items-center pointer-events-none z-10 opacity-80">
+                <h1 id="poster-district-title" class="vertical-text text-[140px] font-black gold-text opacity-40 ml-12 shadow-2xl drop-shadow-[0_0_15px_rgba(255,200,0,0.3)]">
+                    復興小區
+                </h1>
+            </div>
+
+            <!-- Map Area (Right) -->
+            <div id="map-area" class="absolute top-[250px] right-8 w-[350px] bottom-[50px] rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm p-4 hidden">
+                <!-- Markers will be injected here -->
+            </div>
+
+            <!-- Dynamic Content (Photos, Markers, Arrows) -->
+            <div id="dynamic-content" class="absolute inset-0 top-[250px] bottom-[50px]"></div>
+
+            <svg class="arrow-overlay" id="arrow-svg">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                    refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#d4af37" />
+                    </marker>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <g id="arrow-paths"></g>
+            </svg>
+
+            <!-- Footer -->
+            <div class="absolute bottom-8 w-full text-center text-amber-500/60 font-bold tracking-widest text-lg">
+                TRUE JESUS CHURCH 100TH ANNIVERSARY
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DISTRICT_DATA = {
+            fuxing: {
+                name: "復興小區",
+                id: "fuxing",
+                churches: [
+                    { name: "八德教會", lat: 24.934632, lng: 121.299978, photo: "assets/photos/fuxing/bade.jpg", showPhoto: true },
+                    { name: "崎頂教會", lat: 24.900432, lng: 121.282682, photo: "assets/photos/fuxing/qiding.jpg", showPhoto: true },
+                    { name: "大溪教會", lat: 24.881231, lng: 121.294548, photo: "assets/photos/fuxing/daxi.jpg", showPhoto: true },
+                    { name: "復興教會", lat: 24.826416, lng: 121.356914, photo: "assets/photos/fuxing/fuxing.jpg", showPhoto: true },
+                    { name: "義盛教會", lat: 24.779475, lng: 121.365940, photo: "assets/photos/fuxing/yisheng.jpg", showPhoto: true },
+                    { name: "大灣祈禱所", lat: 24.760693, lng: 121.344903, photo: "assets/photos/fuxing/dawan.jpg", showPhoto: true },
+                    { name: "雪霧鬧祈禱所", lat: 24.741287, lng: 121.365961, photo: "assets/photos/fuxing/xuewunao.jpg", showPhoto: true },
+                    { name: "上巴陵教會", lat: 24.685697, lng: 121.396455, photo: "assets/photos/fuxing/shangbaling.jpg", showPhoto: true },
+                    { name: "中巴陵", lat: 24.679721, lng: 121.396892, showPhoto: false },
+                    { name: "三光", lat: 24.675178, lng: 121.366111, showPhoto: false },
+                    { name: "光華", lat: 24.665251, lng: 121.398561, showPhoto: false }
+                ]
+            },
+            zhumiao: {
+                name: "竹苗小區",
+                id: "zhumiao",
+                churches: [
+                    { name: "花園教會", lat: 24.645038, lng: 121.151893, photo: "assets/photos/zhumiao/huayuan.jpg", showPhoto: true },
+                    { name: "五峰教會", lat: 24.629047, lng: 121.119750, photo: "assets/photos/zhumiao/wufeng.jpg", showPhoto: true },
+                    { name: "桃山教會", lat: 24.599219, lng: 121.109834, photo: "assets/photos/zhumiao/taoshan.jpg", showPhoto: true },
+                    { name: "清泉教會", lat: 24.578934, lng: 121.106060, photo: "assets/photos/zhumiao/qingquan.jpg", showPhoto: true },
+                    { name: "義興教會", lat: 24.683555, lng: 121.185258, photo: "assets/photos/zhumiao/yixing.jpg", showPhoto: true },
+                    { name: "錦屏教會", lat: 24.695765, lng: 121.227790, photo: "assets/photos/zhumiao/jinping.jpg", showPhoto: true },
+                    { name: "尖石教會", lat: 24.720930, lng: 121.214883, photo: "assets/photos/zhumiao/jianshi.jpg", showPhoto: true }
+                ]
+            },
+            zhongmiao: {
+                name: "中苗小區",
+                id: "zhongmiao",
+                churches: [
+                    { name: "東勢教會", lat: 24.249405, lng: 120.832019, photo: "assets/photos/zhongmiao/dongshi.jpg", showPhoto: true },
+                    { name: "自由教會", lat: 24.270630, lng: 120.890200, photo: "assets/photos/zhongmiao/ziyou.jpg", showPhoto: true },
+                    { name: "雙崎教會", lat: 24.290980, lng: 120.908350, photo: "assets/photos/zhongmiao/shuangqi.jpg", showPhoto: true },
+                    { name: "達觀教會", lat: 24.321900, lng: 120.921956, photo: "assets/photos/zhongmiao/daguan.jpg", showPhoto: true },
+                    { name: "南勢教會", lat: 24.170876, lng: 120.896805, photo: "assets/photos/zhongmiao/nanshi.jpg", showPhoto: true },
+                    { name: "裡冷教會", lat: 24.164515, lng: 120.952551, photo: "assets/photos/zhongmiao/lileng.jpg", showPhoto: true },
+                    { name: "博愛教會", lat: 24.174447, lng: 120.978225, photo: "assets/photos/zhongmiao/boai.jpg", showPhoto: true }
+                ]
+            },
+            nantou: {
+                name: "南投小區",
+                id: "nantou",
+                churches: [
+                    { name: "翠巒教會", lat: 24.182960, lng: 121.204100, photo: "assets/photos/nantou/cuiluan.jpg", showPhoto: true },
+                    { name: "力行教會", lat: 24.148459, lng: 121.190195, photo: "assets/photos/nantou/lixing.jpg", showPhoto: true },
+                    { name: "紅香教會", lat: 24.159071, lng: 121.176026, photo: "assets/photos/nantou/hongxiang.jpg", showPhoto: true },
+                    { name: "慈峰教會", lat: 24.131208, lng: 121.184243, photo: "assets/photos/nantou/cifeng.jpg", showPhoto: true },
+                    { name: "精英教會", lat: 24.061304, lng: 121.194630, photo: "assets/photos/nantou/jingying.jpg", showPhoto: true },
+                    { name: "廬山教會", lat: 24.033899, lng: 121.185267, photo: "assets/photos/nantou/lushan.jpg", showPhoto: true },
+                    { name: "春陽教會", lat: 24.027045, lng: 121.149445, photo: "assets/photos/nantou/chunyang.jpg", showPhoto: true }
+                ]
+            }
+        };
+
+        // UI Scaling
+        let currentScale = 0.45;
+        const wrapper = document.getElementById('scale-wrapper');
+        
+        function updateScale() {
+            wrapper.style.transform = `scale(${currentScale})`;
+            wrapper.style.marginTop = `-${(1 - currentScale) * 1000}px`;
+            wrapper.style.marginBottom = `-${(1 - currentScale) * 1000}px`;
+        }
+
+        function zoomIn() { currentScale += 0.05; updateScale(); }
+        function zoomOut() { currentScale -= 0.05; updateScale(); }
+        
+        // Init scale
+        updateScale();
+
+        function renderPoster(districtKey) {
+            const data = DISTRICT_DATA[districtKey];
+            document.getElementById('poster-district-title').innerText = data.name;
+            
+            const container = document.getElementById('dynamic-content');
+            const svgGroup = document.getElementById('arrow-paths');
+            container.innerHTML = '';
+            svgGroup.innerHTML = '';
+
+            const churches = data.churches;
+            
+            // Calculate map bounding box to project Lat/Lng to X/Y
+            let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
+            churches.forEach(c => {
+                if (c.lat < minLat) minLat = c.lat;
+                if (c.lat > maxLat) maxLat = c.lat;
+                if (c.lng < minLng) minLng = c.lng;
+                if (c.lng > maxLng) maxLng = c.lng;
+            });
+            
+            // Add padding to bounds
+            const latPad = (maxLat - minLat) * 0.1;
+            const lngPad = (maxLng - minLng) * 0.1;
+            minLat -= latPad; maxLat += latPad;
+            minLng -= lngPad; maxLng += lngPad;
+
+            // Map Area (Right side: X: 450 to 750, Y: 0 to 1700 (relative to dynamic-content))
+            const mapRect = { left: 450, top: 50, width: 300, height: 1600 };
+            
+            // Photos Area (Left side: X: 50 to 350, Y: distributed)
+            const photosArea = { left: 40, width: 320, top: 100, height: 1500 };
+            const churchesWithPhoto = churches.filter(c => c.showPhoto);
+            const photoSpacing = photosArea.height / Math.max(churchesWithPhoto.length, 1);
+
+            let photoIndex = 0;
+            
+            churches.forEach((church) => {
+                // Project Lat/Lng to Map X/Y
+                const xPct = (church.lng - minLng) / (maxLng - minLng);
+                const yPct = (maxLat - church.lat) / (maxLat - minLat); // Invert Y
+                
+                const markerX = mapRect.left + (xPct * mapRect.width);
+                const markerY = mapRect.top + (yPct * mapRect.height);
+
+                // Create Map Marker
+                const marker = document.createElement('div');
+                marker.className = 'map-marker';
+                marker.style.left = `${markerX}px`;
+                marker.style.top = `${markerY}px`;
+                marker.innerHTML = `
+                    <svg class="w-8 h-8 text-amber-500 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <div class="mt-1 px-2 py-1 bg-slate-900/80 border border-amber-500/50 rounded text-amber-200 text-sm font-bold shadow-lg whitespace-nowrap backdrop-blur-sm">
+                        ${church.name}
+                    </div>
+                `;
+                container.appendChild(marker);
+
+                // Place Photo and Draw Arrow
+                if (church.showPhoto) {
+                    const blobClass = `blob-${(photoIndex % 4) + 1}`;
+                    const photoWidth = 240 + Math.random() * 40; // 240px to 280px
+                    const photoHeight = 180 + Math.random() * 40; // 180px to 220px
+                    
+                    // Stagger X position for overlap effect
+                    const photoX = photosArea.left + (photoIndex % 2 === 0 ? 0 : 60);
+                    const photoY = photosArea.top + (photoIndex * photoSpacing) - (photoHeight / 2);
+
+                    const photo = document.createElement('img');
+                    // Fallback to placeholder if real asset is not found
+                    photo.src = church.photo || `https://placehold.co/${Math.floor(photoWidth)}x${Math.floor(photoHeight)}/2c3e50/d4af37?text=${church.name}`;
+                    photo.onerror = function() {
+                        this.onerror = null;
+                        this.src = `https://placehold.co/${Math.floor(photoWidth)}x${Math.floor(photoHeight)}/2c3e50/d4af37?text=${church.name}`;
+                    };
+                    photo.className = `irregular-photo ${blobClass}`;
+                    photo.style.width = `${photoWidth}px`;
+                    photo.style.height = `${photoHeight}px`;
+                    photo.style.left = `${photoX}px`;
+                    photo.style.top = `${photoY}px`;
+                    
+                    container.appendChild(photo);
+
+                    const startX = photoX + photoWidth - 10;
+                    const startY = photoY + (photoHeight / 2);
+                    const endX = markerX - 15;
+                    const endY = markerY - 20; // Point near the marker icon
+
+                    // Calculate control point for bezier curve
+                    const ctrlX = startX + (endX - startX) / 2;
+                    const ctrlY = Math.min(startY, endY) - 50 - Math.random() * 50;
+
+                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    // +250 because the SVG is full height but container is offset by 250px from top
+                    const offset = 250; 
+                    path.setAttribute("d", `M ${startX} ${startY + offset} Q ${ctrlX} ${ctrlY + offset} ${endX} ${endY + offset}`);
+                    path.setAttribute("fill", "none");
+                    path.setAttribute("stroke", "#d4af37"); // Gold
+                    path.setAttribute("stroke-width", "3");
+                    path.setAttribute("stroke-dasharray", "8, 6");
+                    path.setAttribute("marker-end", "url(#arrowhead)");
+                    path.setAttribute("filter", "url(#glow)");
+                    path.setAttribute("opacity", "0.8");
+
+                    svgGroup.appendChild(path);
+
+                    photoIndex++;
+                }
+            });
+        }
+
+        // Initialize with default selection
+        window.onload = () => {
+            renderPoster('fuxing');
+        };
+    </script>
+</body>
+</html>
