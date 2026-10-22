@@ -369,6 +369,7 @@
                         </span>
                     </div>
 
+<!-- ... existing code ... -->
                     <!-- 地圖外框金邊裝飾角 -->
                     <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-brand-gold pointer-events-none z-10"></div>
                     <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-brand-gold pointer-events-none z-10"></div>
@@ -448,7 +449,6 @@
             }
         };
 
- <script>
         // 全域地圖變數與縮放狀態
         let map = null;
         let mapMarkers = [];
@@ -530,7 +530,6 @@
             }).addTo(map);
         }
 
-     <script>
         function renderPoster() {
             applyBgImage();
             const zoneKey = document.getElementById("zone-select").value;
@@ -540,7 +539,10 @@
             // 更新直書小區名稱與副標題
             document.getElementById("huge-zone-name").innerText = zone.name;
             document.getElementById("poster-subtitle").innerText = zone.subtitle;
-            document.getElementById("map-area-tag").innerHTML = `<i class="fa-solid fa-layer-group"></i> ${zone.name} 地形與行政區地圖`;
+            const mapTag = document.getElementById("map-area-tag");
+            if (mapTag) {
+                mapTag.innerHTML = `<i class="fa-solid fa-layer-group"></i> ${zone.name} 地形與行政區地圖`;
+            }
             document.getElementById("footer-count-text").innerText = `共收錄 ${zone.churches.length} 所教會`;
 
             // 清空舊圖層
@@ -646,6 +648,7 @@
 
             }, 250);
         }
+
         // 廠商高畫質出圖功能 (匯出 300 DPI / 超高解析度 PNG 檔案)
         async function exportHighResPoster() {
             const btn = document.getElementById('export-btn');
