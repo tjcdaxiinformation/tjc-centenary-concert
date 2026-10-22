@@ -231,27 +231,63 @@
         // x, y 代表在 800x1422 畫布上的百分比位置
         // ==========================================
         const zonesData = {
-            zhongmiao: {
-                name: '中苗小區',
-                nodes: [
-                    { id: 1, blobId: 1, blob: {x: 35, y: 22, class: 'blob-1'}, pin: {x: 72, y: 26}, name: '達觀教會' },
-                    { id: 2, blobId: 2, blob: {x: 38, y: 32, class: 'blob-2'}, pin: {x: 69, y: 38}, name: '雙崎教會' },
-                    { id: 3, blobId: 3, blob: {x: 33, y: 43, class: 'blob-3'}, pin: {x: 67, y: 46}, name: '自由教會' },
-                    { id: 4, blobId: 4, blob: {x: 38, y: 53, class: 'blob-4'}, pin: {x: 58, y: 54}, name: '東勢教會' },
-                    { id: 5, blobId: 5, blob: {x: 33, y: 62, class: 'blob-1'}, pin: {x: 67, y: 84}, name: '南勢教會' },
-                    { id: 6, blobId: 6, blob: {x: 38, y: 72, class: 'blob-2'}, pin: {x: 75, y: 87}, name: '裡冷教會' },
-                    { id: 7, blobId: 7, blob: {x: 33, y: 82, class: 'blob-3'}, pin: {x: 79, y: 83}, name: '博愛教會' }
+       fuxing: {
+                name: "復興小區",
+                id: "fuxing",
+                churches: [
+                    { name: "八德教會", lat: 24.934632, lng: 121.299978, photo: "assets/photos/fuxing/bade.jpg", showPhoto: true },
+                    { name: "崎頂教會", lat: 24.900432, lng: 121.282682, photo: "assets/photos/fuxing/qiding.jpg", showPhoto: true },
+                    { name: "大溪教會", lat: 24.881231, lng: 121.294548, photo: "assets/photos/fuxing/daxi.jpg", showPhoto: true },
+                    { name: "復興教會", lat: 24.826416, lng: 121.356914, photo: "assets/photos/fuxing/fuxing.jpg", showPhoto: true },
+                    { name: "義盛教會", lat: 24.779475, lng: 121.365940, photo: "assets/photos/fuxing/yisheng.jpg", showPhoto: true },
+                    { name: "大灣祈禱所", lat: 24.760693, lng: 121.344903, photo: "assets/photos/fuxing/dawan.jpg", showPhoto: true },
+                    { name: "雪霧鬧祈禱所", lat: 24.741287, lng: 121.365961, photo: "assets/photos/fuxing/xuewunao.jpg", showPhoto: true },
+                    { name: "上巴陵教會", lat: 24.685697, lng: 121.396455, photo: "assets/photos/fuxing/shangbaling.jpg", showPhoto: true },
+                    { name: "中巴陵", lat: 24.679721, lng: 121.396892, showPhoto: false },
+                    { name: "三光", lat: 24.675178, lng: 121.366111, showPhoto: false },
+                    { name: "光華", lat: 24.665251, lng: 121.398561, showPhoto: false }
                 ]
             },
-            other: {
-                name: '測試小區',
-                nodes: [
-                    { id: 1, blobId: 1, blob: {x: 35, y: 30, class: 'blob-1'}, pin: {x: 70, y: 40}, name: '測試教會A' },
-                    { id: 2, blobId: 2, blob: {x: 35, y: 60, class: 'blob-2'}, pin: {x: 70, y: 70}, name: '測試教會B' }
+            zhumiao: {
+                name: "竹苗小區",
+                id: "zhumiao",
+                churches: [
+                    { name: "花園教會", lat: 24.645038, lng: 121.151893, photo: "assets/photos/zhumiao/huayuan.jpg", showPhoto: true },
+                    { name: "五峰教會", lat: 24.629047, lng: 121.119750, photo: "assets/photos/zhumiao/wufeng.jpg", showPhoto: true },
+                    { name: "桃山教會", lat: 24.599219, lng: 121.109834, photo: "assets/photos/zhumiao/taoshan.jpg", showPhoto: true },
+                    { name: "清泉教會", lat: 24.578934, lng: 121.106060, photo: "assets/photos/zhumiao/qingquan.jpg", showPhoto: true },
+                    { name: "義興教會", lat: 24.683555, lng: 121.185258, photo: "assets/photos/zhumiao/yixing.jpg", showPhoto: true },
+                    { name: "錦屏教會", lat: 24.695765, lng: 121.227790, photo: "assets/photos/zhumiao/jinping.jpg", showPhoto: true },
+                    { name: "尖石教會", lat: 24.720930, lng: 121.214883, photo: "assets/photos/zhumiao/jianshi.jpg", showPhoto: true }
+                ]
+            },
+            zhongmiao: {
+                name: "中苗小區",
+                id: "zhongmiao",
+                churches: [
+                    { name: "東勢教會", lat: 24.249405, lng: 120.832019, photo: "assets/photos/zhongmiao/dongshi.jpg", showPhoto: true },
+                    { name: "自由教會", lat: 24.270630, lng: 120.890200, photo: "assets/photos/zhongmiao/ziyou.jpg", showPhoto: true },
+                    { name: "雙崎教會", lat: 24.290980, lng: 120.908350, photo: "assets/photos/zhongmiao/shuangqi.jpg", showPhoto: true },
+                    { name: "達觀教會", lat: 24.321900, lng: 120.921956, photo: "assets/photos/zhongmiao/daguan.jpg", showPhoto: true },
+                    { name: "南勢教會", lat: 24.170876, lng: 120.896805, photo: "assets/photos/zhongmiao/nanshi.jpg", showPhoto: true },
+                    { name: "裡冷教會", lat: 24.164515, lng: 120.952551, photo: "assets/photos/zhongmiao/lileng.jpg", showPhoto: true },
+                    { name: "博愛教會", lat: 24.174447, lng: 120.978225, photo: "assets/photos/zhongmiao/boai.jpg", showPhoto: true }
+                ]
+            },
+            nantou: {
+                name: "南投小區",
+                id: "nantou",
+                churches: [
+                    { name: "翠巒教會", lat: 24.182960, lng: 121.204100, photo: "assets/photos/nantou/cuiluan.jpg", showPhoto: true },
+                    { name: "力行教會", lat: 24.148459, lng: 121.190195, photo: "assets/photos/nantou/lixing.jpg", showPhoto: true },
+                    { name: "紅香教會", lat: 24.159071, lng: 121.176026, photo: "assets/photos/nantou/hongxiang.jpg", showPhoto: true },
+                    { name: "慈峰教會", lat: 24.131208, lng: 121.184243, photo: "assets/photos/nantou/cifeng.jpg", showPhoto: true },
+                    { name: "精英教會", lat: 24.061304, lng: 121.194630, photo: "assets/photos/nantou/jingying.jpg", showPhoto: true },
+                    { name: "廬山教會", lat: 24.033899, lng: 121.185267, photo: "assets/photos/nantou/lushan.jpg", showPhoto: true },
+                    { name: "春陽教會", lat: 24.027045, lng: 121.149445, photo: "assets/photos/nantou/chunyang.jpg", showPhoto: true }
                 ]
             }
         };
-
         function init() {
             // 設定初始縮放
             document.getElementById('poster-wrapper').style.transform = `scale(${currentScale})`;
