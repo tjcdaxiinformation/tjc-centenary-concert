@@ -6,7 +6,7 @@
     <title>易拉寶海報產生器 - 真耶穌教會臺灣傳教百週年西區音樂會</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -39,7 +39,7 @@
         }
     </script>
     
-     <style>
+    <style>
         body {
             background-color: #0b0f19;
             color: #f3f4f6;
@@ -48,6 +48,7 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            font-family: 'Noto Sans TC', sans-serif;
         }
 
         /* 頂部固定工具列 */
@@ -56,8 +57,8 @@
             top: 0;
             z-index: 100;
             backdrop-filter: blur(12px);
-            background-color: rgba(15, 23, 42, 0.85);
-            border-bottom: 1px solid rgba(223, 183, 84, 0.2);
+            background-color: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(223, 183, 84, 0.25);
         }
 
         /* 易拉寶 H 架 比例 (60 x 160 cm => 600px x 1600px) */
@@ -66,38 +67,37 @@
             height: 1600px;
             position: relative;
             background-color: #0d1527;
-            /* 載入指定相對路徑底圖 */
             background-image: url('tjc-centenary-concert/主視覺.jpg'), url('主視覺.jpg'), linear-gradient(180deg, #090e18 0%, #111a2e 50%, #080c14 100%);
             background-size: cover;
             background-position: center;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(223, 183, 84, 0.15);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(223, 183, 84, 0.2);
             overflow: hidden;
             transform-origin: top center;
             transition: transform 0.25s ease-out;
         }
 
-        /* 標題高度對比強化 */
+        /* 標題文字光暈特效 */
         .poster-title-text {
             color: #ffffff;
             text-shadow: 
                 0px 2px 4px rgba(0,0,0,0.9), 
                 0px 0px 12px rgba(15, 23, 42, 0.95),
-                0px 0px 25px rgba(184, 134, 11, 0.8);
+                0px 0px 25px rgba(223, 183, 84, 0.8);
             font-weight: 900;
         }
 
         .poster-subtitle-text {
             color: #0f172a;
             font-weight: 800;
-            background: rgba(255, 255, 255, 0.75);
-            padding: 2px 14px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 4px 16px;
             border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(223, 183, 84, 0.5);
+            border: 1px solid rgba(223, 183, 84, 0.6);
         }
 
-        /* 暗色地圖自訂濾鏡 */
+        /* 暗色地圖濾鏡 */
         .leaflet-container {
             background: transparent !important;
         }
@@ -105,7 +105,7 @@
             filter: brightness(0.7) contrast(1.2) !important;
         }
 
-        /* Leaflet 控制項隱藏與重設 */
+        /* Leaflet 控制項隱藏 */
         .leaflet-control-attribution, .leaflet-control-zoom {
             display: none !important;
         }
@@ -119,7 +119,7 @@
             z-index: 60 !important;
         }
 
-        /* 自訂地圖標記 (Church Pin Marker) 支持方向錯開 */
+        /* 自訂地圖標記 (Church Pin Marker) */
         .custom-church-pin {
             display: flex;
             flex-direction: column;
@@ -145,8 +145,8 @@
             font-size: 12px;
         }
         .pin-label {
-            background: rgba(11, 15, 25, 0.95);
-            border: 1px solid rgba(223, 183, 84, 0.9);
+            background: rgba(11, 15, 25, 0.92);
+            border: 1px solid rgba(223, 183, 84, 0.85);
             color: #f3d685;
             padding: 2px 8px;
             font-size: 11px;
@@ -167,13 +167,13 @@
         .huge-zone-title-vertical {
             writing-mode: vertical-rl;
             text-orientation: upright;
-            font-size: 92px;
+            font-size: 84px;
             font-weight: 900;
             letter-spacing: 0.2em;
-            background: linear-gradient(180deg, #9A7422 0%, #DFB754 30%, #4A3000 70%, #1A0C00 100%);
+            background: linear-gradient(180deg, #FFFFFF 0%, #DFB754 40%, #B8860B 80%, #5C4000 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 15px rgba(255, 255, 255, 0.9)) drop-shadow(0px 8px 25px rgba(0, 0, 0, 0.8));
+            filter: drop-shadow(0px 4px 15px rgba(0, 0, 0, 0.9)) drop-shadow(0px 0px 20px rgba(223, 183, 84, 0.5));
             user-select: none;
             pointer-events: none;
             line-height: 1;
@@ -181,14 +181,14 @@
 
         /* 直書旁的金箔古風外框線條條飾 */
         .vertical-title-accent {
-            width: 4px;
-            height: 380px;
-            background: linear-gradient(180deg, transparent, rgba(184, 134, 11, 0.9), transparent);
+            width: 3px;
+            height: 340px;
+            background: linear-gradient(180deg, transparent, rgba(223, 183, 84, 0.8), transparent);
             border-radius: 2px;
-            box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 8px rgba(223, 183, 84, 0.4);
         }
 
-        /* 滾動條美化 */
+        /* 自訂滾動條 */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -213,7 +213,7 @@
             </div>
         </div>
 
-   <div class="flex flex-wrap items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
             <!-- 區域選擇 -->
             <div class="flex items-center gap-2 bg-brand-panel border border-brand-gold/40 px-3 py-1.5 rounded-lg">
                 <label for="zone-select" class="text-xs text-brand-gold font-bold">選擇小區：</label>
@@ -237,12 +237,12 @@
                 </button>
             </div>
 
-            <!-- 縮放按鈕 -->
+            <!-- 縮放控制 -->
             <div class="flex items-center bg-slate-800 rounded-lg p-1 border border-slate-700">
                 <button onclick="zoomPoster(-0.08)" class="px-3 py-1 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors text-sm font-bold" title="縮小預覽">
                     <i class="fa-solid fa-minus"></i>
                 </button>
-                <span id="scale-indicator" class="px-2 text-xs text-brand-gold font-mono font-bold">50%</span>
+                <span id="scale-indicator" class="px-2 text-xs text-brand-gold font-mono font-bold">52%</span>
                 <button onclick="zoomPoster(0.08)" class="px-3 py-1 text-slate-300 hover:text-white hover:bg-slate-700 rounded transition-colors text-sm font-bold" title="放大預覽">
                     <i class="fa-solid fa-plus"></i>
                 </button>
@@ -257,7 +257,7 @@
                 <span>刷新</span>
             </button>
 
-            <!-- 廠商出圖高畫質下載按鈕 -->
+            <!-- 高畫質下載按鈕 -->
             <button id="export-btn" onclick="exportHighResPoster()" class="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black px-5 py-2 rounded-lg transition-all text-sm shadow-xl flex items-center gap-2 transform active:scale-95">
                 <i class="fa-solid fa-file-export text-base"></i>
                 <span>廠商出圖 (產生 60×160cm 高解析度檔)</span>
@@ -268,8 +268,10 @@
     <!-- 海報畫布工作區 -->
     <main class="w-full flex justify-center py-10 px-4 overflow-auto">
         <div class="poster-wrapper">
-            <div id="poster" class="poster-canvas rounded-sm">
-                <!-- SVG 連線層 (鋪滿全畫布) -->
+            <!-- 易拉寶主體海報容器 (60cm x 160cm 比例：600px * 1600px) -->
+            <div id="poster" class="poster-canvas rounded-xl border-4 border-brand-gold/60">
+                
+                <!-- SVG 連線圖層 -->
                 <svg id="svg-connections" class="absolute inset-0 w-full h-full pointer-events-none z-30"></svg>
 
                 <!-- 上半部：統一標題列 (0px ~ 220px) -->
@@ -283,14 +285,14 @@
                         </h2>
                         <div class="inline-block">
                             <p id="poster-subtitle" class="poster-subtitle-text text-xs tracking-widest font-serif">
-                                足跡與信仰之光 • 主恩滿溢
+                                山川縱谷間的福音燈臺 • 泰雅爾足跡
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- 中間：大氣【直書】小區名稱標題 (放置於 right 側或中央層) -->
-                <div class="absolute top-[210px] right-[30px] z-20 flex items-center gap-3 pointer-events-none">
+                <!-- 中間：直書小區名稱標題 (位於右側) -->
+                <div class="absolute top-[210px] right-[24px] z-20 flex items-center gap-3 pointer-events-none">
                     <div class="vertical-title-accent"></div>
                     <h1 id="huge-zone-name" class="huge-zone-title-vertical font-serif">
                         復興小區
@@ -301,75 +303,31 @@
                 <!-- 相片泡泡浮動層 (180px ~ 920px) -->
                 <div id="photos-container" class="absolute inset-0 w-full h-[950px] pointer-events-none z-30"></div>
 
-                <!-- 下半部：Leaflet 動態地形與行政區地圖 -->
-                <div class="absolute bottom-[40px] left-[30px] w-[540px] h-[680px] rounded-2xl overflow-hidden border-2 border-brand-gold/50 shadow-2xl z-20 bg-slate-950/80 backdrop-blur-sm">
- <!-- 自訂地圖標記 (Church Pin Marker) 支持方向錯開 -->
-            <style>
-                .custom-church-pin {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    pointer-events: auto;
-                }
-                .pin-head {
-                    width: 26px;
-                    height: 26px;
-                    background: linear-gradient(135deg, #dfb754, #b8860b);
-                    border: 2px solid #ffffff;
-                    border-radius: 50% 50% 50% 0;
-                    transform: rotate(-45deg);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 12px rgba(223, 183, 84, 0.8);
-                }
-                .pin-head i {
-                    transform: rotate(45deg);
-                    color: #0b0f19;
-                    font-size: 12px;
-                }
-                .pin-label {
-                    background: rgba(11, 15, 25, 0.9);
-                    border: 1px solid rgba(223, 183, 84, 0.8);
-                    color: #f3d685;
-                    padding: 2px 8px;
-                    font-size: 11px;
-                    font-weight: 700;
-                    border-radius: 10px;
-                    white-space: nowrap;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.8);
-                    backdrop-filter: blur(4px);
-                    position: absolute;
-                }
-                /* 標籤錯開位置樣式 */
-                .pin-label-top { bottom: 32px; }
-                .pin-label-bottom { top: 32px; }
-                .pin-label-left { right: 32px; top: 2px; }
-                .pin-label-right { left: 32px; top: 2px; }
-            </style>
-                            <i class="fa-solid fa-layer-group"></i> 地形與行政區域衛星地圖
+                <!-- 下半部：Leaflet 地圖區域 -->
+                <div class="absolute bottom-[50px] left-[30px] w-[540px] h-[670px] rounded-2xl overflow-hidden border-2 border-brand-gold/50 shadow-2xl z-20 bg-slate-950/90 backdrop-blur-md flex flex-col">
+                    <!-- 地圖標題列 -->
+                    <div class="bg-slate-950/90 border-b border-brand-gold/30 px-4 py-2 flex items-center justify-between z-10">
+                        <span id="map-area-tag" class="text-xs font-serif text-brand-gold flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group"></i> 復興小區 地形與行政區地圖
                         </span>
-                        <span class="text-[10px] text-slate-400">OpenStreetMap / Terrain</span>
+                        <span class="text-[10px] text-slate-400 font-sans">OpenStreetMap / Leaflet</span>
                     </div>
 
-                    <!-- Leaflet 地圖容器 -->
-                    <div id="leaflet-map" class="w-full h-full dark-map-tiles z-0"></div>
-                    
-                    <!-- 地圖右下角懸浮 QR Code (西區傳教史) -->
-                    <div class="absolute bottom-4 right-4 z-30 bg-slate-950/90 border border-brand-gold/60 p-2.5 rounded-xl shadow-2xl flex flex-col items-center gap-1.5 backdrop-blur-md">
-                        <div class="w-24 h-24 bg-white p-1 rounded-lg border border-brand-gold/40 flex items-center justify-center overflow-hidden">
-                            <img src="西區傳教史見證網頁.png" 
+                    <!-- Leaflet 地圖實際載入區域 -->
+                    <div id="leaflet-map" class="w-full flex-1 dark-map-tiles z-0"></div>
+
+                    <!-- 地圖右下角懸浮 QR Code -->
+                    <div class="absolute bottom-4 right-4 z-30 bg-slate-950/95 border border-brand-gold/60 p-2.5 rounded-xl shadow-2xl flex flex-col items-center gap-1.5 backdrop-blur-md">
+                        <div class="w-20 h-20 bg-white p-1 rounded-lg border border-brand-gold/40 flex items-center justify-center overflow-hidden">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tjc.org.tw" 
                                  alt="西區傳教史" 
-                                 class="w-full h-full object-contain"
-                                 onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tjc.org.tw';" />
+                                 class="w-full h-full object-contain" />
                         </div>
-                        <span class="text-[11px] font-bold text-brand-goldLight font-serif tracking-wider flex items-center gap-1">
+                        <span class="text-[10px] font-bold text-brand-goldLight font-serif tracking-wider flex items-center gap-1">
                             <i class="fa-solid fa-qrcode text-brand-gold"></i> 西區傳教史
                         </span>
                     </div>
 
-<!-- ... existing code ... -->
                     <!-- 地圖外框金邊裝飾角 -->
                     <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-brand-gold pointer-events-none z-10"></div>
                     <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-brand-gold pointer-events-none z-10"></div>
@@ -377,10 +335,13 @@
                     <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-brand-gold pointer-events-none z-10"></div>
                 </div>
 
-                <!-- 頁尾資訊塊 (底部裝飾標籤) -->
-                <div class="absolute bottom-0 inset-x-0 h-10 bg-slate-950/90 border-t border-brand-gold/30 flex items-center justify-between px-8 text-[11px] text-slate-400 z-40 font-serif">
-                    <span>真耶穌教會臺灣傳教百週年西區音樂會</span>
-                    <span id="footer-count-text" class="text-brand-gold">共收錄 11 所教會</span>
+                <!-- 頁尾資訊列 -->
+                <div class="absolute bottom-0 inset-x-0 h-10 bg-slate-950 border-t border-brand-gold/40 flex items-center justify-between px-6 text-[11px] text-slate-300 z-40 font-serif">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-cross text-brand-gold text-xs"></i>
+                        真耶穌教會臺灣傳教百週年西區音樂會
+                    </span>
+                    <span id="footer-count-text" class="text-brand-gold font-bold">共收錄 11 所教會</span>
                 </div>
             </div>
         </div>
@@ -565,7 +526,7 @@
             setTimeout(() => {
                 map.invalidateSize();
 
-                // 2. 繪製地圖上的教會 Pin（標籤交錯顯示，避免重疊遮擋）
+                // 2. 繪製地圖上的教會 Pin
                 const positions = ['top', 'bottom', 'left', 'right'];
                 churches.forEach((church, index) => {
                     const posClass = `pin-label-${positions[index % positions.length]}`;
@@ -588,36 +549,26 @@
                     mapMarkers.push(marker);
                 });
 
-                // 3. 滿版左右交錯相片泡泡渲染（涵蓋頂部 180px 至 880px）
+                // 3. 滿版左右交錯相片泡泡渲染
                 const photoChurches = churches.filter(c => c.showPhoto);
                 const totalPhotos = photoChurches.length;
 
-                // 頂部與底部範圍設定
                 const startY = 180;
                 const endY = 880;
                 const availableHeight = endY - startY;
 
                 photoChurches.forEach((church, index) => {
-                    // 雙欄左右交錯 (Column 0: 左側, Column 1: 右側)
                     const col = index % 2; 
-                    
-                    // 計算垂直格層，讓圖片均勻分佈於上半部
                     const rowCount = Math.ceil(totalPhotos / 2);
                     const rowIndex = Math.floor(index / 2);
                     const rowStep = availableHeight / Math.max(rowCount, 1);
 
-                    // 加入適當微調，展現生動錯落感
                     const photoY = startY + (rowIndex * rowStep) + (index % 3 * 6 - 6);
-                    
-                    // 左欄範圍: 40px, 右欄範圍: 220px (避開最右側直書大標題)
                     const photoX = col === 0 
                         ? 45 + (index % 2 * 10) 
                         : 225 + (index % 2 * 10);
 
-                    // 動態泡泡大小 (135px ~ 150px)
                     const photoSize = 138 + (index % 3 * 8);
-
-                    // 圖檔預設帶文字替代圖（避免原本圖片路徑讀取失敗變空白）
                     const defaultPlaceholder = `https://placehold.co/300x300/1e293b/dfb754?text=${encodeURIComponent(church.name)}`;
 
                     const photoEl = document.createElement("div");
@@ -657,13 +608,11 @@
             btn.disabled = true;
 
             const poster = document.getElementById('poster');
-            
-            // 備份原 Scale
             const originalTransform = poster.style.transform;
             poster.style.transform = 'scale(1)'; // 重置為 100% 原始尺寸渲染
 
             try {
-                // 3倍 Scale 輸出超高解析度圖片 (1800px * 4800px，適合易拉寶 H 架直式大圖輸出)
+                // 3倍 Scale 輸出超高解析度圖片 (1800px * 4800px)
                 const canvas = await html2canvas(poster, {
                     scale: 3, 
                     useCORS: true,
@@ -672,7 +621,6 @@
                     logging: false
                 });
 
-                // 建立下載連結
                 const zoneSelect = document.getElementById('zone-select');
                 const zoneName = zoneSelect.options[zoneSelect.selectedIndex].text;
                 const link = document.createElement('a');
@@ -684,13 +632,13 @@
                 console.error("出圖失敗：", error);
                 alert("高畫質出圖過程中發生錯誤，請確認網頁圖片載入狀況。");
             } finally {
-                // 復原原本面板縮放與按鈕狀態
                 poster.style.transform = originalTransform;
                 btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         }
 
+        // 頁面初始化
         window.addEventListener('DOMContentLoaded', () => {
             setupLeafletMap();
             initScale();
