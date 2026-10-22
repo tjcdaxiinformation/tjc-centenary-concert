@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>傳教百週年西區音樂會 - 易寶拉海報</title>
+    <title>Roll-up Banner Poster Generator</title>
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- 引入 html2canvas 供匯出圖片使用 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         body {
             font-family: 'Noto Serif TC', serif;
@@ -14,334 +19,363 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: row; /* 改為左右排列：左控制面板，右預覽區 */
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 隱藏捲軸但保留滾動功能 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568; 
+            border-radius: 4px;
+        }
+
+        /* 左側控制面板 */
+        #control-panel {
+            width: 350px;
+            background-color: #162032;
+            padding: 24px;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* 右側預覽區 (讓其可以滾動) */
+        #preview-area {
+            margin-left: 350px;
+            width: calc(100% - 350px);
+            display: flex;
+            justify-content: center;
+            padding: 40px 0;
+            background-color: #0d131f;
         }
 
         #poster-container {
             width: 800px;
-            height: 2000px; /* 1:2.5 aspect ratio typical for roll-up banners */
-            background: linear-gradient(135deg, #0b1021 0%, #1a2a40 50%, #0b1021 100%);
+            height: 2000px; /* 1:2.5 易拉展比例 */
+            background: linear-gradient(135deg, rgba(11,16,33,0.85) 0%, rgba(26,42,64,0.85) 50%, rgba(11,16,33,0.85) 100%), url('https://images.unsplash.com/photo-1507692049790-de58290a4334?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             transform-origin: top center;
-            margin-top: 20px;
         }
 
-        /* 偽主視覺背景紋理 */
-        .bg-texture {
-            position: absolute;
-            inset: 0;
-            opacity: 0.15;
-            background-image: radial-gradient(#d4af37 1px, transparent 1px);
-            background-size: 30px 30px;
-            pointer-events: none;
-        }
-
-        .gold-text {
-            background: linear-gradient(to bottom, #fceabb, #f8b500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .irregular-photo {
-            position: absolute;
-            object-fit: cover;
-            border: 4px solid rgba(212, 175, 55, 0.8); /* Gold border */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            transition: all 0.5s ease;
-            z-index: 10;
-        }
-        
-        .blob-1 { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-        .blob-2 { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-        .blob-3 { border-radius: 50% 50% 20% 80% / 25% 80% 20% 75%; }
-        .blob-4 { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-
+        /* 垂直文字 */
         .vertical-text {
             writing-mode: vertical-rl;
-            text-orientation: upright;
+            text-orientation: mixed;
             letter-spacing: 0.5em;
         }
 
-        svg.arrow-overlay {
+        /* 金色文字特效 */
+        .gold-text {
+            background: linear-gradient(to bottom, #FFDF73 0%, #D4AF37 50%, #996515 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* 拖曳元素的樣式 */
+        .draggable {
+            position: absolute;
+            cursor: grab;
+            user-select: none;
+            transition: box-shadow 0.2s;
+        }
+        .draggable:active {
+            cursor: grabbing;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 100;
+        }
+
+        /* SVG 箭頭覆蓋層 */
+        .arrow-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
-        
-        .map-marker {
-            position: absolute;
-            transform: translate(-50%, -100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            pointer-events: none; /* 讓點擊穿透 */
             z-index: 20;
         }
     </style>
 </head>
-<body class="pb-10">
+<body>
 
-    <div class="w-full bg-slate-900 p-4 sticky top-0 z-50 flex justify-center items-center gap-4 shadow-lg border-b border-amber-500/30">
-        <h1 class="text-xl font-bold text-amber-400">海報產生器 (預覽)</h1>
-        <select id="district-select" onchange="renderPoster(this.value)" class="bg-slate-800 text-amber-400 border border-amber-500/50 rounded-lg px-4 py-2 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-amber-500/50 cursor-pointer">
-            <option value="fuxing">復興小區</option>
-            <option value="zhumiao">竹苗小區</option>
-            <option value="zhongmiao">中苗小區</option>
-            <option value="nantou">南投小區</option>
-        </select>
-        <button onclick="zoomOut()" class="px-3 py-1 bg-slate-700 rounded hover:bg-slate-600">- 縮小</button>
-        <button onclick="zoomIn()" class="px-3 py-1 bg-slate-700 rounded hover:bg-slate-600">+ 放大</button>
+    <div id="control-panel" class="border-r border-slate-700">
+        <h2 class="text-2xl font-bold mb-6 text-amber-500 border-b border-slate-600 pb-2">海報產生器控制台</h2>
+        
+        <div class="mb-5">
+            <label class="block text-sm font-medium mb-1">小區名稱 / 標題</label>
+            <input type="text" id="input-title" value="復興小區" class="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div class="mb-5">
+            <label class="block text-sm font-medium mb-1">上傳主視覺背景</label>
+            <input type="file" id="upload-bg" accept="image/*" class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer">
+        </div>
+
+        <div class="mb-5">
+            <label class="block text-sm font-medium mb-1">上傳地圖底圖</label>
+            <input type="file" id="upload-map" accept="image/*" class="w-full text-sm text-slate-300 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-700 cursor-pointer">
+        </div>
+
+        <hr class="border-slate-600 my-6">
+
+        <div class="mb-4">
+            <button id="btn-add-photo" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2 transition">
+                + 新增老照片 (可拖曳)
+            </button>
+            <button id="btn-add-marker" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition">
+                + 新增地圖圖釘 (可拖曳)
+            </button>
+        </div>
+
+        <hr class="border-slate-600 my-6">
+
+        <button id="btn-download" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-black text-lg py-3 px-4 rounded shadow-lg transition transform hover:scale-105">
+            匯出海報 (下載 JPG)
+        </button>
+        <p class="text-xs text-slate-400 mt-2">提示：直接在右側畫布上拖曳照片與圖釘來調整位置。</p>
     </div>
 
-    <div id="scale-wrapper">
+    <div id="preview-area">
         <div id="poster-container">
-            <div class="bg-texture"></div>
+            <!-- 裝飾紋理 -->
+            <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none z-0"></div>
             
-            <!-- Header / Title -->
-            <div class="absolute top-12 left-0 w-full text-center z-30 px-8">
-                <h2 class="text-3xl font-bold tracking-widest text-gray-300 mb-4">真耶穌教會臺灣傳教百週年</h2>
-                <h1 class="text-6xl font-black gold-text tracking-widest">西區音樂會</h1>
-                <div class="w-3/4 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mt-6"></div>
-            </div>
-
-            <!-- Center Vertical Text -->
+            <!-- 中央垂直大標題 -->
             <div class="absolute inset-0 flex justify-center items-center pointer-events-none z-10 opacity-80">
                 <h1 id="poster-district-title" class="vertical-text text-[140px] font-black gold-text opacity-40 ml-12 shadow-2xl drop-shadow-[0_0_15px_rgba(255,200,0,0.3)]">
                     復興小區
                 </h1>
             </div>
 
-            <!-- Map Area (Right) -->
-            <div id="map-area" class="absolute top-[250px] right-8 w-[350px] bottom-[50px] rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm p-4 hidden">
-                <!-- Markers will be injected here -->
+            <!-- 右側地圖區域 -->
+            <div id="map-area" class="absolute top-[300px] left-[450px] w-[300px] h-[1550px] rounded-3xl border border-amber-500/30 overflow-hidden shadow-[0_0_30px_rgba(0,0,0,0.5)] z-0">
+                <!-- 地圖底圖 (預設為占位圖) -->
+                <div id="map-bg" class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-70 mix-blend-lighten bg-slate-800"></div>
+                <!-- 備用地形紋理 -->
+                <div class="absolute inset-0 opacity-30" style="background-image: repeating-radial-gradient(circle at 50% 50%, transparent 0, rgba(212, 175, 55, 0.1) 15px), repeating-linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)); pointer-events: none;"></div>
             </div>
 
-            <!-- Dynamic Content (Photos, Markers, Arrows) -->
-            <div id="dynamic-content" class="absolute inset-0 top-[250px] bottom-[50px]"></div>
+            <!-- 動態內容區 (放置拖曳的照片與圖釘) -->
+            <div id="dynamic-content" class="absolute inset-0 z-30">
+                <!-- 預設示範元素 (可拖曳) -->
+                <div class="draggable p-2 bg-white rounded shadow-xl border border-slate-300" style="top: 400px; left: 100px; width: 250px;">
+                    <img src="https://images.unsplash.com/photo-1517456793572-1d8efd6dc135?q=80&w=500&auto=format&fit=crop" class="w-full h-auto rounded" alt="歷史照片">
+                    <p class="text-slate-800 font-bold text-center mt-2 text-lg">早期聚會所</p>
+                </div>
+                
+                <div class="draggable" style="top: 800px; left: 580px;">
+                    <div class="w-8 h-8 bg-red-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center animate-bounce">
+                        <div class="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- SVG 連接線或裝飾層 -->
             <svg class="arrow-overlay" id="arrow-svg">
                 <defs>
-                    <marker id="arrowhead" markerWidth="10" markerHeight="7" 
-                    refX="9" refY="3.5" orient="auto">
-                        <polygon points="0 0, 10 3.5, 0 7" fill="#d4af37" />
-                    </marker>
-                    <filter id="glow">
-                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-                        <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
+                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="5" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                 </defs>
                 <g id="arrow-paths"></g>
             </svg>
 
-            <!-- Footer -->
-            <div class="absolute bottom-8 w-full text-center text-amber-500/60 font-bold tracking-widest text-lg">
+            <!-- 右下角 QR Code -->
+            <div class="absolute bottom-[90px] right-10 z-40 flex flex-col items-center bg-white/95 backdrop-blur p-3 rounded-2xl shadow-2xl border-2 border-amber-500/80">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tjcdaxiinformation.github.io/tjc-centenary-concert/west_history.html" alt="西區傳教史 QR Code" class="w-28 h-28 mb-2 rounded-lg">
+                <span class="text-slate-900 font-black tracking-widest text-sm">西區傳教史</span>
+            </div>
+
+            <!-- 底部文字 -->
+            <div class="absolute bottom-8 w-full text-center text-amber-500/60 font-bold tracking-widest text-lg z-10">
                 TRUE JESUS CHURCH 100TH ANNIVERSARY
             </div>
         </div>
     </div>
 
     <script>
-        const DISTRICT_DATA = {
-            fuxing: {
-                name: "復興小區",
-                id: "fuxing",
-                churches: [
-                    { name: "八德教會", lat: 24.934632, lng: 121.299978, photo: "assets/photos/fuxing/bade.jpg", showPhoto: true },
-                    { name: "崎頂教會", lat: 24.900432, lng: 121.282682, photo: "assets/photos/fuxing/qiding.jpg", showPhoto: true },
-                    { name: "大溪教會", lat: 24.881231, lng: 121.294548, photo: "assets/photos/fuxing/daxi.jpg", showPhoto: true },
-                    { name: "復興教會", lat: 24.826416, lng: 121.356914, photo: "assets/photos/fuxing/fuxing.jpg", showPhoto: true },
-                    { name: "義盛教會", lat: 24.779475, lng: 121.365940, photo: "assets/photos/fuxing/yisheng.jpg", showPhoto: true },
-                    { name: "大灣祈禱所", lat: 24.760693, lng: 121.344903, photo: "assets/photos/fuxing/dawan.jpg", showPhoto: true },
-                    { name: "雪霧鬧祈禱所", lat: 24.741287, lng: 121.365961, photo: "assets/photos/fuxing/xuewunao.jpg", showPhoto: true },
-                    { name: "上巴陵教會", lat: 24.685697, lng: 121.396455, photo: "assets/photos/fuxing/shangbaling.jpg", showPhoto: true },
-                    { name: "中巴陵", lat: 24.679721, lng: 121.396892, showPhoto: false },
-                    { name: "三光", lat: 24.675178, lng: 121.366111, showPhoto: false },
-                    { name: "光華", lat: 24.665251, lng: 121.398561, showPhoto: false }
-                ]
-            },
-            zhumiao: {
-                name: "竹苗小區",
-                id: "zhumiao",
-                churches: [
-                    { name: "花園教會", lat: 24.645038, lng: 121.151893, photo: "assets/photos/zhumiao/huayuan.jpg", showPhoto: true },
-                    { name: "五峰教會", lat: 24.629047, lng: 121.119750, photo: "assets/photos/zhumiao/wufeng.jpg", showPhoto: true },
-                    { name: "桃山教會", lat: 24.599219, lng: 121.109834, photo: "assets/photos/zhumiao/taoshan.jpg", showPhoto: true },
-                    { name: "清泉教會", lat: 24.578934, lng: 121.106060, photo: "assets/photos/zhumiao/qingquan.jpg", showPhoto: true },
-                    { name: "義興教會", lat: 24.683555, lng: 121.185258, photo: "assets/photos/zhumiao/yixing.jpg", showPhoto: true },
-                    { name: "錦屏教會", lat: 24.695765, lng: 121.227790, photo: "assets/photos/zhumiao/jinping.jpg", showPhoto: true },
-                    { name: "尖石教會", lat: 24.720930, lng: 121.214883, photo: "assets/photos/zhumiao/jianshi.jpg", showPhoto: true }
-                ]
-            },
-            zhongmiao: {
-                name: "中苗小區",
-                id: "zhongmiao",
-                churches: [
-                    { name: "東勢教會", lat: 24.249405, lng: 120.832019, photo: "assets/photos/zhongmiao/dongshi.jpg", showPhoto: true },
-                    { name: "自由教會", lat: 24.270630, lng: 120.890200, photo: "assets/photos/zhongmiao/ziyou.jpg", showPhoto: true },
-                    { name: "雙崎教會", lat: 24.290980, lng: 120.908350, photo: "assets/photos/zhongmiao/shuangqi.jpg", showPhoto: true },
-                    { name: "達觀教會", lat: 24.321900, lng: 120.921956, photo: "assets/photos/zhongmiao/daguan.jpg", showPhoto: true },
-                    { name: "南勢教會", lat: 24.170876, lng: 120.896805, photo: "assets/photos/zhongmiao/nanshi.jpg", showPhoto: true },
-                    { name: "裡冷教會", lat: 24.164515, lng: 120.952551, photo: "assets/photos/zhongmiao/lileng.jpg", showPhoto: true },
-                    { name: "博愛教會", lat: 24.174447, lng: 120.978225, photo: "assets/photos/zhongmiao/boai.jpg", showPhoto: true }
-                ]
-            },
-            nantou: {
-                name: "南投小區",
-                id: "nantou",
-                churches: [
-                    { name: "翠巒教會", lat: 24.182960, lng: 121.204100, photo: "assets/photos/nantou/cuiluan.jpg", showPhoto: true },
-                    { name: "力行教會", lat: 24.148459, lng: 121.190195, photo: "assets/photos/nantou/lixing.jpg", showPhoto: true },
-                    { name: "紅香教會", lat: 24.159071, lng: 121.176026, photo: "assets/photos/nantou/hongxiang.jpg", showPhoto: true },
-                    { name: "慈峰教會", lat: 24.131208, lng: 121.184243, photo: "assets/photos/nantou/cifeng.jpg", showPhoto: true },
-                    { name: "精英教會", lat: 24.061304, lng: 121.194630, photo: "assets/photos/nantou/jingying.jpg", showPhoto: true },
-                    { name: "廬山教會", lat: 24.033899, lng: 121.185267, photo: "assets/photos/nantou/lushan.jpg", showPhoto: true },
-                    { name: "春陽教會", lat: 24.027045, lng: 121.149445, photo: "assets/photos/nantou/chunyang.jpg", showPhoto: true }
-                ]
-            }
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM 元素參考
+            const inputTitle = document.getElementById('input-title');
+            const posterTitle = document.getElementById('poster-district-title');
+            const uploadBg = document.getElementById('upload-bg');
+            const posterContainer = document.getElementById('poster-container');
+            const uploadMap = document.getElementById('upload-map');
+            const mapBg = document.getElementById('map-bg');
+            const btnAddPhoto = document.getElementById('btn-add-photo');
+            const btnAddMarker = document.getElementById('btn-add-marker');
+            const dynamicContent = document.getElementById('dynamic-content');
+            const btnDownload = document.getElementById('btn-download');
 
-        // UI Scaling
-        let currentScale = 0.45;
-        const wrapper = document.getElementById('scale-wrapper');
-        
-        function updateScale() {
-            wrapper.style.transform = `scale(${currentScale})`;
-            wrapper.style.marginTop = `-${(1 - currentScale) * 1000}px`;
-            wrapper.style.marginBottom = `-${(1 - currentScale) * 1000}px`;
-        }
-
-        function zoomIn() { currentScale += 0.05; updateScale(); }
-        function zoomOut() { currentScale -= 0.05; updateScale(); }
-        
-        // Init scale
-        updateScale();
-
-        function renderPoster(districtKey) {
-            const data = DISTRICT_DATA[districtKey];
-            document.getElementById('poster-district-title').innerText = data.name;
-            
-            const container = document.getElementById('dynamic-content');
-            const svgGroup = document.getElementById('arrow-paths');
-            container.innerHTML = '';
-            svgGroup.innerHTML = '';
-
-            const churches = data.churches;
-            
-            // Calculate map bounding box to project Lat/Lng to X/Y
-            let minLat = 90, maxLat = -90, minLng = 180, maxLng = -180;
-            churches.forEach(c => {
-                if (c.lat < minLat) minLat = c.lat;
-                if (c.lat > maxLat) maxLat = c.lat;
-                if (c.lng < minLng) minLng = c.lng;
-                if (c.lng > maxLng) maxLng = c.lng;
+            // 1. 即時更新標題
+            inputTitle.addEventListener('input', (e) => {
+                posterTitle.innerText = e.target.value || '請輸入標題';
             });
-            
-            // Add padding to bounds
-            const latPad = (maxLat - minLat) * 0.1;
-            const lngPad = (maxLng - minLng) * 0.1;
-            minLat -= latPad; maxLat += latPad;
-            minLng -= lngPad; maxLng += lngPad;
 
-            // Map Area (Right side: X: 450 to 750, Y: 0 to 1700 (relative to dynamic-content))
-            const mapRect = { left: 450, top: 50, width: 300, height: 1600 };
-            
-            // Photos Area (Left side: X: 50 to 350, Y: distributed)
-            const photosArea = { left: 40, width: 320, top: 100, height: 1500 };
-            const churchesWithPhoto = churches.filter(c => c.showPhoto);
-            const photoSpacing = photosArea.height / Math.max(churchesWithPhoto.length, 1);
-
-            let photoIndex = 0;
-            
-            churches.forEach((church) => {
-                // Project Lat/Lng to Map X/Y
-                const xPct = (church.lng - minLng) / (maxLng - minLng);
-                const yPct = (maxLat - church.lat) / (maxLat - minLat); // Invert Y
-                
-                const markerX = mapRect.left + (xPct * mapRect.width);
-                const markerY = mapRect.top + (yPct * mapRect.height);
-
-                // Create Map Marker
-                const marker = document.createElement('div');
-                marker.className = 'map-marker';
-                marker.style.left = `${markerX}px`;
-                marker.style.top = `${markerY}px`;
-                marker.innerHTML = `
-                    <svg class="w-8 h-8 text-amber-500 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
-                    <div class="mt-1 px-2 py-1 bg-slate-900/80 border border-amber-500/50 rounded text-amber-200 text-sm font-bold shadow-lg whitespace-nowrap backdrop-blur-sm">
-                        ${church.name}
-                    </div>
-                `;
-                container.appendChild(marker);
-
-                // Place Photo and Draw Arrow
-                if (church.showPhoto) {
-                    const blobClass = `blob-${(photoIndex % 4) + 1}`;
-                    const photoWidth = 240 + Math.random() * 40; // 240px to 280px
-                    const photoHeight = 180 + Math.random() * 40; // 180px to 220px
-                    
-                    // Stagger X position for overlap effect
-                    const photoX = photosArea.left + (photoIndex % 2 === 0 ? 0 : 60);
-                    const photoY = photosArea.top + (photoIndex * photoSpacing) - (photoHeight / 2);
-
-                    const photo = document.createElement('img');
-                    // Fallback to placeholder if real asset is not found
-                    photo.src = church.photo || `https://placehold.co/${Math.floor(photoWidth)}x${Math.floor(photoHeight)}/2c3e50/d4af37?text=${church.name}`;
-                    photo.onerror = function() {
-                        this.onerror = null;
-                        this.src = `https://placehold.co/${Math.floor(photoWidth)}x${Math.floor(photoHeight)}/2c3e50/d4af37?text=${church.name}`;
+            // 2. 更換主視覺背景
+            uploadBg.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        // 保留漸層並替換背景圖片
+                        posterContainer.style.background = `linear-gradient(135deg, rgba(11,16,33,0.85) 0%, rgba(26,42,64,0.85) 50%, rgba(11,16,33,0.85) 100%), url('${event.target.result}')`;
+                        posterContainer.style.backgroundSize = 'cover';
+                        posterContainer.style.backgroundPosition = 'center';
                     };
-                    photo.className = `irregular-photo ${blobClass}`;
-                    photo.style.width = `${photoWidth}px`;
-                    photo.style.height = `${photoHeight}px`;
-                    photo.style.left = `${photoX}px`;
-                    photo.style.top = `${photoY}px`;
-                    
-                    container.appendChild(photo);
-
-                    const startX = photoX + photoWidth - 10;
-                    const startY = photoY + (photoHeight / 2);
-                    const endX = markerX - 15;
-                    const endY = markerY - 20; // Point near the marker icon
-
-                    // Calculate control point for bezier curve
-                    const ctrlX = startX + (endX - startX) / 2;
-                    const ctrlY = Math.min(startY, endY) - 50 - Math.random() * 50;
-
-                    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                    // +250 because the SVG is full height but container is offset by 250px from top
-                    const offset = 250; 
-                    path.setAttribute("d", `M ${startX} ${startY + offset} Q ${ctrlX} ${ctrlY + offset} ${endX} ${endY + offset}`);
-                    path.setAttribute("fill", "none");
-                    path.setAttribute("stroke", "#d4af37"); // Gold
-                    path.setAttribute("stroke-width", "3");
-                    path.setAttribute("stroke-dasharray", "8, 6");
-                    path.setAttribute("marker-end", "url(#arrowhead)");
-                    path.setAttribute("filter", "url(#glow)");
-                    path.setAttribute("opacity", "0.8");
-
-                    svgGroup.appendChild(path);
-
-                    photoIndex++;
+                    reader.readAsDataURL(file);
                 }
             });
-        }
 
-        // Initialize with default selection
-        window.onload = () => {
-            renderPoster('fuxing');
-        };
+            // 3. 更換地圖底圖
+            uploadMap.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        mapBg.style.backgroundImage = `url('${event.target.result}')`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            let activeDragElement = null;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            function makeDraggable(element) {
+                element.addEventListener('mousedown', (e) => {
+                    activeDragElement = element;
+                    // 計算滑鼠相對於元素左上角的偏移量
+                    const rect = element.getBoundingClientRect();
+                    const containerRect = posterContainer.getBoundingClientRect();
+                    
+                    // 為了在縮放的容器中保持精確，計算相對於 posterContainer 的位置
+                    offsetX = e.clientX - rect.left;
+                    offsetY = e.clientY - rect.top;
+                    
+                    element.style.zIndex = 1000; // 拖曳時置頂
+                });
+            }
+
+            // 初始化既有的拖曳元素
+            document.querySelectorAll('.draggable').forEach(makeDraggable);
+
+            // 處理全局鼠標移動與釋放
+            document.addEventListener('mousemove', (e) => {
+                if (!activeDragElement) return;
+
+                const containerRect = posterContainer.getBoundingClientRect();
+                
+                // 確保元素被限制在海報容器內
+                let newX = e.clientX - containerRect.left - offsetX;
+                let newY = e.clientY - containerRect.top - offsetY;
+
+                activeDragElement.style.left = `${newX}px`;
+                activeDragElement.style.top = `${newY}px`;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (activeDragElement) {
+                    activeDragElement.style.zIndex = ''; // 恢復預設
+                    activeDragElement = null;
+                }
+            });
+
+            // 4. 新增照片
+            btnAddPhoto.addEventListener('click', () => {
+                const el = document.createElement('div');
+                el.className = 'draggable p-2 bg-white rounded shadow-xl border border-slate-300';
+                el.style.top = '500px';
+                el.style.left = '150px';
+                el.style.width = '250px';
+                
+                el.innerHTML = `
+                    <div class="relative group">
+                        <img src="https://placehold.co/500x350/e2e8f0/475569?text=Photo" class="w-full h-auto rounded" alt="新照片">
+                        <button class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 delete-btn cursor-pointer">✕</button>
+                    </div>
+                    <input type="text" value="輸入描述文字" class="w-full mt-2 text-slate-800 font-bold text-center text-lg border-b border-dashed border-slate-400 focus:outline-none">
+                `;
+                
+                // 加入刪除功能
+                el.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation(); // 防止觸發拖曳
+                    el.remove();
+                });
+
+                dynamicContent.appendChild(el);
+                makeDraggable(el);
+            });
+
+            // 5. 新增標記點
+            btnAddMarker.addEventListener('click', () => {
+                const el = document.createElement('div');
+                el.className = 'draggable group';
+                el.style.top = '800px';
+                el.style.left = '600px';
+                
+                el.innerHTML = `
+                    <div class="w-8 h-8 bg-amber-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                        <div class="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                    <button class="absolute -top-6 -right-6 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 delete-btn cursor-pointer text-xs">✕</button>
+                `;
+
+                // 加入刪除功能
+                el.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    el.remove();
+                });
+
+                dynamicContent.appendChild(el);
+                makeDraggable(el);
+            });
+
+            // 6. 匯出海報 (透過 html2canvas)
+            btnDownload.addEventListener('click', () => {
+                btnDownload.innerText = "處理中...";
+                btnDownload.disabled = true;
+
+                // 為了避免截圖時控制項(如刪除按鈕、輸入框框)出現，可以稍微處理，但這裡保持簡單直出
+                html2canvas(posterContainer, {
+                    scale: 1, // 控制輸出解析度，設 1 維持 800x2000
+                    useCORS: true, // 允許跨域圖片 (若圖片來自外部需伺服器設定)
+                    backgroundColor: '#1a1a2e'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `${inputTitle.value || 'poster'}-banner.jpg`;
+                    link.href = canvas.toDataURL('image/jpeg', 0.9);
+                    link.click();
+
+                    btnDownload.innerText = "匯出海報 (下載 JPG)";
+                    btnDownload.disabled = false;
+                }).catch(err => {
+                    console.error("匯出錯誤:", err);
+                    alert("匯出失敗，請確認是否使用了不允許跨域的外部圖片。");
+                    btnDownload.innerText = "匯出海報 (下載 JPG)";
+                    btnDownload.disabled = false;
+                });
+            });
+        });
     </script>
 </body>
 </html>
