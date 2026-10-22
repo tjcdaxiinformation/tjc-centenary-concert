@@ -172,18 +172,29 @@
         ];
 
         const districtData = {
-            fuxing: {
-                title: "復興小區",
-                churches: [
-                    { name: "八德", lat: 24.934632, lng: 121.299978, image: "八德教會.jpg", showPhoto: true },
-                    { name: "崎頂", lat: 24.900432, lng: 121.282682, image: "崎頂教會.jpg", showPhoto: true },
-                    { name: "大溪", lat: 24.881231, lng: 121.294548, image: "大溪教會.jpg", showPhoto: true },
-                    { name: "復興", lat: 24.826416, lng: 121.356914, image: "復興教會.jpg", showPhoto: true },
-                    { name: "義盛", lat: 24.779475, lng: 121.365940, image: "義盛教會.jpg", showPhoto: true },
-                    { name: "大灣", lat: 24.760693, lng: 121.344903, image: "大灣教會.jpg", showPhoto: true },
-                    { name: "雪霧鬧", lat: 24.741287, lng: 121.365961, image: "雪霧鬧教會.jpg", showPhoto: true }
-                ]
-            },
+  // 1. 復興小區
+  fuxing: {
+    name: "復興小區",
+    center: [24.81, 121.32],
+    zoom: 11,
+    churches: [
+      { name: "八德教會", lat: 24.9358, lng: 121.2952, photo: "assets/photos/fuxing/bade.jpg", isChurch: true },
+      { name: "崎頂教會", lat: 24.8911, lng: 121.2882, photo: "assets/photos/fuxing/qiding.jpg", isChurch: true },
+      { name: "大溪教會", lat: 24.8812, lng: 121.2889, photo: "assets/photos/fuxing/daxi.jpg", isChurch: true },
+      { name: "復興教會", lat: 24.8213, lng: 121.3508, photo: "assets/photos/fuxing/fuxing.jpg", isChurch: true },
+      { name: "霞雲祈禱所", lat: 24.8011, lng: 121.3785, photo: "assets/photos/fuxing/xiayun.jpg", isChurch: false },
+      { name: "義盛教會", lat: 24.7895, lng: 121.3882, photo: "assets/photos/fuxing/yisheng.jpg", isChurch: true },
+      { name: "卡普祈禱所", lat: 24.7782, lng: 121.3991, photo: "assets/photos/fuxing/kapu.jpg", isChurch: false },
+      { name: "大灣祈禱所", lat: 24.7612, lng: 121.3621, photo: "assets/photos/fuxing/dawan.jpg", isChurch: false },
+      { name: "奎輝教會", lat: 24.7925, lng: 121.3321, photo: "assets/photos/fuxing/kuihui.jpg", isChurch: true },
+      { name: "雪霧鬧祈禱所", lat: 24.7381, lng: 121.3721, photo: "assets/photos/fuxing/xuewunao.jpg", isChurch: false },
+      { name: "上巴陵教會", lat: 24.6861, lng: 121.4111, photo: "assets/photos/fuxing/shangbaling.jpg", isChurch: true },
+      { name: "中巴陵祈禱所", lat: 24.6782, lng: 121.4022, photo: "assets/photos/fuxing/zhongbaling.jpg", isChurch: false },
+      { name: "三光教會", lat: 24.6521, lng: 121.3611, photo: "assets/photos/fuxing/sanguang.jpg", isChurch: true },
+      { name: "高義祈禱所", lat: 24.6612, lng: 121.3821, photo: "assets/photos/fuxing/gaoyi.jpg", isChurch: false },
+      { name: "光華祈禱所", lat: 24.6311, lng: 121.3912, photo: "assets/photos/fuxing/guanghua.jpg", isChurch: false }
+    ]
+  },
             zhumiao: {
                 title: "竹苗小區",
                 churches: [
