@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TJC Centenary Concert 海報產生器 - 四區傳教史版</title>
-    <!-- 載入 Tailwind CSS 進行快速排版 -->
+    <title>海報產生器 (預覽)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 載入 html2canvas 用於將 HTML 轉換為圖片 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- 載入 Google 字體 (思源宋體) -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for map marker icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
         tailwind.config = {
@@ -17,9 +15,10 @@
                 extend: {
                     colors: {
                         brand: {
-                            navy: '#0B132B',
-                            gold: '#D4AF37',
-                            light: '#F8F9FA'
+                            bg: '#141824', // 外圍背景色
+                            posterBg: '#131e33', // 海報深藍色
+                            gold: '#dfb754',
+                            text: '#f3f4f6'
                         }
                     },
                     fontFamily: {
@@ -32,287 +31,312 @@
     
     <style>
         body {
-            background-color: #e5e7eb;
+            background-color: #141824;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 2rem 1rem;
             font-family: 'Noto Serif TC', serif;
+            margin: 0;
+            min-height: 100vh;
         }
-        
-        /* 鎖定 A4 比例 */
-        .poster-wrapper {
+
+        /* 頂部工具列 */
+        .toolbar {
             width: 100%;
-            max-width: 794px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            margin-bottom: 2rem;
-            background: white;
-            transition: all 0.3s ease;
+            background-color: #1a2235;
+            border-bottom: 1px solid #334155;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* 鎖定海報比例 (直式 9:16 或類似尺寸) */
+        .poster-wrapper {
+            margin-top: 2rem;
+            margin-bottom: 4rem;
+            transform-origin: top center;
+            transition: transform 0.2s ease-out;
         }
 
         #poster {
-            width: 794px;
-            height: 1123px;
+            width: 800px;
+            height: 1422px; /* 16:9 ratio */
             position: relative;
-            background: linear-gradient(135deg, #0B132B 0%, #1A2A5C 100%);
+            background: linear-gradient(180deg, #0d1527 0%, #152039 100%);
             color: white;
             overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .poster-border {
+        /* 背景網點裝飾 */
+        .bg-pattern {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            border: 2px solid rgba(212, 175, 55, 0.3);
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+
+        /* 背景垂直大字 */
+        .bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.05);
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: -2rem;
+        }
+
+        /* 不規則泡泡樣式 */
+        .blob {
+            position: absolute;
+            border: 2px solid #dfb754;
+            background: rgba(30, 41, 59, 0.7);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 10px 15px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #dfb754;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 0.2rem;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        /* 產生不規則形狀 */
+        .blob-1 { border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%; width: 220px; height: 130px; }
+        .blob-2 { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; width: 200px; height: 140px; }
+        .blob-3 { border-radius: 50% 50% 40% 60% / 60% 40% 50% 50%; width: 210px; height: 130px; }
+        .blob-4 { border-radius: 40% 60% 50% 50% / 50% 50% 60% 40%; width: 230px; height: 140px; }
+
+        /* 地標與名稱標籤 */
+        .pin-container {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+            transform: translate(-50%, -100%); /* 將定位點設在圖標底部中心 */
+        }
+        
+        .pin-icon {
+            color: #dfb754;
+            font-size: 1.8rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+            margin-bottom: 4px;
+        }
+
+        .pin-label {
+            background-color: #1a2235;
+            border: 1px solid #dfb754;
+            color: #f3f4f6;
+            padding: 2px 8px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        /* SVG 連線層 */
+        #connections {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: 10;
         }
-
-        .photo-frame {
-            border: 2px solid #D4AF37;
-            padding: 6px;
-            background: rgba(255,255,255,0.1);
-        }
         
-        /* 隱藏捲軸但允許捲動 */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .connection-line {
+            fill: none;
+            stroke: #dfb754;
+            stroke-width: 3;
+            stroke-dasharray: 6 6;
+            opacity: 0.6;
         }
     </style>
 </head>
 <body>
 
-    <div class="mb-6 flex flex-col items-center gap-4 bg-white p-6 rounded-xl shadow-lg w-full max-w-3xl">
-        <h1 class="text-2xl font-bold text-gray-800">西區傳教史海報 - 四區生成工具</h1>
-        <p class="text-gray-600 text-sm text-center">
-            請在下方切換牧區預覽。您好不容易生成的「教會座標」，請貼入下方 JS 的 `zonesData` 中。<br>
-            完成後點擊下載按鈕，即可分別匯出四張海報。
-        </p>
+    <div class="toolbar">
+        <h1 class="text-brand-gold text-2xl font-bold tracking-wider mr-4">海報產生器 (預覽)</h1>
         
-        <!-- 牧區切換按鈕 -->
-        <div class="flex flex-wrap justify-center gap-3 w-full my-2" id="zone-buttons">
-            <!-- 按鈕由 JS 動態生成並管理狀態 -->
+        <!-- 區域選擇下拉選單 -->
+        <div class="relative">
+            <select id="zone-select" onchange="renderPoster()" class="appearance-none bg-[#1e293b] border border-brand-gold text-brand-gold py-2 pl-4 pr-10 rounded text-lg font-bold focus:outline-none cursor-pointer">
+                <option value="zhongmiao">中苗小區</option>
+                <option value="other">其他小區 (測試)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-brand-gold">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+            </div>
         </div>
 
-        <button onclick="downloadPoster()" class="bg-brand-gold hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3px 0 003 3h10a3 3px 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-            </svg>
-            下載當前海報 (PNG)
+        <!-- 縮放控制 -->
+        <button onclick="zoomPoster(-0.1)" class="bg-[#334155] hover:bg-[#475569] text-white px-4 py-2 rounded transition-colors text-lg">
+            - 縮小
         </button>
-        <div id="status-msg" class="hidden text-brand-navy font-bold p-2 bg-yellow-100 rounded w-full text-center">圖片生成中，請稍候...</div>
+        <button onclick="zoomPoster(0.1)" class="bg-[#334155] hover:bg-[#475569] text-white px-4 py-2 rounded transition-colors text-lg">
+            + 放大
+        </button>
     </div>
 
-    <div class="poster-wrapper">
+    <div class="poster-wrapper" id="poster-wrapper">
         <div id="poster">
-            <div class="poster-border"></div>
+            <div class="bg-pattern"></div>
             
-            <!-- 背景裝飾光暈 -->
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(ellipse_at_top,rgba(212,175,55,0.15)_0%,transparent_50%)] pointer-events-none z-0"></div>
-            
-            <!-- 頂部標題區 (不變) -->
-            <div class="pt-16 px-16 text-center relative z-20">
-                <p class="text-brand-gold tracking-widest text-lg mb-2">TRUE JESUS CHURCH</p>
-                <h1 class="text-6xl font-black mb-4 tracking-wider" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">百年紀念音樂會</h1>
-                <!-- 動態牧區標題 -->
-                <div class="inline-block border-b-2 border-brand-gold pb-2 mb-8">
-                    <h2 class="text-4xl font-semibold text-brand-light tracking-widest">西區傳教史 — <span id="display-zone-title" class="text-brand-gold">復興區</span></h2>
-                </div>
+            <!-- 背景浮水印大字 -->
+            <div class="bg-text" id="bg-title">中苗小區</div>
+
+            <!-- 標題區 -->
+            <div class="absolute top-16 w-full text-center z-30">
+                <p class="text-white text-xl tracking-[0.3em] mb-2 font-semibold">真耶穌教會臺灣傳教百週年</p>
+                <h2 class="text-brand-gold text-6xl font-black tracking-[0.2em]" style="text-shadow: 0 4px 10px rgba(0,0,0,0.5);">西區音樂會</h2>
             </div>
 
-            <!-- 動態內容區 (照片 + 教會座標列表) -->
-            <div class="px-16 flex flex-col gap-8 relative z-20" style="height: 650px;">
-                <!-- 該區代表性歷史照片 -->
-                <div class="w-full flex justify-center">
-                    <div class="photo-frame w-full max-w-2xl aspect-[21/9] relative overflow-hidden">
-                        <img id="display-zone-img" src="https://placehold.co/1200x500/1e293b/d4af37?text=Fuxing+History+Photo" alt="牧區歷史照片" class="w-full h-full object-cover">
-                    </div>
-                </div>
-
-                <!-- 教會與座標列表區 -->
-                <div class="w-full">
-                    <h3 class="text-xl text-brand-gold mb-4 tracking-widest flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3px 0 11-6 0 3 3px 0 016 0z" />
-                        </svg>
-                        牧區所屬教會與座標
-                    </h3>
-                    <!-- 座標列表容器 -->
-                    <div id="display-zone-churches" class="grid grid-cols-2 gap-x-8 gap-y-4 text-gray-200">
-                        <!-- 由 JS 動態注入 -->
-                    </div>
-                </div>
+            <!-- 動態生成內容的容器 -->
+            <div id="dynamic-content">
+                <!-- 泡泡與地標將由 JS 動態注入 -->
             </div>
 
-            <!-- 底部資訊區 (不變) -->
-            <div class="absolute bottom-12 w-full px-16 flex justify-between items-end z-20">
-                <div class="text-left flex-1 border-l-4 border-brand-gold pl-4">
-                    <p class="text-brand-gold text-2xl font-bold mb-2 tracking-wider">2026.11.15 (日) 14:00</p>
-                    <p class="text-xl text-gray-200 mb-1">地點：國家音樂廳 (暫定)</p>
-                    <p class="text-sm text-gray-400">主辦單位：真耶穌教會</p>
-                </div>
-                
-                <div class="flex flex-col items-center ml-4">
-                    <div class="p-2 bg-white rounded shadow-lg">
-                        <img src="https://placehold.co/100x100/fff/000?text=QR+Code" alt="QR Code" class="w-20 h-20">
-                    </div>
-                    <p class="text-xs text-brand-gold mt-2 tracking-widest font-bold">掃描索票</p>
-                </div>
+            <!-- SVG 曲線繪製區 -->
+            <svg id="connections"></svg>
+
+            <!-- 底部文字 -->
+            <div class="absolute bottom-12 w-full text-center z-30">
+                <p class="text-brand-gold text-sm tracking-[0.4em] uppercase font-semibold">True Jesus Church 100th Anniversary</p>
             </div>
         </div>
     </div>
 
     <script>
+        // 記錄目前的縮放比例
+        let currentScale = window.innerHeight > 1000 ? 1 : 0.6; // 根據螢幕高度給初始值
+        
         // ==========================================
-        // 【重要】請將您辛苦生成的「教會名稱與座標」貼在下方對應的陣列中
+        // 佈局資料定義 (基於截圖還原中苗小區的相對位置)
+        // x, y 代表在 800x1422 畫布上的百分比位置
         // ==========================================
-        const districtData = {
-       fuxing: {
-                name: "復興小區",
-                id: "fuxing",
-                churches: [
-                    { name: "八德教會", lat: 24.934632, lng: 121.299978, photo: "assets/photos/fuxing/bade.jpg", showPhoto: true },
-                    { name: "崎頂教會", lat: 24.900432, lng: 121.282682, photo: "assets/photos/fuxing/qiding.jpg", showPhoto: true },
-                    { name: "大溪教會", lat: 24.881231, lng: 121.294548, photo: "assets/photos/fuxing/daxi.jpg", showPhoto: true },
-                    { name: "復興教會", lat: 24.826416, lng: 121.356914, photo: "assets/photos/fuxing/fuxing.jpg", showPhoto: true },
-                    { name: "義盛教會", lat: 24.779475, lng: 121.365940, photo: "assets/photos/fuxing/yisheng.jpg", showPhoto: true },
-                    { name: "大灣祈禱所", lat: 24.760693, lng: 121.344903, photo: "assets/photos/fuxing/dawan.jpg", showPhoto: true },
-                    { name: "雪霧鬧祈禱所", lat: 24.741287, lng: 121.365961, photo: "assets/photos/fuxing/xuewunao.jpg", showPhoto: true },
-                    { name: "上巴陵教會", lat: 24.685697, lng: 121.396455, photo: "assets/photos/fuxing/shangbaling.jpg", showPhoto: true },
-                    { name: "中巴陵", lat: 24.679721, lng: 121.396892, showPhoto: false },
-                    { name: "三光", lat: 24.675178, lng: 121.366111, showPhoto: false },
-                    { name: "光華", lat: 24.665251, lng: 121.398561, showPhoto: false }
-                ]
-            },
-            zhumiao: {
-                name: "竹苗小區",
-                id: "zhumiao",
-                churches: [
-                    { name: "花園教會", lat: 24.645038, lng: 121.151893, photo: "assets/photos/zhumiao/huayuan.jpg", showPhoto: true },
-                    { name: "五峰教會", lat: 24.629047, lng: 121.119750, photo: "assets/photos/zhumiao/wufeng.jpg", showPhoto: true },
-                    { name: "桃山教會", lat: 24.599219, lng: 121.109834, photo: "assets/photos/zhumiao/taoshan.jpg", showPhoto: true },
-                    { name: "清泉教會", lat: 24.578934, lng: 121.106060, photo: "assets/photos/zhumiao/qingquan.jpg", showPhoto: true },
-                    { name: "義興教會", lat: 24.683555, lng: 121.185258, photo: "assets/photos/zhumiao/yixing.jpg", showPhoto: true },
-                    { name: "錦屏教會", lat: 24.695765, lng: 121.227790, photo: "assets/photos/zhumiao/jinping.jpg", showPhoto: true },
-                    { name: "尖石教會", lat: 24.720930, lng: 121.214883, photo: "assets/photos/zhumiao/jianshi.jpg", showPhoto: true }
-                ]
-            },
+        const zonesData = {
             zhongmiao: {
-                name: "中苗小區",
-                id: "zhongmiao",
-                churches: [
-                    { name: "東勢教會", lat: 24.249405, lng: 120.832019, photo: "assets/photos/zhongmiao/dongshi.jpg", showPhoto: true },
-                    { name: "自由教會", lat: 24.270630, lng: 120.890200, photo: "assets/photos/zhongmiao/ziyou.jpg", showPhoto: true },
-                    { name: "雙崎教會", lat: 24.290980, lng: 120.908350, photo: "assets/photos/zhongmiao/shuangqi.jpg", showPhoto: true },
-                    { name: "達觀教會", lat: 24.321900, lng: 120.921956, photo: "assets/photos/zhongmiao/daguan.jpg", showPhoto: true },
-                    { name: "南勢教會", lat: 24.170876, lng: 120.896805, photo: "assets/photos/zhongmiao/nanshi.jpg", showPhoto: true },
-                    { name: "裡冷教會", lat: 24.164515, lng: 120.952551, photo: "assets/photos/zhongmiao/lileng.jpg", showPhoto: true },
-                    { name: "博愛教會", lat: 24.174447, lng: 120.978225, photo: "assets/photos/zhongmiao/boai.jpg", showPhoto: true }
+                name: '中苗小區',
+                nodes: [
+                    { id: 1, blobId: 1, blob: {x: 35, y: 22, class: 'blob-1'}, pin: {x: 72, y: 26}, name: '達觀教會' },
+                    { id: 2, blobId: 2, blob: {x: 38, y: 32, class: 'blob-2'}, pin: {x: 69, y: 38}, name: '雙崎教會' },
+                    { id: 3, blobId: 3, blob: {x: 33, y: 43, class: 'blob-3'}, pin: {x: 67, y: 46}, name: '自由教會' },
+                    { id: 4, blobId: 4, blob: {x: 38, y: 53, class: 'blob-4'}, pin: {x: 58, y: 54}, name: '東勢教會' },
+                    { id: 5, blobId: 5, blob: {x: 33, y: 62, class: 'blob-1'}, pin: {x: 67, y: 84}, name: '南勢教會' },
+                    { id: 6, blobId: 6, blob: {x: 38, y: 72, class: 'blob-2'}, pin: {x: 75, y: 87}, name: '裡冷教會' },
+                    { id: 7, blobId: 7, blob: {x: 33, y: 82, class: 'blob-3'}, pin: {x: 79, y: 83}, name: '博愛教會' }
                 ]
             },
-            nantou: {
-                name: "南投小區",
-                id: "nantou",
-                churches: [
-                    { name: "翠巒教會", lat: 24.182960, lng: 121.204100, photo: "assets/photos/nantou/cuiluan.jpg", showPhoto: true },
-                    { name: "力行教會", lat: 24.148459, lng: 121.190195, photo: "assets/photos/nantou/lixing.jpg", showPhoto: true },
-                    { name: "紅香教會", lat: 24.159071, lng: 121.176026, photo: "assets/photos/nantou/hongxiang.jpg", showPhoto: true },
-                    { name: "慈峰教會", lat: 24.131208, lng: 121.184243, photo: "assets/photos/nantou/cifeng.jpg", showPhoto: true },
-                    { name: "精英教會", lat: 24.061304, lng: 121.194630, photo: "assets/photos/nantou/jingying.jpg", showPhoto: true },
-                    { name: "廬山教會", lat: 24.033899, lng: 121.185267, photo: "assets/photos/nantou/lushan.jpg", showPhoto: true },
-                    { name: "春陽教會", lat: 24.027045, lng: 121.149445, photo: "assets/photos/nantou/chunyang.jpg", showPhoto: true }
+            other: {
+                name: '測試小區',
+                nodes: [
+                    { id: 1, blobId: 1, blob: {x: 35, y: 30, class: 'blob-1'}, pin: {x: 70, y: 40}, name: '測試教會A' },
+                    { id: 2, blobId: 2, blob: {x: 35, y: 60, class: 'blob-2'}, pin: {x: 70, y: 70}, name: '測試教會B' }
                 ]
             }
         };
 
-        let currentZoneId = 'fuxing';
-
-        function initUI() {
-            const btnContainer = document.getElementById('zone-buttons');
-            btnContainer.innerHTML = '';
-            
-            // 建立切換按鈕
-            Object.values(zonesData).forEach(zone => {
-                const btn = document.createElement('button');
-                btn.innerText = zone.name;
-                btn.className = `px-6 py-2 rounded-full font-bold transition-colors ${currentZoneId === zone.id ? 'bg-brand-navy text-white ring-2 ring-brand-gold' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`;
-                btn.onclick = () => switchZone(zone.id);
-                btnContainer.appendChild(btn);
-            });
-            
-            renderPoster(currentZoneId);
+        function init() {
+            // 設定初始縮放
+            document.getElementById('poster-wrapper').style.transform = `scale(${currentScale})`;
+            renderPoster();
         }
 
-        function switchZone(zoneId) {
-            currentZoneId = zoneId;
-            initUI(); // 重新渲染按鈕狀態
+        function zoomPoster(delta) {
+            currentScale += delta;
+            // 限制縮放範圍
+            if (currentScale < 0.3) currentScale = 0.3;
+            if (currentScale > 1.5) currentScale = 1.5;
+            document.getElementById('poster-wrapper').style.transform = `scale(${currentScale})`;
         }
 
-        function renderPoster(zoneId) {
-            const data = zonesData[zoneId];
+        function renderPoster() {
+            const zoneKey = document.getElementById('zone-select').value;
+            const data = zonesData[zoneKey];
             
-            // 更新標題與照片
-            document.getElementById('display-zone-title').innerText = data.name;
-            document.getElementById('display-zone-img').src = data.image;
+            // 更新背景文字
+            document.getElementById('bg-title').innerText = data.name;
+
+            const container = document.getElementById('dynamic-content');
+            const svgLayer = document.getElementById('connections');
             
-            // 更新教會座標列表
-            const listContainer = document.getElementById('display-zone-churches');
-            listContainer.innerHTML = '';
-            
-            data.churches.forEach(church => {
-                const item = document.createElement('div');
-                item.className = 'flex flex-col border-b border-gray-600 pb-2';
-                item.innerHTML = `
-                    <span class="text-lg font-bold text-brand-light tracking-wide">${church.name}</span>
-                    <span class="text-sm font-mono text-gray-400">📍 ${church.coord}</span>
+            // 清空內容
+            container.innerHTML = '';
+            svgLayer.innerHTML = '';
+
+            const posterW = 800;
+            const posterH = 1422;
+
+            // 遍歷所有節點資料
+            data.nodes.forEach(node => {
+                // 1. 計算絕對座標 (供 SVG 連線使用)
+                const blobAbsX = posterW * (node.blob.x / 100);
+                const blobAbsY = posterH * (node.blob.y / 100);
+                const pinAbsX = posterW * (node.pin.x / 100);
+                // pin 的 Y 座標我們視為 icon 的底部，連線可以稍微高一點連到 icon 內部
+                const pinAbsY = (posterH * (node.pin.y / 100)) - 25; 
+
+                // 2. 建立泡泡 (Blob)
+                const blobDiv = document.createElement('div');
+                blobDiv.className = `blob ${node.blob.class}`;
+                blobDiv.style.left = `calc(${node.blob.x}% - ${blobDiv.style.width || '100px'})`;
+                // 使用 transform 置中定位點
+                blobDiv.style.transform = 'translate(-50%, -50%)';
+                blobDiv.style.left = `${node.blob.x}%`;
+                blobDiv.style.top = `${node.blob.y}%`;
+                blobDiv.innerHTML = `<span>[?][?][?][?]</span>`;
+                container.appendChild(blobDiv);
+
+                // 3. 建立地標 (Pin)
+                const pinDiv = document.createElement('div');
+                pinDiv.className = 'pin-container';
+                pinDiv.style.left = `${node.pin.x}%`;
+                pinDiv.style.top = `${node.pin.y}%`;
+                pinDiv.innerHTML = `
+                    <i class="fa-solid fa-location-dot pin-icon"></i>
+                    <div class="pin-label">${node.name}</div>
                 `;
-                listContainer.appendChild(item);
+                container.appendChild(pinDiv);
+
+                // 4. 繪製 SVG 連線 (二次貝茲曲線 Q)
+                // 為了讓線條看起來像截圖一樣集中在中間，我們動態計算控制點 (Control Point)
+                // 控制點 x 設在兩者中間偏左/右，y 設在中間
+                let cpX = (blobAbsX + pinAbsX) / 2;
+                let cpY = (blobAbsY + pinAbsY) / 2;
+                
+                // 針對不同位置加入一些隨機或特定的偏移，讓曲線更生動 (模擬截圖的效果)
+                if (node.blob.y < 50 && node.pin.y > 50) {
+                    cpX -= 100; // 跨越上半到下半的線，控制點往左拉
+                } else if (node.blob.y > 50 && node.pin.y > 50) {
+                    cpX += 50;  // 都在下半部的線，控制點微調
+                }
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const d = `M ${blobAbsX} ${blobAbsY} Q ${cpX} ${cpY} ${pinAbsX} ${pinAbsY}`;
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'connection-line');
+                svgLayer.appendChild(path);
             });
         }
 
-        function downloadPoster() {
-            const statusMsg = document.getElementById('status-msg');
-            const data = zonesData[currentZoneId];
-            
-            // 顯示載入中，避免使用 alert 中斷
-            statusMsg.classList.remove('hidden');
-            statusMsg.innerText = `正在生成【${data.name}】海報，請稍候...`;
-
-            const posterElement = document.getElementById('poster');
-            
-            html2canvas(posterElement, {
-                scale: 2,
-                useCORS: true, 
-                backgroundColor: '#0B132B',
-                logging: false
-            }).then(canvas => {
-                const image = canvas.toDataURL("image/png");
-                
-                const link = document.createElement('a');
-                // 動態命名下載的檔案
-                link.download = `TJC_百年音樂會_西區傳教史_${data.name}.png`;
-                link.href = image;
-                link.click();
-                
-                statusMsg.innerText = '✅ 下載完成！';
-                setTimeout(() => statusMsg.classList.add('hidden'), 3000);
-            }).catch(err => {
-                console.error("生成圖片發生錯誤:", err);
-                statusMsg.innerText = '❌ 生成圖片失敗，請檢查圖片路徑是否正確。';
-                statusMsg.classList.add('bg-red-100', 'text-red-700');
-            });
-        }
-
-        // 初始化
-        window.onload = initUI;
+        // 啟動
+        window.onload = init;
     </script>
 </body>
 </html>
