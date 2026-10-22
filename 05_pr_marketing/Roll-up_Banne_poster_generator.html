@@ -189,7 +189,7 @@
             </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-3">
+   <div class="flex flex-wrap items-center gap-3">
             <!-- 區域選擇 -->
             <div class="flex items-center gap-2 bg-brand-panel border border-brand-gold/40 px-3 py-1.5 rounded-lg">
                 <label for="zone-select" class="text-xs text-brand-gold font-bold">選擇小區：</label>
@@ -199,6 +199,18 @@
                     <option value="zhumiao" class="bg-slate-900">竹苗小區</option>
                     <option value="nantou" class="bg-slate-900">南投小區</option>
                 </select>
+            </div>
+
+            <!-- 自訂底圖檔案選擇 -->
+            <div class="flex items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg">
+                <label for="bg-file-input" class="text-xs text-amber-300 font-bold cursor-pointer flex items-center gap-1.5 hover:text-white transition-colors">
+                    <i class="fa-solid fa-image"></i>
+                    <span>上傳主視覺底圖</span>
+                </label>
+                <input type="file" id="bg-file-input" accept="image/*" class="hidden" onchange="handleBgImageUpload(event)" />
+                <button onclick="resetBgImage()" class="text-[11px] text-slate-400 hover:text-white border-l border-slate-600 pl-2 ml-1" title="重置為預設背景">
+                    重置
+                </button>
             </div>
 
             <!-- 縮放按鈕 -->
@@ -265,9 +277,51 @@
 
                 <!-- 下半部：Leaflet 動態地形與行政區地圖 (850px ~ 1550px) -->
                 <div class="absolute bottom-[40px] left-[30px] w-[540px] h-[680px] rounded-2xl overflow-hidden border-2 border-brand-gold/50 shadow-2xl z-20 bg-slate-950/80 backdrop-blur-sm">
-                    <!-- 地圖標題列 -->
-                    <div class="absolute top-0 inset-x-0 h-10 bg-gradient-to-b from-slate-950/90 to-transparent z-10 pointer-events-none flex items-center justify-between px-4">
-                        <span id="map-area-tag" class="text-xs text-brand-gold font-bold tracking-wider flex items-center gap-1.5">
+ <!-- 自訂地圖標記 (Church Pin Marker) 支持方向錯開 -->
+            <style>
+                .custom-church-pin {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    pointer-events: auto;
+                }
+                .pin-head {
+                    width: 26px;
+                    height: 26px;
+                    background: linear-gradient(135deg, #dfb754, #b8860b);
+                    border: 2px solid #ffffff;
+                    border-radius: 50% 50% 50% 0;
+                    transform: rotate(-45deg);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 12px rgba(223, 183, 84, 0.8);
+                }
+                .pin-head i {
+                    transform: rotate(45deg);
+                    color: #0b0f19;
+                    font-size: 12px;
+                }
+                .pin-label {
+                    background: rgba(11, 15, 25, 0.9);
+                    border: 1px solid rgba(223, 183, 84, 0.8);
+                    color: #f3d685;
+                    padding: 2px 8px;
+                    font-size: 11px;
+                    font-weight: 700;
+                    border-radius: 10px;
+                    white-space: nowrap;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+                    backdrop-filter: blur(4px);
+                    position: absolute;
+                }
+                /* 標籤錯開位置樣式 */
+                .pin-label-top { bottom: 32px; }
+                .pin-label-bottom { top: 32px; }
+                .pin-label-left { right: 32px; top: 2px; }
+                .pin-label-right { left: 32px; top: 2px; }
+            </style>
                             <i class="fa-solid fa-layer-group"></i> 地形與行政區域衛星地圖
                         </span>
                         <span class="text-[10px] text-slate-400">OpenStreetMap / Terrain</span>
@@ -368,10 +422,40 @@
             }
         };
 
+ <script>
         // 全域地圖變數與縮放狀態
         let map = null;
         let mapMarkers = [];
         let currentScale = 0.52;
+        let uploadedBgUrl = null;
+
+        // 處理使用者自行上傳底圖
+        function handleBgImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedBgUrl = e.target.result;
+                    applyBgImage();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetBgImage() {
+            uploadedBgUrl = null;
+            document.getElementById('bg-file-input').value = '';
+            applyBgImage();
+        }
+
+        function applyBgImage() {
+            const poster = document.getElementById('poster');
+            if (uploadedBgUrl) {
+                poster.style.backgroundImage = `url('${uploadedBgUrl}'), linear-gradient(180deg, #090e18 0%, #111a2e 50%, #080c14 100%)`;
+            } else {
+                poster.style.backgroundImage = `url('tjc-centenary-concert/主視覺.jpg'), url('主視覺.jpg'), url('主視覺.png'), linear-gradient(180deg, #090e18 0%, #111a2e 50%, #080c14 100%)`;
+            }
+        }
 
         function initScale() {
             const screenHeight = window.innerHeight;
@@ -421,6 +505,7 @@
         }
 
         function renderPoster() {
+            applyBgImage();
             const zoneKey = document.getElementById("zone-select").value;
             const zone = zonesData[zoneKey];
             if (!zone) return;
@@ -435,7 +520,7 @@
             const photosContainer = document.getElementById("photos-container");
             const svgLayer = document.getElementById("svg-connections");
             photosContainer.innerHTML = '';
-            svgLayer.innerHTML = '';
+            svgLayer.innerHTML = ''; // 已取消連線虛線
 
             // 清除 Leaflet 圖標
             mapMarkers.forEach(m => map.removeLayer(m));
@@ -450,64 +535,76 @@
 
             setTimeout(() => {
                 map.invalidateSize();
-                
-                const mapContainerLeft = 30;
-                const mapContainerTop = 880;
 
-                const photoChurches = churches.filter(c => c.showPhoto);
-                const totalPhotos = photoChurches.length;
-
-                photoChurches.forEach((church, index) => {
-                    // 地圖 Marker
+                // 2. 繪製地圖上的教會 Pin（標籤交錯顯示，避免重疊遮擋）
+                const positions = ['top', 'bottom', 'left', 'right'];
+                churches.forEach((church, index) => {
+                    const posClass = `pin-label-${positions[index % positions.length]}`;
+                    
                     const customIcon = L.divIcon({
                         className: '',
                         html: `
-                            <div class="custom-church-pin">
+                            <div class="custom-church-pin relative">
                                 <div class="pin-head">
                                     <i class="fa-solid fa-church"></i>
                                 </div>
-                                <div class="pin-label">${church.name}</div>
+                                <div class="pin-label ${posClass}">${church.name}</div>
                             </div>
                         `,
-                        iconSize: [60, 50],
-                        iconAnchor: [30, 25]
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
                     });
 
                     const marker = L.marker([church.lat, church.lng], { icon: customIcon }).addTo(map);
                     mapMarkers.push(marker);
+                });
 
-                    const point = map.latLngToContainerPoint([church.lat, church.lng]);
-                    const pinX = mapContainerLeft + point.x;
-                    const pinY = mapContainerTop + point.y;
+                // 3. 滿版左右交錯相片泡泡渲染（涵蓋頂部 190px 至 900px，不留多餘空間）
+                const photoChurches = churches.filter(c => c.showPhoto);
+                const totalPhotos = photoChurches.length;
 
-                    // 照片泡泡擺放 (因右側有直書標題，調整左中區域分佈)
-                    const isEven = index % 2 === 0;
-                    const colX = isEven ? 120 + (Math.random() * 30 - 15) : 320 + (Math.random() * 30 - 15);
+                // 頂部與底部範圍設定
+                const startY = 190;
+                const endY = 880;
+                const availableHeight = endY - startY;
+
+                photoChurches.forEach((church, index) => {
+                    // 雙欄左右交錯 (Column 0: 左側, Column 1: 右側)
+                    const col = index % 2; 
                     
-                    const rowHeight = (620 / Math.ceil(totalPhotos / 2));
+                    // 計算垂直格層，讓圖片均勻分佈於上半部
+                    const rowCount = Math.ceil(totalPhotos / 2);
                     const rowIndex = Math.floor(index / 2);
-                    const photoY = 220 + rowIndex * rowHeight + (Math.random() * 20 - 10);
-                    const photoX = colX;
+                    const rowStep = availableHeight / Math.max(rowCount, 1);
 
-                    const photoSize = 135 + Math.floor(Math.random() * 25);
+                    // 加入適當隨機微調，展現生動錯落感
+                    const photoY = startY + (rowIndex * rowStep) + (Math.random() * 20 - 10);
+                    
+                    // 左欄範圍: 60px~210px, 右欄範圍: 250px~410px (避開最右側直書大標題)
+                    const photoX = col === 0 
+                        ? 70 + (Math.random() * 40) 
+                        : 260 + (Math.random() * 40);
+
+                    // 動態泡泡大小 (120px ~ 160px，充滿張力)
+                    const photoSize = 130 + Math.floor(Math.random() * 30);
 
                     const photoEl = document.createElement("div");
-                    photoEl.className = "photo-bubble absolute cursor-pointer pointer-events-auto rounded-full p-1.5 bg-gradient-to-br from-brand-gold/60 via-slate-800 to-amber-700/40 shadow-2xl flex items-center justify-center group";
+                    photoEl.className = "photo-bubble absolute cursor-pointer pointer-events-auto rounded-full p-1.5 bg-gradient-to-br from-brand-gold/70 via-slate-800 to-amber-700/50 shadow-2xl flex items-center justify-center group";
                     photoEl.style.width = `${photoSize}px`;
                     photoEl.style.height = `${photoSize}px`;
-                    photoEl.style.left = `${photoX - photoSize / 2}px`;
-                    photoEl.style.top = `${photoY - photoSize / 2}px`;
+                    photoEl.style.left = `${photoX}px`;
+                    photoEl.style.top = `${photoY}px`;
                     photoEl.style.zIndex = 20 + index;
 
                     photoEl.innerHTML = `
-                        <div class="w-full h-full rounded-full overflow-hidden relative bg-slate-900 border border-brand-gold/40">
+                        <div class="w-full h-full rounded-full overflow-hidden relative bg-slate-900 border-2 border-brand-gold/50 shadow-inner">
                             <img src="${church.photo}" 
                                  alt="${church.name}" 
-                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-115"
                                  onerror="this.onerror=null; this.src='https://placehold.co/300x300/1e293b/dfb754?text=${encodeURIComponent(church.name)}';" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-80 group-hover:opacity-40 transition-opacity"></div>
-                            <div class="absolute bottom-2 inset-x-0 text-center">
-                                <span class="px-2 py-0.5 rounded-full bg-slate-950/80 text-brand-goldLight text-[11px] font-bold tracking-wider border border-brand-gold/30">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-transparent to-transparent opacity-90 group-hover:opacity-50 transition-opacity"></div>
+                            <div class="absolute bottom-2.5 inset-x-0 text-center px-1">
+                                <span class="px-2.5 py-0.5 rounded-full bg-slate-950/90 text-brand-goldLight text-[11px] font-bold tracking-wider border border-brand-gold/40 shadow-lg inline-block truncate max-w-[90%]">
                                     ${church.name}
                                 </span>
                             </div>
@@ -515,39 +612,7 @@
                     `;
 
                     photosContainer.appendChild(photoEl);
-
-                    // 繪製動態金絲連線
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    const controlX = (photoX + pinX) / 2 + (isEven ? -30 : 30);
-                    const controlY = (photoY + pinY) / 2;
-                    const pathData = `M ${photoX} ${photoY} Q ${controlX} ${controlY} ${pinX} ${pinY}`;
-
-                    line.setAttribute('d', pathData);
-                    line.setAttribute('fill', 'none');
-                    line.setAttribute('stroke', 'url(#gold-gradient)');
-                    line.setAttribute('stroke-width', '2');
-                    line.setAttribute('stroke-dasharray', '6 6');
-                    line.setAttribute('opacity', '0.65');
-
-                    const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-                    anim.setAttribute('attributeName', 'stroke-dashoffset');
-                    anim.setAttribute('from', '24');
-                    anim.setAttribute('to', '0');
-                    anim.setAttribute('dur', '2s');
-                    anim.setAttribute('repeatCount', 'indefinite');
-                    line.appendChild(anim);
-
-                    svgLayer.appendChild(line);
                 });
-
-                const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-                defs.innerHTML = `
-                    <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#F3D685" stop-opacity="0.9" />
-                        <stop offset="100%" stop-color="#DFB754" stop-opacity="0.3" />
-                    </linearGradient>
-                `;
-                svgLayer.appendChild(defs);
 
             }, 300);
         }
