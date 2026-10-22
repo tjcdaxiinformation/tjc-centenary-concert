@@ -318,4 +318,116 @@
     </div>
 
     <script>
-// ... existing code ...
+<!-- ... existing code ... -->
+            <select id="district-select" onchange="switchDistrict(this.value)" class="ml-4 bg-slate-800 text-amber-400 border border-amber-500/50 rounded-lg px-3 py-1.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-500/50 cursor-pointer shadow-lg shadow-amber-500/10">
+                <option value="fuxing">復興小區</option>
+                <option value="zhumiao">竹苗小區</option>
+                <option value="zhongmiao">中苗小區</option>
+                <option value="nantou">南投小區</option>
+            </select>
+        </div>
+
+        <div class="flex items-center gap-3">
+<!-- ... existing code ... -->
+        const terrainTileLayers = [
+            {
+                url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+                attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap'
+            },
+            {
+                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                attribution: 'Esri Satellite'
+            }
+        ];
+
+        // 各小區資料結構
+        const districtData = {
+            fuxing: {
+                title: "復興小區",
+                subtitle: "教會與祈禱所",
+                region: "八德 / 大溪 / 復興山區",
+                churches: [
+                    { name: "八德", lat: 24.934632, lng: 121.299978, image: "八德教會.jpg", desc: "前山牧區", showPhoto: true },
+                    { name: "崎頂", lat: 24.900432, lng: 121.282682, image: "崎頂教會.jpg", desc: "前山牧區", showPhoto: true },
+                    { name: "大溪", lat: 24.881231, lng: 121.294548, image: "大溪教會.jpg", desc: "前山牧區", showPhoto: true },
+                    { name: "復興", lat: 24.826416, lng: 121.356914, image: "復興教會.jpg", desc: "前山牧區", showPhoto: true },
+                    { name: "義盛", lat: 24.779475, lng: 121.365940, image: "義盛教會.jpg", desc: "中山牧區", showPhoto: true },
+                    { name: "大灣", lat: 24.760693, lng: 121.344903, image: "大灣教會.jpg", desc: "中山牧區", showPhoto: true },
+                    { name: "雪霧鬧", lat: 24.741287, lng: 121.365961, image: "雪霧鬧教會.jpg", desc: "中山牧區", showPhoto: true },
+                    { name: "上巴陵", lat: 24.685697, lng: 121.396455, image: "上巴陵教會.jpg", desc: "後山牧區", showPhoto: false },
+                    { name: "中巴陵", lat: 24.679721, lng: 121.396892, desc: "後山牧區", showPhoto: false },
+                    { name: "三光", lat: 24.675178, lng: 121.366111, desc: "後山牧區", showPhoto: false },
+                    { name: "光華", lat: 24.665251, lng: 121.398561, desc: "後山牧區", showPhoto: false },
+                    { name: "霞雲", lat: 24.821014, lng: 121.381574, desc: "祈禱所", showPhoto: false },
+                    { name: "卡普", lat: 24.795905, lng: 121.389985, desc: "祈禱所", showPhoto: false },
+                    { name: "奎輝", lat: 24.797636, lng: 121.331500, desc: "祈禱所", showPhoto: false },
+                    { name: "高義", lat: 24.706971, lng: 121.357480, desc: "祈禱所", showPhoto: false },
+                    { name: "爺亨", lat: 24.673894, lng: 121.375643, desc: "祈禱所", showPhoto: false }
+                ]
+            },
+            zhumiao: {
+                title: "竹苗小區",
+                subtitle: "教會與祈禱所",
+                region: "新竹 / 苗栗山區",
+                churches: [
+                    { name: "花園", lat: 24.645038, lng: 121.151893, image: "花園教會.jpg", desc: "五峰牧區", showPhoto: true },
+                    { name: "五峰", lat: 24.629047, lng: 121.119750, image: "五峰教會.jpg", desc: "五峰牧區", showPhoto: true },
+                    { name: "桃山", lat: 24.599219, lng: 121.109834, image: "桃山教會.jpg", desc: "五峰牧區", showPhoto: true },
+                    { name: "清泉", lat: 24.578934, lng: 121.106060, image: "清泉教會.jpg", desc: "五峰牧區", showPhoto: true },
+                    { name: "義興", lat: 24.683555, lng: 121.185258, image: "義興教會.jpg", desc: "尖石前牧區", showPhoto: true },
+                    { name: "錦屏", lat: 24.695765, lng: 121.227790, image: "錦屏教會.jpg", desc: "尖石前牧區", showPhoto: true },
+                    { name: "尖石", lat: 24.720930, lng: 121.214883, image: "尖石教會.jpg", desc: "尖石前牧區", showPhoto: true },
+                    { name: "頭份", lat: 24.681674, lng: 120.901236, desc: "中港溪牧區", showPhoto: false },
+                    { name: "東江", lat: 24.594705, lng: 121.005885, desc: "中港溪牧區", showPhoto: false },
+                    { name: "東河", lat: 24.600946, lng: 121.040070, desc: "中港溪牧區(祈禱所)", showPhoto: false },
+                    { name: "養老", lat: 24.588522, lng: 121.266869, desc: "尖石後牧區(祈禱所)", showPhoto: false },
+                    { name: "李埔", lat: 24.666145, lng: 121.295985, desc: "尖石後牧區(祈禱所)", showPhoto: false },
+                    { name: "那羅", lat: 24.679807, lng: 121.246533, desc: "尖石後牧區", showPhoto: false },
+                    { name: "湖口", lat: 24.867112, lng: 121.029554, desc: "祈禱所", showPhoto: false }
+                ]
+            },
+            zhongmiao: {
+                title: "中苗小區",
+                subtitle: "教會與祈禱所",
+                region: "大甲溪沿線 / 東勢",
+                churches: [
+                    { name: "東勢", lat: 24.249405, lng: 120.832019, image: "東勢教會.jpg", desc: "東勢牧區", showPhoto: true },
+                    { name: "自由", lat: 24.270630, lng: 120.890200, image: "自由教會.jpg", desc: "東勢牧區", showPhoto: true },
+                    { name: "雙崎", lat: 24.290980, lng: 120.908350, image: "雙崎教會.jpg", desc: "東勢牧區", showPhoto: true },
+                    { name: "達觀", lat: 24.321900, lng: 120.921956, image: "達觀教會.jpg", desc: "東勢牧區", showPhoto: true },
+                    { name: "南勢", lat: 24.170876, lng: 120.896805, image: "南勢教會.jpg", desc: "大甲溪牧區", showPhoto: true },
+                    { name: "裡冷", lat: 24.164515, lng: 120.952551, image: "裡冷教會.jpg", desc: "大甲溪牧區", showPhoto: true },
+                    { name: "博愛", lat: 24.174447, lng: 120.978225, image: "博愛教會.jpg", desc: "大甲溪牧區", showPhoto: true },
+                    { name: "環山", lat: 24.318340, lng: 121.294490, desc: "大甲溪牧區", showPhoto: false },
+                    { name: "士林", lat: 24.346180, lng: 120.927380, desc: "泰安牧區", showPhoto: false },
+                    { name: "永安", lat: 24.358270, lng: 120.962500, desc: "泰安牧區", showPhoto: false },
+                    { name: "大興", lat: 24.412569, lng: 120.911832, desc: "泰安牧區(祈禱所)", showPhoto: false },
+                    { name: "大安", lat: 24.373270, lng: 120.969800, desc: "泰安牧區(祈禱所)", showPhoto: false },
+                    { name: "竹林", lat: 24.306048, lng: 120.925130, desc: "教會", showPhoto: false },
+                    { name: "佳陽", lat: 24.257639, lng: 121.208498, desc: "祈禱所", showPhoto: false }
+                ]
+            },
+            nantou: {
+                title: "南投小區",
+                subtitle: "教會與祈禱所",
+                region: "仁愛 / 翠巒 / 力行",
+                churches: [
+                    { name: "翠巒", lat: 24.182960, lng: 121.204100, image: "翠巒教會.jpg", desc: "力行線牧區", showPhoto: true },
+                    { name: "力行", lat: 24.148459, lng: 121.190195, image: "力行教會.jpg", desc: "力行線牧區", showPhoto: true },
+                    { name: "紅香", lat: 24.159071, lng: 121.176026, image: "紅香教會.jpg", desc: "力行線牧區", showPhoto: true },
+                    { name: "慈峰", lat: 24.131208, lng: 121.184243, image: "慈峰教會.jpg", desc: "力行線牧區", showPhoto: true },
+                    { name: "精英", lat: 24.061304, lng: 121.194630, image: "精英教會.jpg", desc: "親春線牧區", showPhoto: true },
+                    { name: "廬山", lat: 24.033899, lng: 121.185267, image: "廬山教會.jpg", desc: "親春線牧區", showPhoto: true },
+                    { name: "春陽", lat: 24.027045, lng: 121.149445, image: "春陽教會.jpg", desc: "親春線牧區", showPhoto: true },
+                    { name: "親愛", lat: 23.970208, lng: 121.097397, desc: "親春線牧區", showPhoto: false },
+                    { name: "新生", lat: 24.072186, lng: 120.981626, desc: "新望愛牧區", showPhoto: false },
+                    { name: "望美", lat: 23.616368, lng: 120.886717, desc: "新望愛牧區", showPhoto: false },
+                    { name: "仁愛", lat: 23.962340, lng: 120.975144, desc: "新望愛牧區", showPhoto: false },
+                    { name: "武界", lat: 23.909640, lng: 121.049480, desc: "祈禱所", showPhoto: false }
+                ]
+            }
+        };
+
+        // 自訂發光地標標示
+        function createPinIcon(title) {
+<!-- ... existing code ... -->
