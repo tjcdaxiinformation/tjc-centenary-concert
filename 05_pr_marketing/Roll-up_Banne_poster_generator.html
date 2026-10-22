@@ -178,7 +178,9 @@
         <div class="relative">
             <select id="zone-select" onchange="renderPoster()" class="appearance-none bg-[#1e293b] border border-brand-gold text-brand-gold py-2 pl-4 pr-10 rounded text-lg font-bold focus:outline-none cursor-pointer">
                 <option value="zhongmiao">中苗小區</option>
-                <option value="other">其他小區 (測試)</option>
+                <option value="fuxing">復興小區</option>
+                <option value="zhumiao">竹苗小區</option>
+                <option value="nantou">南投小區</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-brand-gold">
                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -226,12 +228,12 @@
         // 記錄目前的縮放比例
         let currentScale = window.innerHeight > 1000 ? 1 : 0.6; // 根據螢幕高度給初始值
         
-        // ==========================================
+   // ==========================================
         // 佈局資料定義 (基於截圖還原中苗小區的相對位置)
         // x, y 代表在 800x1422 畫布上的百分比位置
         // ==========================================
         const zonesData = {
-       fuxing: {
+            fuxing: {
                 name: "復興小區",
                 id: "fuxing",
                 churches: [
@@ -288,13 +290,8 @@
                 ]
             }
         };
-        function init() {
-            // 設定初始縮放
-            document.getElementById('poster-wrapper').style.transform = `scale(${currentScale})`;
-            renderPoster();
-        }
 
-        function zoomPoster(delta) {
+        function renderPoster() {
             currentScale += delta;
             // 限制縮放範圍
             if (currentScale < 0.3) currentScale = 0.3;
