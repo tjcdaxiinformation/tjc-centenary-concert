@@ -131,7 +131,17 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">誠摯邀請敬語</label>
+                    <label class="block text-[10px] text-gray-400 mb-1">職銜</label>
+                    <input type="text" id="inRecipientTitle" value="區長賢伉儷" placeholder="職銜" class="w-full bg-[#0c1b33] border border-blue-900/80 rounded-lg px-3 py-2 text-sm text-amber-200 focus:outline-none focus:border-amber-400 transition">
+                </div>
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="chkBlankMode" onchange="toggleBlankMode(this.checked)" class="rounded border-slate-700 text-amber-500 focus:ring-amber-400">
+                    <label for="chkBlankMode" class="text-[11px] text-gray-300 cursor-pointer">保留底線留白（不填寫姓名職銜）</label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">誠摯邀請敬語</label>
                     <input type="text" id="inSalutation" value="主內平安！誠摯邀請您蒞臨指導：" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2 text-xs text-gray-200 focus:outline-none focus:border-amber-400 transition">
                 </div>
 
@@ -170,7 +180,7 @@
             <div class="pt-4 space-y-2">
                 <button onclick="downloadECard()" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white font-black py-4 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
                     <span class="text-xl">📲</span>
-                    <span class="text-base">下載專屬電子邀請卡 (傳送專用)</span>
+                    <span class="text-base">下載 / 儲存至照片 (傳送專用)</span>
                 </button>
             </div>
         </div>
@@ -278,6 +288,24 @@
 
         const toast = document.getElementById('toast');
 
+        function toggleBlankMode(isBlank) {
+            if (isBlank) {
+                ecRecipientName.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                ecRecipientTitle.innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;";
+                inRecipientName.disabled = true;
+                inRecipientTitle.disabled = true;
+                inRecipientName.classList.add('opacity-40');
+                inRecipientTitle.classList.add('opacity-40');
+            } else {
+                ecRecipientName.textContent = inRecipientName.value || "蘇佐璽";
+                ecRecipientTitle.textContent = inRecipientTitle.value || "區長賢伉儷";
+                inRecipientName.disabled = false;
+                inRecipientTitle.disabled = false;
+                inRecipientName.classList.remove('opacity-40');
+                inRecipientTitle.classList.remove('opacity-40');
+            }
+        }
+
         function bindText(inputEl, target) {
             if (!inputEl || !target) return;
             inputEl.addEventListener('input', (e) => {
@@ -335,17 +363,42 @@
                 backgroundColor: '#0c1b33',
             }).then(canvas => {
                 document.body.removeChild(clone);
-                const link = document.createElement('a');
-                const recipient = inRecipientName.value || '貴賓';
-                link.download = `音樂會電子邀請卡_${recipient}.png`;
-                link.href = canvas.toDataURL('image/png', 1.0);
-                link.click();
-                showToast(`🎉 電子邀請卡 下載成功！可直接透過 Line 傳送。`);
+                const isBlank = document.getElementById('chkBlankMode')?.checked;
+                const recipient = isBlank ? '空白' : (inRecipientName.value || '貴賓');
+                const filename = `音樂會電子邀請卡_${recipient}.png`;
+                
+                // 轉換為 Blob 以支援 Web Share API，能讓手機使用者直接「存到照片」
+                canvas.toBlob(blob => {
+                    const file = new File([blob], filename, { type: 'image/png' });
+                    
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            files: [file],
+                            title: '西區音樂會邀請卡',
+                            text: '誠摯邀請您參加傳教百週年西區詩歌音樂會！'
+                        }).then(() => {
+                            showToast(`🎉 成功開啟分享選單，您可選擇「儲存影像」存至相簿！`);
+                        }).catch(err => {
+                            console.log('Share API cancelled or failed, using fallback.', err);
+                            fallbackDownload(canvas, filename);
+                        });
+                    } else {
+                        fallbackDownload(canvas, filename);
+                    }
+                }, 'image/png', 1.0);
             }).catch(err => {
                 console.error(err);
                 if(document.body.contains(clone)) document.body.removeChild(clone);
                 showToast('❌ 電子卡匯出失敗，請稍後再試。');
             });
+        }
+
+        function fallbackDownload(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+            showToast(`🎉 電子邀請卡 下載成功！`);
         }
 
         function showToast(msg) {
