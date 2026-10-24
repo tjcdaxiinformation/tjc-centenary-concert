@@ -300,6 +300,19 @@
                     <div class="vertical-title-accent"></div>
                 </div>
 
+                <!-- 中間右側：西區傳教史 QR Code (移至大字下方，約離地 100cm 處的最佳手持掃描高度) -->
+                <div class="absolute top-[580px] right-[30px] z-40 bg-slate-950/90 border border-brand-gold/60 p-3.5 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] flex flex-col items-center gap-1.5 backdrop-blur-md">
+                    <span class="text-[10px] text-brand-gold tracking-widest font-bold mb-0.5">探索百年軌跡</span>
+                    <div class="w-28 h-28 bg-white p-1.5 rounded-xl border border-brand-gold/40 flex items-center justify-center overflow-hidden">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.instagram.com/tjc100_west_concert/" 
+                             alt="西區傳教史" 
+                             class="w-full h-full object-contain" />
+                    </div>
+                    <span class="text-xs font-bold text-brand-goldLight font-serif tracking-widest flex items-center gap-1.5 mt-1">
+                        <i class="fa-solid fa-qrcode text-brand-gold"></i> 西區傳教史
+                    </span>
+                </div>
+
                 <!-- 相片泡泡浮動層 (180px ~ 920px) -->
                 <div id="photos-container" class="absolute inset-0 w-full h-[950px] pointer-events-none z-30"></div>
 
@@ -315,18 +328,6 @@
 
                     <!-- Leaflet 地圖實際載入區域 -->
                     <div id="leaflet-map" class="w-full flex-1 dark-map-tiles z-0"></div>
-
-                    <!-- 地圖右下角懸浮 QR Code -->
-                    <div class="absolute bottom-4 right-4 z-30 bg-slate-950/95 border border-brand-gold/60 p-2.5 rounded-xl shadow-2xl flex flex-col items-center gap-1.5 backdrop-blur-md">
-                        <div class="w-20 h-20 bg-white p-1 rounded-lg border border-brand-gold/40 flex items-center justify-center overflow-hidden">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.instagram.com/tjc100_west_concert/" 
-                                 alt="西區傳教史" 
-                                 class="w-full h-full object-contain" />
-                        </div>
-                        <span class="text-[10px] font-bold text-brand-goldLight font-serif tracking-wider flex items-center gap-1">
-                            <i class="fa-solid fa-qrcode text-brand-gold"></i> 西區傳教史
-                        </span>
-                    </div>
 
                     <!-- 地圖外框金邊裝飾角 -->
                     <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-brand-gold pointer-events-none z-10"></div>
@@ -379,10 +380,10 @@
                     { name: "清泉教會", year: "1963年", lat: 24.578934, lng: 121.106060, photo: "assets/photos/zhumiao/清泉教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/清泉教會.jpg", showPhoto: true },
                     { name: "義興教會", year: "1970年", lat: 24.683555, lng: 121.185258, photo: "assets/photos/zhumiao/義興教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/義興教會.jpg", showPhoto: true },
                     { name: "錦屏教會", year: "1967年", lat: 24.695765, lng: 121.227790, photo: "assets/photos/zhumiao/錦屏教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/錦屏教會.jpg", showPhoto: true },
-                    { name: "尖石教會", year: "1955年", lat: 24.720930, lng: 121.214883, photo: "assets/photos/zhumiao/尖石教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/尖石教會.jpg", showPhoto: true }
-                    { name: "那羅教會", year: "2009年", lat: 24.679807, lng: 121.246533, photo: "assets/photos/zhumiao/那羅教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/那羅教會.jpg", showPhoto: true }
-                    { name: "頭份教會", year: "2004年", lat: 24.681674, lng: 120.901236, photo: "assets/photos/zhumiao/頭份教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/頭份教會.jpg", showPhoto: true }
-                    { name: "東江教會", year: "1975年", lat: 24.594705, lng: 121.005885, photo: "assets/photos/zhumiao/東江教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/東江教會.jpg", showPhoto: true }
+                    { name: "尖石教會", year: "1955年", lat: 24.720930, lng: 121.214883, photo: "assets/photos/zhumiao/尖石教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/尖石教會.jpg", showPhoto: true },
+                    { name: "那羅教會", year: "2009年", lat: 24.679807, lng: 121.246533, photo: "assets/photos/zhumiao/那羅教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/那羅教會.jpg", showPhoto: true },
+                    { name: "頭份教會", year: "2004年", lat: 24.681674, lng: 120.901236, photo: "assets/photos/zhumiao/頭份教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/頭份教會.jpg", showPhoto: true },
+                    { name: "東江教會", year: "1975年", lat: 24.594705, lng: 121.005885, photo: "assets/photos/zhumiao/東江教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/東江教會.jpg", showPhoto: true },
                     { name: "東河祈禱所", year: "1975年", lat: 24.600946, lng: 121.04007, photo: "assets/photos/zhumiao/東河祈禱所.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhumiao/東河祈禱所.jpg", showPhoto: true }
                 ]
             },
@@ -396,15 +397,14 @@
                     { name: "達觀教會", year: "1969年", lat: 24.321900, lng: 120.921956, photo: "assets/photos/zhongmiao/達觀教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/達觀教會.jpg", showPhoto: true },
                     { name: "南勢教會", year: "", lat: 24.170876, lng: 120.896805, photo: "assets/photos/zhongmiao/南勢教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/南勢教會.jpg", showPhoto: true },
                     { name: "裡冷教會", year: "1953年", lat: 24.164515, lng: 120.952551, photo: "assets/photos/zhongmiao/裡冷教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/裡冷教會.jpg", showPhoto: true },
-                    { name: "博愛教會", year: "1951年", lat: 24.174447, lng: 120.978225, photo: "assets/photos/zhongmiao/博愛教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/博愛教會.jpg", showPhoto: true }
-                    { name: "永安教會", year: "", lat: 24.35827, lng: 120.9625, photo: "assets/photos/zhongmiao/永安教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/永安教會.jpg", showPhoto: true }
-                    { name: "大安祈禱所", year: "", lat: 24.37327, lng: 24.37327, photo: "assets/photos/zhongmiao/大安祈禱所.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/大安祈禱所.jpg", showPhoto: true }
-                    { name: "士林教會", year: "1971年", lat: 24.34618, lng: 120.92738, photo: "assets/photos/zhongmiao/士林教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/士林教會.jpg", showPhoto: true }
-                    { name: "竹林教會", year: "", lat: 24.306048, lng: 120.92513, photo: "assets/photos/zhongmiao/竹林教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/竹林教會.jpg", showPhoto: true }
-                    { name: "大興祈禱所", year: "", lat: 24.412569, lng: 120.911832, photo: "assets/photos/zhongmiao/大興祈禱所.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/大興祈禱所.jpg", showPhoto: true }
-                    { name: "環山教會", year: "1963年", lat: 24.31834, lng: 121.29449, photo: "assets/photos/zhongmiao/環山教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/環山教會.jpg", showPhoto: true }
+                    { name: "博愛教會", year: "1951年", lat: 24.174447, lng: 120.978225, photo: "assets/photos/zhongmiao/博愛教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/博愛教會.jpg", showPhoto: true },
+                    { name: "永安教會", year: "", lat: 24.35827, lng: 120.9625, photo: "assets/photos/zhongmiao/永安教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/永安教會.jpg", showPhoto: true },
+                    { name: "大安祈禱所", year: "", lat: 24.37327, lng: 24.37327, photo: "assets/photos/zhongmiao/大安祈禱所.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/大安祈禱所.jpg", showPhoto: true },
+                    { name: "士林教會", year: "1971年", lat: 24.34618, lng: 120.92738, photo: "assets/photos/zhongmiao/士林教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/士林教會.jpg", showPhoto: true },
+                    { name: "竹林教會", year: "", lat: 24.306048, lng: 120.92513, photo: "assets/photos/zhongmiao/竹林教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/竹林教會.jpg", showPhoto: true },
+                    { name: "大興祈禱所", year: "", lat: 24.412569, lng: 120.911832, photo: "assets/photos/zhongmiao/大興祈禱所.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/大興祈禱所.jpg", showPhoto: true },
+                    { name: "環山教會", year: "1963年", lat: 24.31834, lng: 121.29449, photo: "assets/photos/zhongmiao/環山教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/環山教會.jpg", showPhoto: true },
                     { name: "佳陽祈禱所", year: "1971年", lat: 24.257639, lng: 121.208498, photo: "assets/photos/zhongmiao/佳陽祈禱所.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/zhongmiao/佳陽祈禱所.jpg", showPhoto: true }
-
                 ]
             },
             nantou: {
@@ -417,10 +417,10 @@
                     { name: "慈峰教會", year: "1953年", lat: 24.131208, lng: 121.184243, photo: "assets/photos/nantou/慈峰教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/慈峰教會.jpg", showPhoto: true },
                     { name: "精英教會", year: "1953年", lat: 24.061304, lng: 121.194630, photo: "assets/photos/nantou/精英教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/精英教會.jpg", showPhoto: true },
                     { name: "廬山教會", year: "1954年", lat: 24.033899, lng: 121.185267, photo: "assets/photos/nantou/廬山教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/廬山教會.jpg", showPhoto: true },
-                    { name: "春陽教會", year: "1956年", lat: 24.027045, lng: 121.149445, photo: "assets/photos/nantou/春陽教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/春陽教會.jpg", showPhoto: true }
-                    { name: "親愛教會", year: "1952年", lat: 23.970208, lng: 121.097397, photo: "assets/photos/nantou/親愛教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/親愛教會.jpg", showPhoto: true }
-                    { name: "新生教會", year: "1956年", lat: 24.072186, lng: 120.981626, photo: "assets/photos/nantou/新生教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/新生教會.jpg", showPhoto: true }
-                    { name: "仁愛教會", year: "2002年", lat: 23.96234, lng: 120.975144, photo: "assets/photos/nantou/仁愛教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/仁愛教會.jpg", showPhoto: true }
+                    { name: "春陽教會", year: "1956年", lat: 24.027045, lng: 121.149445, photo: "assets/photos/nantou/春陽教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/春陽教會.jpg", showPhoto: true },
+                    { name: "親愛教會", year: "1952年", lat: 23.970208, lng: 121.097397, photo: "assets/photos/nantou/親愛教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/親愛教會.jpg", showPhoto: true },
+                    { name: "新生教會", year: "1956年", lat: 24.072186, lng: 120.981626, photo: "assets/photos/nantou/新生教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/新生教會.jpg", showPhoto: true },
+                    { name: "仁愛教會", year: "2002年", lat: 23.96234, lng: 120.975144, photo: "assets/photos/nantou/仁愛教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/仁愛教會.jpg", showPhoto: true },
                     { name: "望美教會", year: "", lat: 23.616368, lng: 120.886717, photo: "assets/photos/nantou/望美教會.jpg", fallbackPhoto: "05_pr_marketing/assets/photos/nantou/望美教會.jpg", showPhoto: true }
                 ]
             }
