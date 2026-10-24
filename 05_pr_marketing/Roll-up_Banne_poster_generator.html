@@ -467,6 +467,29 @@
         let uploadedBgUrl = null;
         let churchYearsMap = {}; // 儲存從 Google Sheet 取得的成立時間
 
+        // 智慧圖片錯誤重試處理 (解決 GitHub 大小寫與副檔名問題，並修復 CORS 導致的黑底)
+        window.handlePhotoFallback = function(img, churchName, originalPhoto, fallbackPhoto) {
+            const state = parseInt(img.dataset.retryState || '0');
+            // 依序嘗試：1.備用路徑 2.大寫JPG 3.備用大寫JPG 4.PNG 5.備用PNG
+            const pathsToTry = [
+                fallbackPhoto,
+                originalPhoto.replace('.jpg', '.JPG'),
+                fallbackPhoto.replace('.jpg', '.JPG'),
+                originalPhoto.replace('.jpg', '.png'),
+                fallbackPhoto.replace('.jpg', '.png')
+            ];
+
+            if (state < pathsToTry.length) {
+                img.dataset.retryState = state + 1;
+                img.src = pathsToTry[state];
+            } else {
+                // 最終備案：改用 Inline SVG，絕對不會有 CORS (跨域) 阻擋問題，保證能渲染出替代文字
+                img.onerror = null;
+                const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="300" height="300" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="64" font-weight="bold" fill="#dfb754">${churchName.substring(0,2)}</text></svg>`;
+                img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+            }
+        };
+
         // 處理使用者自行上傳底圖
         function handleBgImageUpload(event) {
             const file = event.target.files[0];
@@ -635,9 +658,6 @@
                     const absolutePhoto = encodeURI(photoPath);
                     const absoluteFallback = encodeURI(fallbackPath);
                     
-                    // 修正 2：使用穩定的 UI-Avatars PNG 格式做為最終替代圖 (避免 html2canvas 解析 SVG 當機)
-                    const defaultPlaceholder = `https://ui-avatars.com/api/?name=${encodeURIComponent(church.name.substring(0,2))}&background=1e293b&color=dfb754&size=300`;
-
                     // 照片泡泡中加入成立時間
                     const estYear = church.year ? `<span class="text-[9px] text-amber-300 ml-1 font-mono">(${church.year})</span>` : '';
 
@@ -649,14 +669,14 @@
                     photoEl.style.top = `${photoY}px`;
                     photoEl.style.zIndex = 30 + index;
 
-                    // 修正 3：加入 crossorigin="anonymous" 並修復 onerror 的無限迴圈死機問題
+                    // 套用改良版的 fallback 圖片重試機制
                     photoEl.innerHTML = `
                         <div class="w-full h-full rounded-full overflow-hidden relative bg-slate-900 border-2 border-amber-300 shadow-2xl">
                             <img src="${absolutePhoto}" 
                                  alt="${church.name}" 
                                  crossorigin="anonymous"
                                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                 onerror="if(!this.dataset.failed){ this.dataset.failed=true; this.src='${absoluteFallback}'; } else if(!this.dataset.failedTwice){ this.dataset.failedTwice=true; this.src='${defaultPlaceholder}'; } else { this.onerror=null; }" />
+                                 onerror="handlePhotoFallback(this, '${church.name}', '${absolutePhoto}', '${absoluteFallback}')" />
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-90 group-hover:opacity-60 transition-opacity"></div>
                             <div class="absolute bottom-2 inset-x-0 text-center px-1">
                                 <span class="px-2.5 py-0.5 rounded-full bg-slate-950/95 text-brand-goldLight text-[11px] font-bold tracking-wider border border-brand-gold/60 shadow-lg inline-block truncate max-w-[92%]">
