@@ -16,8 +16,11 @@
             color: #f3f4f6;
         }
 
-        .font-brush {
-            font-family: 'Ma Shan Zheng', cursive;
+        .font-kai {
+            font-family: 'Kaiti TC', 'BiauKai', 'DFKai-SB', 'Kaiti', 'Noto Serif TC', serif;
+            font-weight: 900;
+            -webkit-text-stroke: 3px #022c22; /* 讓楷書達到「最粗」的厚重效果 (對應 emerald-950 顏色) */
+            paint-order: stroke fill;
         }
 
         .gold-gradient-text {
@@ -216,12 +219,12 @@
                             </div>
                         </div>
 
-                        <!-- 中間內文區 (修改點：姓名使用毛筆字型、職銜置右底線端點) -->
+                        <!-- 中間內文區 -->
                         <div class="my-auto py-8 text-left">
                             <div id="ecSalutation" class="text-2xl text-emerald-900 font-bold mb-5">主內平安！誠摯邀請您蒞臨指導：</div>
                             <div class="flex items-end mb-8 w-full relative">
                                 <span class="text-3xl text-slate-700 font-bold mb-2 mr-6 shrink-0 z-10 relative">敬邀</span>
-                                <span id="ecRecipientName" class="text-8xl text-emerald-950 font-brush tracking-widest leading-none drop-shadow-sm pb-2 z-10 relative">蘇佐璽</span>
+                                <span id="ecRecipientName" class="text-8xl text-emerald-950 font-kai tracking-widest leading-none drop-shadow-sm pb-2 z-10 relative">蘇佐璽</span>
                                 <div class="flex-grow border-b-[2px] border-dashed border-emerald-900/20 mb-3 mx-4"></div>
                                 <span id="ecRecipientTitle" class="text-3xl text-emerald-900 font-bold mb-2 shrink-0 z-10 relative">區長賢伉儷</span>
                             </div>
