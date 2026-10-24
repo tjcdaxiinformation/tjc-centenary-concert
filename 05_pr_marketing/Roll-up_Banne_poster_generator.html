@@ -625,10 +625,15 @@
 
                     const photoSize = 138 + (index % 3 * 8);
                     
-                    // 修正 1：轉換為 GitHub 絕對路徑，確保跨平台或本機端都能正確讀取照片
-                    const baseUrl = 'https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/';
-                    const absolutePhoto = church.photo.startsWith('http') ? church.photo : baseUrl + church.photo;
-                    const absoluteFallback = church.fallbackPhoto.startsWith('http') ? church.fallbackPhoto : baseUrl + church.fallbackPhoto;
+                    // 修正 1：依照您的 GitHub 資料夾結構，加上 05_pr_marketing 路徑，組合成絕對網址
+                    const baseUrl = 'https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/05_pr_marketing/';
+                    
+                    let photoPath = church.photo.startsWith('http') ? church.photo : baseUrl + church.photo;
+                    let fallbackPath = church.fallbackPhoto.startsWith('http') ? church.fallbackPhoto : 'https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/' + church.fallbackPhoto;
+                    
+                    // 使用 encodeURI 處理中文檔名，防止部分瀏覽器載入破圖
+                    const absolutePhoto = encodeURI(photoPath);
+                    const absoluteFallback = encodeURI(fallbackPath);
                     
                     // 修正 2：使用穩定的 UI-Avatars PNG 格式做為最終替代圖 (避免 html2canvas 解析 SVG 當機)
                     const defaultPlaceholder = `https://ui-avatars.com/api/?name=${encodeURIComponent(church.name.substring(0,2))}&background=1e293b&color=dfb754&size=300`;
