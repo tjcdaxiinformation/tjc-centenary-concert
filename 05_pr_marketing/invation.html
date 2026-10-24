@@ -449,42 +449,60 @@
 
         <!-- 隱藏的電子書式(手機版直式)邀請卡渲染模板 -->
         <div style="width: 0; height: 0; overflow: hidden; position: absolute; z-index: -1;">
-            <div id="eCardTemplate" class="w-[800px] h-[1200px] bg-cover bg-center flex flex-col justify-between p-12 text-center" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
-                <!-- 深色遮罩確保文字清晰 -->
-                <div class="absolute inset-0 bg-slate-950/75 pointer-events-none"></div>
-                
-                <!-- 上方視覺標題 -->
-                <div class="relative z-10 space-y-6 pt-10">
-                    <div class="text-amber-400 font-mono tracking-[0.3em] text-lg font-bold">1926 — 2026 CENTENARY</div>
-                    <h1 id="ecSlogan" class="text-5xl font-black font-serif text-amber-300 tracking-widest" style="text-shadow: 0 4px 12px rgba(0,0,0,0.8);">重修牆垣 開展境界</h1>
-                    <div id="ecMainTitle" class="text-2xl font-bold text-white tracking-wider">真耶穌教會臺灣傳教百年 西區詩歌音樂會</div>
-                </div>
+            <div id="eCardTemplate" class="w-[800px] h-[1200px] bg-cover bg-center flex items-center justify-center p-10" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png');">
+                <!-- 輕微透亮遮罩，保留底圖淡彩邊緣 -->
+                <div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] pointer-events-none"></div>
 
-                <!-- 中間內容玻璃擬物化卡片 -->
-                <div class="relative z-10 bg-white/10 backdrop-blur-md p-10 rounded-3xl border border-amber-500/30 text-left shadow-2xl my-auto mx-4">
-                    <div id="ecSalutation" class="text-xl text-amber-200 mb-6 font-bold">主內平安！誠摯邀請您蒞臨指導：</div>
-                    <div class="flex items-baseline gap-4 border-b-2 border-amber-500/50 pb-6 mb-6">
-                        <span class="text-2xl text-gray-300 font-bold">敬邀</span>
-                        <span id="ecRecipientName" class="text-5xl font-serif font-black text-white tracking-widest">張大衛</span>
-                        <span id="ecRecipientTitle" class="text-2xl text-amber-300 font-bold">長老 / 執事</span>
-                    </div>
-                    <p id="ecBodyText" class="text-2xl text-gray-100 leading-relaxed font-serif text-justify">
-                        謹訂於主後 2026 年 11 月 1 日舉開傳教百週年西區詩歌音樂會。同心以詩歌頌揚主恩、重修信仰牆垣，敬備貴賓專屬席位，誠摯盼望您的蒞臨共襄盛舉，同沐主恩！
-                    </p>
-                </div>
-
-                <!-- 底部時間地點與落款 -->
-                <div class="relative z-10 space-y-8 pb-10">
-                    <div class="bg-amber-500/20 p-6 rounded-2xl border border-amber-500/40 flex justify-center gap-12 text-xl text-white font-bold mx-4 shadow-lg">
-                        <div class="text-center"><span class="text-amber-400 block text-base mb-2 tracking-widest">舉開時間</span><span id="ecEventTime">2026.11.01 (日) 上午 08:30</span></div>
-                        <div class="w-px bg-amber-500/50"></div>
-                        <div class="text-center"><span class="text-amber-400 block text-base mb-2 tracking-widest">舉辦地點</span><span id="ecLocation">國立中央大學 大禮堂</span></div>
-                    </div>
+                <!-- 核心白底卡片 (避免被底圖分隔線干擾，並改為深色文字確保高對比清晰度) -->
+                <div class="relative z-10 w-full h-full max-h-[1100px] bg-white/95 backdrop-blur-md rounded-[3rem] border-[3px] border-[#102a45] shadow-2xl flex flex-col justify-between p-12">
                     
-                    <div class="flex items-center justify-between px-8">
-                        <div id="ecSignOff" class="text-xl text-gray-300 font-serif font-bold text-left">真耶穌教會西區辦事處<br>音樂會籌備小組 敬邀</div>
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.instagram.com/tjc100_west_concert/" alt="IG QR Code" class="w-20 h-20 bg-white p-1 rounded-xl shadow-lg border-2 border-amber-400">
+                    <!-- 上方視覺標題 -->
+                    <div class="text-center space-y-6 pt-4">
+                        <div class="inline-block bg-amber-100 text-[#102a45] font-mono tracking-[0.25em] px-5 py-2 rounded-full text-base font-bold border border-amber-300 shadow-sm">
+                            1926 — 2026 CENTENARY
+                        </div>
+                        <h1 id="ecSlogan" class="text-6xl font-black font-serif text-[#1a3a2a] tracking-widest drop-shadow-sm pt-2">
+                            重修牆垣 開展境界
+                        </h1>
+                        <div id="ecMainTitle" class="text-2xl font-bold text-[#102a45] border-b-[3px] border-amber-400 pb-3 inline-block px-6">
+                            真耶穌教會臺灣傳教百年 西區詩歌音樂會
+                        </div>
                     </div>
+
+                    <!-- 中間內文區 -->
+                    <div class="my-auto py-8 text-left">
+                        <div id="ecSalutation" class="text-2xl text-emerald-900 font-bold mb-5">主內平安！誠摯邀請您蒞臨指導：</div>
+                        <div class="flex items-baseline gap-4 border-b-2 border-dashed border-emerald-900/40 pb-5 mb-8">
+                            <span class="text-2xl text-slate-700 font-bold">敬邀</span>
+                            <span id="ecRecipientName" class="text-6xl font-serif font-black text-emerald-950 tracking-widest">張大衛</span>
+                            <span id="ecRecipientTitle" class="text-2xl text-emerald-900 font-bold">長老 / 執事</span>
+                            <span class="text-2xl font-serif text-slate-600 ml-auto">惠鑒</span>
+                        </div>
+                        <p id="ecBodyText" class="text-3xl text-slate-800 leading-[2.2] font-serif text-justify px-2">
+                            謹訂於主後 2026 年 11 月 1 日舉開傳教百週年西區詩歌音樂會。同心以詩歌頌揚主恩、重修信仰牆垣，敬備貴賓專屬席位，誠摯盼望您的蒞臨共襄盛舉，同沐主恩！
+                        </p>
+                    </div>
+
+                    <!-- 底部時間地點與落款 -->
+                    <div class="bg-amber-50/90 p-8 rounded-[2rem] border border-amber-200 shadow-inner space-y-8">
+                        <div class="flex justify-around items-center">
+                            <div class="text-center">
+                                <span class="bg-[#102a45] text-white text-base px-4 py-1.5 rounded font-bold tracking-widest block mb-4">舉開時間</span>
+                                <span id="ecEventTime" class="text-2xl font-black text-slate-800 tracking-wide">2026.11.01 (日) 上午 08:30</span>
+                            </div>
+                            <div class="w-1 h-20 bg-amber-300 rounded-full"></div>
+                            <div class="text-center">
+                                <span class="bg-[#102a45] text-white text-base px-4 py-1.5 rounded font-bold tracking-widest block mb-4">舉辦地點</span>
+                                <span id="ecLocation" class="text-2xl font-black text-slate-800 tracking-wide">國立中央大學 大禮堂</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-6 border-t-2 border-amber-200/80 px-6">
+                            <div id="ecSignOff" class="text-2xl text-emerald-950 font-serif font-bold text-left leading-relaxed">真耶穌教會西區辦事處<br>音樂會籌備小組 敬邀</div>
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.instagram.com/tjc100_west_concert/" alt="IG QR Code" class="w-28 h-28 bg-white p-2 rounded-2xl shadow-md border border-slate-300">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
