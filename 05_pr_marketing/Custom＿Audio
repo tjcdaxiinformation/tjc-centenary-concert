@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>復興小區宣傳短片 - 旁白語音產生器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #050b14;
+            color: #f3f4f6;
+        }
+        .font-serif-tc {
+            font-family: 'Noto Serif TC', serif;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff8cb 0%, #e5c158 40%, #c99a22 80%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom Audio Player Styling */
+        audio {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            outline: none;
+        }
+        audio::-webkit-media-controls-panel {
+            background-color: #f3f4f6;
+        }
+        audio::-webkit-media-controls-play-button {
+            background-color: #e5c158;
+            border-radius: 50%;
+        }
+        audio::-webkit-media-controls-current-time-display,
+        audio::-webkit-media-controls-time-remaining-display {
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
+
+    <div class="w-full max-w-3xl bg-[#112240] border border-blue-900/50 p-6 md:p-8 rounded-3xl shadow-2xl space-y-6">
+        
+        <!-- Header -->
+        <div class="text-center space-y-2 border-b border-blue-900/60 pb-6">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs tracking-widest">
+                <i class="fa-solid fa-microphone-lines animate-pulse"></i>
+                宣傳短片 AI 語音配音室
+            </div>
+            <h1 class="text-2xl md:text-3xl font-black tracking-wider gold-gradient-text font-serif-tc pt-2">
+                復興小區 ‧ 旁白語音產生器
+            </h1>
+            <p class="text-xs text-gray-400">使用先進 AI 語音合成技術，生成自然口語化的台灣女性配音</p>
+        </div>
+
+        <!-- Script Textarea -->
+        <div class="space-y-2">
+            <label class="block text-sm font-bold text-amber-200">
+                <i class="fa-solid fa-file-lines mr-1.5"></i> 旁白文案內容
+            </label>
+            <textarea id="scriptText" rows="7" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl p-4 text-sm text-gray-200 focus:outline-none focus:border-amber-400 transition leading-relaxed resize-none">真耶穌教會臺灣傳教百週年西區音樂會，西區傳教史恩典足跡，從桃園復興的雲霧繚繞，到大溪、八德的繁華平野，這裡是復興小區。沿著北橫公路，純樸而堅韌的泰雅爾族人，在此世世代代守護著山林。1960 年代初，真理的種子飄入深山。1961 年，大灣與雪霧鬧教會相繼成立，福音的燈臺在縱谷間被點亮。隨著時代變遷，弟兄姊妹的足跡向都市延伸，從山鄉到平地，信仰的傳承從未中斷。走過一甲子的恩典歲月，我們將在百年之際，再次用詩歌串聯歷史的記憶。2026 年 11 月 1 日，西區百年音樂會，重修牆垣，開展境界，我們不見不散！</textarea>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-2">
+            <button id="generateBtn" onclick="generateAudio()" class="flex-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span id="btnText">生成高品質語音</span>
+            </button>
+        </div>
+
+        <!-- Audio Result Area (Hidden initially) -->
+        <div id="resultArea" class="hidden bg-[#0a1526] border border-emerald-900/50 p-5 rounded-2xl space-y-4 shadow-inner mt-4 transition-all duration-500 opacity-0 transform translate-y-4">
+            <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-check"></i> 語音生成成功！
+            </h3>
+            
+            <div class="w-full bg-slate-200 rounded-lg p-2">
+                <audio id="audioPlayer" controls></audio>
+            </div>
+            
+            <div class="flex justify-between items-center pt-2">
+                <span class="text-[11px] text-gray-400"><i class="fa-solid fa-circle-info"></i> 系統提供高音質 WAV 格式，可直接匯入剪輯軟體</span>
+                <a id="downloadLink" href="#" download="復興小區_宣傳短片旁白.wav" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-4 py-2 rounded-lg text-sm font-bold shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i>
+                    下載音檔
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Utility: Convert Base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Utility: Convert Raw PCM16 to valid WAV File Format
+        function pcmToWav(pcm16, sampleRate) {
+            const numChannels = 1;
+            const bitsPerSample = 16;
+            const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+            const blockAlign = numChannels * (bitsPerSample / 8);
+            const wavHeaderSize = 44;
+            const dataSize = pcm16.length * 2;
+            const buffer = new ArrayBuffer(wavHeaderSize + dataSize);
+            const view = new DataView(buffer);
+
+            const writeString = (view, offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); 
+            view.setUint16(20, 1, true); 
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, bitsPerSample, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            let offset = 44;
+            for (let i = 0; i < pcm16.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16[i], true); // Little endian
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        async function generateAudio() {
+            const btn = document.getElementById('generateBtn');
+            const btnText = document.getElementById('btnText');
+            const scriptText = document.getElementById('scriptText').value.trim();
+            const resultArea = document.getElementById('resultArea');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const downloadLink = document.getElementById('downloadLink');
+
+            if (!scriptText) {
+                alert("請先輸入旁白文案內容");
+                return;
+            }
+
+            // Set loading state
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> AI 語音合成中... (約需幾秒鐘)';
+            resultArea.classList.add('hidden', 'opacity-0', 'translate-y-4');
+
+            // Prompt specifically instructing a natural Taiwanese female voice style
+            const prompt = `請以親切自然、充滿感情、口語化的台灣女生口音（語速適中偏溫柔）朗讀以下這段話：\n\n${scriptText}`;
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: {
+                        voiceConfig: {
+                            // Aoede is Breezy, often fits well for female narration
+                            prebuiltVoiceConfig: { voiceName: "Aoede" }
+                        }
+                    }
+                },
+                model: "gemini-2.5-flash-preview-tts"
+            };
+
+            const apiKey = ""; // Uses implicit Canvas runtime API key
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    throw new Error(result.error.message || "發生未知錯誤");
+                }
+
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    // Extract sample rate from mimeType, e.g., "audio/L16;rate=24000"
+                    const rateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = rateMatch ? parseInt(rateMatch[1], 10) : 24000;
+
+                    // Decode Base64 and convert PCM to WAV
+                    const pcmBuffer = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmBuffer);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+
+                    // Setup player and download link
+                    audioPlayer.src = audioUrl;
+                    downloadLink.href = audioUrl;
+
+                    // Show result area with animation
+                    resultArea.classList.remove('hidden');
+                    setTimeout(() => {
+                        resultArea.classList.remove('opacity-0', 'translate-y-4');
+                    }, 50);
+
+                } else {
+                    throw new Error("無法解析回傳的音訊資料。");
+                }
+
+            } catch (error) {
+                console.error("Audio generation failed:", error);
+                alert(`語音生成失敗：${error.message}`);
+            } finally {
+                // Reset button state
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                btnText.innerText = '重新生成語音';
+            }
+        }
+    </script>
+</body>
+</html>
