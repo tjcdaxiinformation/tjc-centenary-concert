@@ -235,6 +235,30 @@
 </head>
 <body>
 
+    <!-- 圖片放大檢視燈箱 (Lightbox) 結構 -->
+    <div id="photo-lightbox" class="fixed inset-0 z-[200] hidden bg-black/90 flex flex-col items-center justify-center backdrop-blur-md transition-all duration-300 opacity-0" onclick="closeLightbox()">
+        <div id="lightbox-panel" class="relative w-11/12 max-w-4xl bg-slate-900 border-2 border-brand-gold rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(223,183,84,0.3)] transform scale-95 transition-transform duration-300 flex flex-col" onclick="event.stopPropagation()">
+            
+            <!-- 關閉按鈕 -->
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 z-50 w-10 h-10 bg-slate-900/80 hover:bg-red-600 text-brand-goldLight hover:text-white rounded-full border border-brand-gold/50 flex items-center justify-center transition-colors shadow-lg backdrop-blur">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <!-- 大圖顯示區 (半版高度) -->
+            <div class="w-full h-[60vh] md:h-[70vh] relative bg-slate-950 flex items-center justify-center overflow-hidden p-2">
+                <img id="lightbox-img" src="" alt="Church Photo" class="max-w-full max-h-full object-contain rounded-xl" />
+            </div>
+            
+            <!-- 底部資訊列 -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 p-5 md:p-6 border-t border-brand-gold/40 flex justify-between items-center">
+                <h3 id="lightbox-title" class="text-2xl md:text-3xl font-black text-brand-goldLight font-serif tracking-widest"></h3>
+                <span class="text-xs text-slate-400 font-mono flex items-center gap-1.5 bg-slate-950/50 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <i class="fa-solid fa-expand"></i> 半版大圖檢視
+                </span>
+            </div>
+        </div>
+    </div>
+
     <!-- 控制列 -->
     <header class="sticky-toolbar w-full px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-lg">
         <div class="flex items-center gap-3">
@@ -465,12 +489,44 @@
         let mapMarkers = [];
         let currentScale = 0.52;
         let uploadedBgUrl = null;
-        let churchYearsMap = {}; // 儲存從 Google Sheet 取得的成立時間
+        let churchYearsMap = {};
 
-        // 智慧圖片錯誤重試處理 (解決 GitHub 大小寫與副檔名問題，並修復 CORS 導致的黑底)
+        // 開啟與關閉燈箱控制函數
+        function openLightbox(imgUrl, titleText) {
+            const lightbox = document.getElementById('photo-lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxTitle = document.getElementById('lightbox-title');
+            const lightboxPanel = document.getElementById('lightbox-panel');
+            
+            lightboxImg.src = imgUrl;
+            lightboxTitle.innerText = titleText;
+            
+            lightbox.classList.remove('hidden');
+            // 加入微小延遲以觸發 CSS 動畫轉場
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+                lightboxPanel.classList.remove('scale-95');
+                lightboxPanel.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('photo-lightbox');
+            const lightboxPanel = document.getElementById('lightbox-panel');
+            
+            lightbox.classList.add('opacity-0');
+            lightboxPanel.classList.remove('scale-100');
+            lightboxPanel.classList.add('scale-95');
+            
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                document.getElementById('lightbox-img').src = '';
+            }, 300);
+        }
+
+        // 智慧圖片錯誤重試處理 (解決 GitHub 大小寫與副檔名問題)
         window.handlePhotoFallback = function(img, churchName, originalPhoto, fallbackPhoto) {
             const state = parseInt(img.dataset.retryState || '0');
-            // 依序嘗試：1.備用路徑 2.大寫JPG 3.備用大寫JPG 4.PNG 5.備用PNG
             const pathsToTry = [
                 fallbackPhoto,
                 originalPhoto.replace('.jpg', '.JPG'),
@@ -483,14 +539,12 @@
                 img.dataset.retryState = state + 1;
                 img.src = pathsToTry[state];
             } else {
-                // 最終備案：改用 Inline SVG，絕對不會有 CORS (跨域) 阻擋問題，保證能渲染出替代文字
                 img.onerror = null;
                 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="300" height="300" fill="#1e293b"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="64" font-weight="bold" fill="#dfb754">${churchName.substring(0,2)}</text></svg>`;
                 img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
             }
         };
 
-        // 處理使用者自行上傳底圖
         function handleBgImageUpload(event) {
             const file = event.target.files[0];
             if (file) {
@@ -547,10 +601,8 @@
             document.getElementById('scale-indicator').innerText = `${Math.round(currentScale * 100)}%`;
         }
 
-        // Initialize Leaflet Map
         function setupLeafletMap() {
             if (map) return;
-
             map = L.map('leaflet-map', {
                 zoomControl: false,
                 attributionControl: false,
@@ -558,7 +610,6 @@
                 scrollWheelZoom: false,
                 doubleClickZoom: false
             });
-
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 subdomains: ['a', 'b', 'c'],
@@ -572,7 +623,6 @@
             const zone = zonesData[zoneKey];
             if (!zone) return;
 
-            // 更新直書小區名稱與副標題
             document.getElementById("huge-zone-name").innerText = zone.name;
             document.getElementById("poster-subtitle").innerText = zone.subtitle;
             const mapTag = document.getElementById("map-area-tag");
@@ -581,32 +631,26 @@
             }
             document.getElementById("footer-count-text").innerText = `共收錄 ${zone.churches.length} 所教會`;
 
-            // 清空舊圖層
             const photosContainer = document.getElementById("photos-container");
             const svgLayer = document.getElementById("svg-connections");
             photosContainer.innerHTML = '';
             svgLayer.innerHTML = ''; 
 
-            // 清除 Leaflet 圖標
             mapMarkers.forEach(m => map.removeLayer(m));
             mapMarkers = [];
 
             const churches = zone.churches;
             if (churches.length === 0) return;
 
-            // 1. 設定 Leaflet 地圖邊界
             const bounds = L.latLngBounds(churches.map(c => [c.lat, c.lng]));
             map.fitBounds(bounds, { padding: [40, 40] });
 
             setTimeout(() => {
                 map.invalidateSize();
 
-                // 2. 繪製地圖上的教會 Pin
                 const positions = ['top', 'bottom-far', 'right', 'left-far', 'bottom', 'top-far', 'left', 'right-far'];
                 churches.forEach((church, index) => {
                     const posClass = `pin-label-${positions[index % positions.length]}`;
-                    
-                    // 從資料中取得成立時間 (若有填寫 year 屬性)
                     const estYear = church.year ? `<span class="text-[10px] text-amber-200/90 ml-1 font-mono tracking-tighter">(${church.year})</span>` : '';
 
                     const customIcon = L.divIcon({
@@ -627,7 +671,6 @@
                     mapMarkers.push(marker);
                 });
 
-                // 3. 滿版左右交錯相片泡泡渲染
                 const photoChurches = churches.filter(c => c.showPhoto);
                 const totalPhotos = photoChurches.length;
 
@@ -642,26 +685,19 @@
                     const rowStep = availableHeight / Math.max(rowCount, 1);
 
                     const photoY = startY + (rowIndex * rowStep) + (index % 3 * 6 - 6);
-                    const photoX = col === 0 
-                        ? 45 + (index % 2 * 10) 
-                        : 225 + (index % 2 * 10);
-
+                    const photoX = col === 0 ? 45 + (index % 2 * 10) : 225 + (index % 2 * 10);
                     const photoSize = 138 + (index % 3 * 8);
                     
-                    // 修正 1：依照您的 GitHub 資料夾結構，加上 05_pr_marketing 路徑，組合成絕對網址
                     const baseUrl = 'https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/05_pr_marketing/';
-                    
                     let photoPath = church.photo.startsWith('http') ? church.photo : baseUrl + church.photo;
                     let fallbackPath = church.fallbackPhoto.startsWith('http') ? church.fallbackPhoto : 'https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/' + church.fallbackPhoto;
                     
-                    // 使用 encodeURI 處理中文檔名，防止部分瀏覽器載入破圖
                     const absolutePhoto = encodeURI(photoPath);
                     const absoluteFallback = encodeURI(fallbackPath);
-                    
-                    // 照片泡泡中加入成立時間
                     const estYear = church.year ? `<span class="text-[9px] text-amber-300 ml-1 font-mono">(${church.year})</span>` : '';
 
                     const photoEl = document.createElement("div");
+                    photoEl.title = `點擊放大檢視 ${church.name}`;
                     photoEl.className = "photo-bubble absolute cursor-pointer pointer-events-auto rounded-full p-1 bg-gradient-to-br from-amber-400 via-amber-600 to-amber-900 shadow-2xl flex items-center justify-center group";
                     photoEl.style.width = `${photoSize}px`;
                     photoEl.style.height = `${photoSize}px`;
@@ -669,7 +705,6 @@
                     photoEl.style.top = `${photoY}px`;
                     photoEl.style.zIndex = 30 + index;
 
-                    // 套用改良版的 fallback 圖片重試機制
                     photoEl.innerHTML = `
                         <div class="w-full h-full rounded-full overflow-hidden relative bg-slate-900 border-2 border-amber-300 shadow-2xl">
                             <img src="${absolutePhoto}" 
@@ -677,8 +712,15 @@
                                  crossorigin="anonymous"
                                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                  onerror="handlePhotoFallback(this, '${church.name}', '${absolutePhoto}', '${absoluteFallback}')" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-90 group-hover:opacity-60 transition-opacity"></div>
-                            <div class="absolute bottom-2 inset-x-0 text-center px-1">
+                                 
+                            <!-- 放大檢視提示遮罩 (Hover Overlay) -->
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none backdrop-blur-[2px] bg-black/40">
+                                <i class="fa-solid fa-expand text-white text-3xl drop-shadow-lg shadow-black"></i>
+                            </div>
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-90 group-hover:opacity-50 transition-opacity z-0 pointer-events-none"></div>
+                            
+                            <div class="absolute bottom-2 inset-x-0 text-center px-1 z-20 pointer-events-none">
                                 <span class="px-2.5 py-0.5 rounded-full bg-slate-950/95 text-brand-goldLight text-[11px] font-bold tracking-wider border border-brand-gold/60 shadow-lg inline-block truncate max-w-[92%]">
                                     ${church.name}${estYear}
                                 </span>
@@ -686,13 +728,17 @@
                         </div>
                     `;
 
+                    // 綁定點擊事件開啟燈箱
+                    photoEl.addEventListener('click', () => {
+                        openLightbox(absolutePhoto, `${church.name} ${church.year || ''}`);
+                    });
+
                     photosContainer.appendChild(photoEl);
                 });
 
             }, 250);
         }
 
-        // 廠商高畫質出圖功能 (匯出 300 DPI / 超高解析度 PNG 檔案)
         async function exportHighResPoster() {
             const btn = document.getElementById('export-btn');
             const originalText = btn.innerHTML;
@@ -701,10 +747,9 @@
 
             const poster = document.getElementById('poster');
             const originalTransform = poster.style.transform;
-            poster.style.transform = 'scale(1)'; // 重置為 100% 原始尺寸渲染
+            poster.style.transform = 'scale(1)';
 
             try {
-                // 3倍 Scale 輸出超高解析度圖片 (1800px * 4800px)
                 const canvas = await html2canvas(poster, {
                     scale: 3, 
                     useCORS: true,
@@ -730,7 +775,6 @@
             }
         }
 
-        // 頁面初始化
         window.addEventListener('DOMContentLoaded', () => {
             setupLeafletMap();
             initScale();
@@ -738,6 +782,11 @@
 
             window.addEventListener('resize', () => {
                 applyZoom();
+            });
+            
+            // 按下 ESC 鍵時關閉燈箱
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeLightbox();
             });
         });
     </script>
