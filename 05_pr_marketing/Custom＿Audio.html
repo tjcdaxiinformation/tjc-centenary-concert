@@ -66,6 +66,15 @@
             <textarea id="scriptText" rows="7" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl p-4 text-sm text-gray-200 focus:outline-none focus:border-amber-400 transition leading-relaxed resize-none">真耶穌教會臺灣傳教百週年西區音樂會，西區傳教史恩典足跡，從桃園復興的雲霧繚繞，到大溪、八德的繁華平野，這裡是復興小區。沿著北橫公路，純樸而堅韌的泰雅爾族人，在此世世代代守護著山林。1960 年代初，真理的種子飄入深山。1961 年，大灣與雪霧鬧教會相繼成立，福音的燈臺在縱谷間被點亮。隨著時代變遷，弟兄姊妹的足跡向都市延伸，從山鄉到平地，信仰的傳承從未中斷。走過一甲子的恩典歲月，我們將在百年之際，再次用詩歌串聯歷史的記憶。2026 年 11 月 1 日，西區百年音樂會，重修牆垣，開展境界，我們不見不散！</textarea>
         </div>
 
+        <!-- API Key Input Box -->
+        <div class="space-y-2 pt-2 border-t border-blue-900/60">
+            <label class="block text-sm font-bold text-amber-200">
+                <i class="fa-solid fa-key mr-1.5"></i> Gemini API Key (必填)
+            </label>
+            <input type="password" id="apiKeyInput" placeholder="請貼上您的 Google Gemini API Key" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-amber-400 transition">
+            <p class="text-[11px] text-gray-400">注意：為確保安全，請勿將金鑰寫死在程式碼中。若您尚未申請，請至 <a href="https://aistudio.google.com/" target="_blank" class="text-amber-400 underline">Google AI Studio</a> 免費取得。</p>
+        </div>
+
         <!-- Controls -->
         <div class="flex flex-col sm:flex-row gap-4 pt-2">
             <button id="generateBtn" onclick="generateAudio()" class="flex-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
@@ -149,9 +158,15 @@
             const btn = document.getElementById('generateBtn');
             const btnText = document.getElementById('btnText');
             const scriptText = document.getElementById('scriptText').value.trim();
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
             const resultArea = document.getElementById('resultArea');
             const audioPlayer = document.getElementById('audioPlayer');
             const downloadLink = document.getElementById('downloadLink');
+
+            if (!apiKey) {
+                alert("請先輸入您的 Gemini API Key！\n若沒有請至 Google AI Studio 申請。");
+                return;
+            }
 
             if (!scriptText) {
                 alert("請先輸入旁白文案內容");
@@ -183,7 +198,6 @@
                 model: "gemini-2.5-flash-preview-tts"
             };
 
-            const apiKey = ""; // Uses implicit Canvas runtime API key
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
 
             try {
