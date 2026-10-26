@@ -26,16 +26,17 @@
             width: 100%;
             max-width: 1122px; /* A4 width at 96 DPI */
             aspect-ratio: 297 / 210;
+            container-type: inline-size; /* 啟用容器查詢，讓字體隨卡片寬度自適應縮放 */
         }
 
         /* Pop Art Cartoon Text Stroke Effect for high readability */
         .text-stroke-pop {
-            -webkit-text-stroke: 12px #0B192C; /* 加重深藍色外框 */
+            -webkit-text-stroke: 0.08em #0B192C; /* 改用 em 動態縮放深藍色外框 */
             paint-order: stroke fill;
             color: #ffffff; /* 強制白字以對比深色主視覺 */
             text-shadow: 
-                0 15px 30px rgba(0, 0, 0, 0.8),
-                0 0 20px rgba(255, 255, 255, 0.2);
+                0 0.1em 0.2em rgba(0, 0, 0, 0.8),
+                0 0 0.15em rgba(255, 255, 255, 0.2);
         }
 
         ::-webkit-scrollbar {
@@ -221,28 +222,29 @@
             const len = text.length;
 
             if (len <= 5) {
-                // 5個字以內：單行滿版巨大字體
-                outChoirName.innerHTML = `<div class="leading-tight">${text}</div>`;
-                outChoirName.className = "text-[7rem] md:text-[10rem] lg:text-[14rem] font-black font-sans text-white tracking-widest text-stroke-pop text-center w-full flex justify-center items-center h-full drop-shadow-2xl";
+                // 5個字以內：單行滿版巨大字體 (利用 cqi 單位自動根據卡片寬度縮放)
+                const fontSizeCqi = Math.min(24, 90 / len);
+                outChoirName.innerHTML = `<div class="leading-tight whitespace-nowrap">${text}</div>`;
+                outChoirName.className = "font-black font-sans text-white tracking-widest text-stroke-pop text-center w-full flex justify-center items-center h-full drop-shadow-2xl";
+                outChoirName.style.fontSize = `${fontSizeCqi}cqi`;
             } else {
-                // 6個字以上 (如 7~9 字)：從中間切分兩行
+                // 6個字以上 (如 7~9 字)：從中間切分兩行，並強制不換行
                 const mid = Math.ceil(len / 2);
                 const line1 = text.substring(0, mid);
                 const line2 = text.substring(mid);
 
-                // 依據字數動態調整極致大字體
-                let sizeClass = "text-[6rem] md:text-[8rem] lg:text-[11.5rem]"; // 每行約 3~4 字
-                if (mid > 4) {
-                    sizeClass = "text-[5rem] md:text-[7rem] lg:text-[9.5rem]";  // 每行 5 字以上
-                }
+                // 依據單行最長字數動態調整極致大字體，防止溢出版面
+                const maxChars = Math.max(line1.length, line2.length) + 0.5; // +0.5 是預留退半格的彈性空間
+                const fontSizeCqi = Math.min(20, 85 / maxChars);
 
                 outChoirName.innerHTML = `
-                    <div class="leading-[1.2] text-left inline-block">
-                        <div class="block">${line1}</div>
-                        <div class="block" style="margin-left: 0.5em;">${line2}</div>
+                    <div class="leading-[1.15] text-left inline-flex flex-col justify-center max-w-full">
+                        <div class="block whitespace-nowrap">${line1}</div>
+                        <div class="block whitespace-nowrap" style="margin-left: 0.5em;">${line2}</div>
                     </div>
                 `;
-                outChoirName.className = `${sizeClass} font-black font-sans text-white tracking-widest text-stroke-pop w-full flex justify-center items-center h-full drop-shadow-2xl`;
+                outChoirName.className = `font-black font-sans text-white tracking-widest text-stroke-pop w-full flex justify-center items-center h-full drop-shadow-2xl`;
+                outChoirName.style.fontSize = `${fontSizeCqi}cqi`;
             }
         }
 
