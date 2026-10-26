@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真耶穌教會傳教百年西區音樂會 - 詩班座位標示牌產生器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #050b14;
+            color: #f3f4f6;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff8cb 0%, #e5c158 40%, #c99a22 80%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Standard A4 Landscape Aspect Ratio (297mm x 210mm) */
+        .a4-landscape-ratio {
+            width: 100%;
+            max-width: 1122px; /* A4 width at 96 DPI */
+            aspect-ratio: 297 / 210;
+        }
+
+        /* Pop Art Cartoon Text Stroke Effect for high readability */
+        .text-stroke-pop {
+            -webkit-text-stroke: 8px #ffffff;
+            paint-order: stroke fill;
+            text-shadow: 
+                0 10px 15px rgba(0, 0, 0, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.8);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #081120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 3px;
+        }
+
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+            header, .controls-area, footer, .no-print, #toast {
+                display: none !important;
+            }
+            .print-area {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                width: 100% !important;
+                height: 100vh !important;
+            }
+            .sign-card {
+                width: 297mm !important;
+                height: 210mm !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                page-break-after: always;
+            }
+            /* Ensure background images print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-3 md:p-6">
+
+    <!-- Header -->
+    <header class="w-full max-w-7xl text-center mb-6 no-print">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs md:text-sm tracking-widest mb-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            真耶穌教會臺灣傳教百週年 ‧ 西區音樂會場務組
+        </div>
+        <h1 class="text-2xl md:text-4xl font-black tracking-wider gold-gradient-text">
+            詩班座位標示牌產生器 (A4 橫式)
+        </h1>
+        <p class="text-xs md:text-sm text-gray-400 mt-1.5 max-w-2xl mx-auto">
+            快速產生具備小區標示與醒目詩班名稱的座位牌。預設使用您的專屬底圖，支援單張下載與直接列印。
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Controls Panel (Left 4 cols) -->
+        <div class="controls-area lg:col-span-4 bg-[#112240] border border-blue-900/50 p-5 md:p-6 rounded-2xl shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-blue-900/60 pb-3">
+                <h2 class="text-base font-bold text-amber-200 flex items-center gap-2">
+                    <span>🪧</span>
+                    <span>標示牌內容設定</span>
+                </h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Zone Selection -->
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-amber-300 mb-1 font-bold">1. 選擇或輸入所屬小區</label>
+                    <div class="flex gap-2 mb-2">
+                        <button onclick="setZone('復興小區')" class="flex-1 bg-[#081120] hover:bg-blue-900/50 border border-blue-800 text-xs text-gray-300 py-1.5 rounded transition">復興</button>
+                        <button onclick="setZone('竹苗小區')" class="flex-1 bg-[#081120] hover:bg-blue-900/50 border border-blue-800 text-xs text-gray-300 py-1.5 rounded transition">竹苗</button>
+                        <button onclick="setZone('中苗小區')" class="flex-1 bg-[#081120] hover:bg-blue-900/50 border border-blue-800 text-xs text-gray-300 py-1.5 rounded transition">中苗</button>
+                        <button onclick="setZone('南投小區')" class="flex-1 bg-[#081120] hover:bg-blue-900/50 border border-blue-800 text-xs text-gray-300 py-1.5 rounded transition">南投</button>
+                    </div>
+                    <input type="text" id="inZone" value="復興小區" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2.5 text-sm text-white font-bold focus:outline-none focus:border-amber-400 transition" placeholder="例如：復興小區">
+                </div>
+
+                <!-- Choir Name Input -->
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-amber-300 mb-1 font-bold">2. 輸入詩班名稱 (將顯示於正中央)</label>
+                    <input type="text" id="inChoirName" value="八德教會詩班" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2.5 text-lg text-white font-black focus:outline-none focus:border-amber-400 transition" placeholder="請輸入詩班名稱">
+                    <p class="text-[10px] text-gray-400 mt-1">字體大小將根據字數自動調整以維持最佳版面。</p>
+                </div>
+
+                <!-- Background Image Upload -->
+                <div class="pt-2 border-t border-blue-900/60">
+                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">3. 自訂底圖 (選填)</label>
+                    <input type="file" id="bgUploader" accept="image/*" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-900 file:text-amber-300 hover:file:bg-blue-800 transition">
+                    <p class="text-[10px] text-amber-500/80 mt-1">預設已自動載入您提供的「詩班座位標示牌底圖.001.jpeg」。</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-3 space-y-2">
+                <button onclick="downloadSign()" class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
+                    <span>📥</span>
+                    <span>下載 A4 高清標示牌 (PNG)</span>
+                </button>
+
+                <button onclick="window.print()" class="w-full bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-2.5 px-4 rounded-xl border border-blue-800 transition text-sm flex items-center justify-center gap-2">
+                    <span>🖨️</span>
+                    <span>直接列印 / 存為 PDF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Preview Canvas Area (Right 8 cols) -->
+        <div class="lg:col-span-8 flex flex-col items-center w-full print-area">
+            
+            <div class="w-full flex justify-between items-center mb-3 no-print max-w-[1122px]">
+                <div class="text-xs uppercase tracking-widest text-amber-400/90 font-mono flex items-center gap-1.5">
+                    <span>🖼️ 標示牌實體視覺預覽 (A4 橫式)</span>
+                </div>
+            </div>
+
+            <!-- A4 Printable Sign Container -->
+            <div class="w-full flex justify-center py-1">
+                
+                <!-- Card -->
+                <div id="signCard" class="sign-card a4-landscape-ratio relative bg-cover bg-center border border-slate-700 shadow-2xl overflow-hidden rounded-md transition-all duration-300" style="background-image: url('詩班座位標示牌底圖.001.jpeg'); background-color: #f0f0f0;">
+                    
+                    <!-- Fallback color gradient if image not found initially -->
+                    <div id="bgFallback" class="absolute inset-0 bg-gradient-to-br from-indigo-100 via-white to-amber-50 -z-10 hidden"></div>
+
+                    <!-- 1. Top-Left Sub-district Label -->
+                    <div class="absolute top-0 left-0 z-20">
+                        <div class="bg-[#102a45]/95 backdrop-blur-sm border-b-4 border-r-4 border-amber-500 text-white pl-6 pr-8 py-3 md:pl-10 md:pr-12 md:py-5 rounded-br-[2rem] shadow-[5px_5px_15px_rgba(0,0,0,0.3)] flex items-center gap-3">
+                            <span class="text-xl md:text-3xl lg:text-4xl font-black tracking-widest" id="outZone">復興小區</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Center Huge Choir Name -->
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center pb-8 px-12">
+                        <div id="outChoirName" class="text-6xl md:text-8xl lg:text-[7.5rem] font-black font-sans text-[#102a45] tracking-widest leading-tight text-stroke-pop text-center">
+                            八德教會詩班
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 hidden bg-amber-500 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-2xl z-50 text-xs md:text-sm transition no-print">
+        通知訊息
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-xs text-gray-500 border-t border-blue-900/40 pt-4 w-full max-w-7xl no-print">
+        真耶穌教會傳教百年西區音樂會籌備小組 ‧ 場務與接待組製作
+    </footer>
+
+    <script>
+        // DOM Elements
+        const inZone = document.getElementById('inZone');
+        const inChoirName = document.getElementById('inChoirName');
+        const bgUploader = document.getElementById('bgUploader');
+        
+        const outZone = document.getElementById('outZone');
+        const outChoirName = document.getElementById('outChoirName');
+        const signCard = document.getElementById('signCard');
+        const bgFallback = document.getElementById('bgFallback');
+        const toast = document.getElementById('toast');
+
+        // Live text binding
+        function bindText(inputEl, outputEl) {
+            if (!inputEl || !outputEl) return;
+            inputEl.addEventListener('input', (e) => {
+                outputEl.textContent = e.target.value;
+                if (outputEl.id === 'outChoirName') {
+                    adjustFontSize(e.target.value);
+                }
+            });
+        }
+
+        bindText(inZone, outZone);
+        bindText(inChoirName, outChoirName);
+
+        // Adjust font size dynamically based on length
+        function adjustFontSize(text) {
+            const len = text.length;
+            if (len <= 6) {
+                outChoirName.className = "text-7xl md:text-8xl lg:text-[7.5rem] font-black font-sans text-[#102a45] tracking-widest leading-tight text-stroke-pop text-center";
+            } else if (len <= 10) {
+                outChoirName.className = "text-6xl md:text-7xl lg:text-[6rem] font-black font-sans text-[#102a45] tracking-wider leading-tight text-stroke-pop text-center";
+            } else {
+                outChoirName.className = "text-5xl md:text-6xl lg:text-[5rem] font-black font-sans text-[#102a45] tracking-wide leading-tight text-stroke-pop text-center";
+            }
+        }
+
+        // Quick set zone
+        function setZone(zoneName) {
+            inZone.value = zoneName;
+            outZone.textContent = zoneName;
+        }
+
+        // Handle Background Upload
+        bgUploader.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                signCard.style.backgroundImage = `url('${event.target.result}')`;
+                showToast('已成功套用新的底圖！');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Error handling for default image
+        const img = new Image();
+        img.onerror = function() {
+            // If the default image '詩班座位標示牌底圖.001.jpeg' is not found in the same directory, show fallback background
+            bgFallback.classList.remove('hidden');
+        };
+        img.src = '詩班座位標示牌底圖.001.jpeg';
+
+        // Download High-Res Image
+        function downloadSign() {
+            showToast('⏳ 正在以高解析度繪製 A4 標示牌，請稍候...');
+
+            // Temporarily remove rounded corners and borders for clean export
+            const originalBorder = signCard.style.border;
+            const originalRadius = signCard.style.borderRadius;
+            const originalShadow = signCard.style.boxShadow;
+            
+            signCard.style.border = 'none';
+            signCard.style.borderRadius = '0';
+            signCard.style.boxShadow = 'none';
+
+            html2canvas(signCard, {
+                scale: 3, // High-res 3x scale
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+            }).then(canvas => {
+                // Restore styling
+                signCard.style.border = originalBorder;
+                signCard.style.borderRadius = originalRadius;
+                signCard.style.boxShadow = originalShadow;
+
+                const link = document.createElement('a');
+                const choirVal = inChoirName.value || '詩班';
+                link.download = `音樂會標示牌_${inZone.value}_${choirVal}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+
+                showToast('🎉 高解析度標示牌圖檔下載成功！');
+            }).catch(err => {
+                console.error(err);
+                
+                // Restore styling
+                signCard.style.border = originalBorder;
+                signCard.style.borderRadius = originalRadius;
+                signCard.style.boxShadow = originalShadow;
+
+                showToast('❌ 圖檔匯出失敗，請嘗試使用列印功能。');
+            });
+        }
+
+        // Custom Toast Message
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        // Initialize view
+        adjustFontSize(inChoirName.value);
+    </script>
+</body>
+</html>
