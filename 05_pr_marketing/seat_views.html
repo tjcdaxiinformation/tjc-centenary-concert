@@ -30,11 +30,12 @@
 
         /* Pop Art Cartoon Text Stroke Effect for high readability */
         .text-stroke-pop {
-            -webkit-text-stroke: 8px #ffffff;
+            -webkit-text-stroke: 12px #0B192C; /* 加重深藍色外框 */
             paint-order: stroke fill;
+            color: #ffffff; /* 強制白字以對比深色主視覺 */
             text-shadow: 
-                0 10px 15px rgba(0, 0, 0, 0.3),
-                0 0 40px rgba(255, 255, 255, 0.8);
+                0 15px 30px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.2);
         }
 
         ::-webkit-scrollbar {
@@ -97,7 +98,7 @@
             詩班座位標示牌產生器 (A4 橫式)
         </h1>
         <p class="text-xs md:text-sm text-gray-400 mt-1.5 max-w-2xl mx-auto">
-            快速產生具備小區標示與醒目詩班名稱的座位牌。預設使用您的專屬底圖，支援單張下載與直接列印。
+            快速產生具備小區標示與滿版超大字體之座位牌。已自動套用官方主視覺底圖，並支援 7~9 字自動換行與退半格排版。
         </p>
     </header>
 
@@ -129,16 +130,10 @@
                 <!-- Choir Name Input -->
                 <div>
                     <label class="block text-xs uppercase tracking-wider text-amber-300 mb-1 font-bold">2. 輸入詩班名稱 (將顯示於正中央)</label>
-                    <input type="text" id="inChoirName" value="八德教會詩班" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2.5 text-lg text-white font-black focus:outline-none focus:border-amber-400 transition" placeholder="請輸入詩班名稱">
-                    <p class="text-[10px] text-gray-400 mt-1">字體大小將根據字數自動調整以維持最佳版面。</p>
+                    <input type="text" id="inChoirName" value="中苗區聯合詩班" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3.5 py-2.5 text-lg text-white font-black focus:outline-none focus:border-amber-400 transition" placeholder="請輸入詩班名稱">
+                    <p class="text-[10px] text-gray-400 mt-1">字體將放大至極致，字數較多時會自動跳行且第二行退半格。</p>
                 </div>
 
-                <!-- Background Image Upload -->
-                <div class="pt-2 border-t border-blue-900/60">
-                    <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1 font-bold">3. 自訂底圖 (選填)</label>
-                    <input type="file" id="bgUploader" accept="image/*" class="w-full bg-[#081120] border border-blue-900/80 rounded-xl px-3 py-2 text-xs text-gray-300 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-900 file:text-amber-300 hover:file:bg-blue-800 transition">
-                    <p class="text-[10px] text-amber-500/80 mt-1">預設已自動載入您提供的「詩班座位標示牌底圖.001.jpeg」。</p>
-                </div>
             </div>
 
             <!-- Action Buttons -->
@@ -168,10 +163,7 @@
             <div class="w-full flex justify-center py-1">
                 
                 <!-- Card -->
-                <div id="signCard" class="sign-card a4-landscape-ratio relative bg-cover bg-center border border-slate-700 shadow-2xl overflow-hidden rounded-md transition-all duration-300" style="background-image: url('詩班座位標示牌底圖.001.jpeg'); background-color: #f0f0f0;">
-                    
-                    <!-- Fallback color gradient if image not found initially -->
-                    <div id="bgFallback" class="absolute inset-0 bg-gradient-to-br from-indigo-100 via-white to-amber-50 -z-10 hidden"></div>
+                <div id="signCard" class="sign-card a4-landscape-ratio relative bg-cover bg-center border border-slate-700 shadow-2xl overflow-hidden rounded-md transition-all duration-300" style="background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png'); background-color: #0c1b33;">
 
                     <!-- 1. Top-Left Sub-district Label -->
                     <div class="absolute top-0 left-0 z-20">
@@ -181,9 +173,9 @@
                     </div>
 
                     <!-- 2. Center Huge Choir Name -->
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center pb-8 px-12">
-                        <div id="outChoirName" class="text-6xl md:text-8xl lg:text-[7.5rem] font-black font-sans text-[#102a45] tracking-widest leading-tight text-stroke-pop text-center">
-                            八德教會詩班
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-center pb-2 pt-8 px-12">
+                        <div id="outChoirName" class="w-full h-full flex justify-center items-center">
+                            <!-- JS Will inject formatted layout here -->
                         </div>
                     </div>
 
@@ -209,37 +201,48 @@
         // DOM Elements
         const inZone = document.getElementById('inZone');
         const inChoirName = document.getElementById('inChoirName');
-        const bgUploader = document.getElementById('bgUploader');
         
         const outZone = document.getElementById('outZone');
         const outChoirName = document.getElementById('outChoirName');
         const signCard = document.getElementById('signCard');
-        const bgFallback = document.getElementById('bgFallback');
         const toast = document.getElementById('toast');
 
-        // Live text binding
-        function bindText(inputEl, outputEl) {
-            if (!inputEl || !outputEl) return;
-            inputEl.addEventListener('input', (e) => {
-                outputEl.textContent = e.target.value;
-                if (outputEl.id === 'outChoirName') {
-                    adjustFontSize(e.target.value);
-                }
-            });
-        }
+        // Text binding
+        inZone.addEventListener('input', (e) => {
+            outZone.textContent = e.target.value;
+        });
 
-        bindText(inZone, outZone);
-        bindText(inChoirName, outChoirName);
+        inChoirName.addEventListener('input', (e) => {
+            renderChoirName(e.target.value);
+        });
 
-        // Adjust font size dynamically based on length
-        function adjustFontSize(text) {
+        // 智慧大字體與自動換行/退半格運算邏輯
+        function renderChoirName(text) {
             const len = text.length;
-            if (len <= 6) {
-                outChoirName.className = "text-7xl md:text-8xl lg:text-[7.5rem] font-black font-sans text-[#102a45] tracking-widest leading-tight text-stroke-pop text-center";
-            } else if (len <= 10) {
-                outChoirName.className = "text-6xl md:text-7xl lg:text-[6rem] font-black font-sans text-[#102a45] tracking-wider leading-tight text-stroke-pop text-center";
+
+            if (len <= 5) {
+                // 5個字以內：單行滿版巨大字體
+                outChoirName.innerHTML = `<div class="leading-tight">${text}</div>`;
+                outChoirName.className = "text-[7rem] md:text-[10rem] lg:text-[14rem] font-black font-sans text-white tracking-widest text-stroke-pop text-center w-full flex justify-center items-center h-full drop-shadow-2xl";
             } else {
-                outChoirName.className = "text-5xl md:text-6xl lg:text-[5rem] font-black font-sans text-[#102a45] tracking-wide leading-tight text-stroke-pop text-center";
+                // 6個字以上 (如 7~9 字)：從中間切分兩行
+                const mid = Math.ceil(len / 2);
+                const line1 = text.substring(0, mid);
+                const line2 = text.substring(mid);
+
+                // 依據字數動態調整極致大字體
+                let sizeClass = "text-[6rem] md:text-[8rem] lg:text-[11.5rem]"; // 每行約 3~4 字
+                if (mid > 4) {
+                    sizeClass = "text-[5rem] md:text-[7rem] lg:text-[9.5rem]";  // 每行 5 字以上
+                }
+
+                outChoirName.innerHTML = `
+                    <div class="leading-[1.2] text-left inline-block">
+                        <div class="block">${line1}</div>
+                        <div class="block" style="margin-left: 0.5em;">${line2}</div>
+                    </div>
+                `;
+                outChoirName.className = `${sizeClass} font-black font-sans text-white tracking-widest text-stroke-pop w-full flex justify-center items-center h-full drop-shadow-2xl`;
             }
         }
 
@@ -248,27 +251,6 @@
             inZone.value = zoneName;
             outZone.textContent = zoneName;
         }
-
-        // Handle Background Upload
-        bgUploader.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                signCard.style.backgroundImage = `url('${event.target.result}')`;
-                showToast('已成功套用新的底圖！');
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Error handling for default image
-        const img = new Image();
-        img.onerror = function() {
-            // If the default image '詩班座位標示牌底圖.001.jpeg' is not found in the same directory, show fallback background
-            bgFallback.classList.remove('hidden');
-        };
-        img.src = '詩班座位標示牌底圖.001.jpeg';
 
         // Download High-Res Image
         function downloadSign() {
@@ -322,8 +304,8 @@
             }, 3500);
         }
 
-        // Initialize view
-        adjustFontSize(inChoirName.value);
+        // Initialize view with dynamic layout
+        renderChoirName(inChoirName.value);
     </script>
 </body>
 </html>
