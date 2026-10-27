@@ -70,7 +70,7 @@
             background-image: url('https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/%E4%B8%BB%E8%A6%96%E8%A6%BA.png'), linear-gradient(180deg, #090e18 0%, #111a2e 50%, #080c14 100%);
             background-size: cover;
             background-position: center;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(223, 183, 84, 0.2);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9);
             overflow: hidden;
             transform-origin: top center;
             transition: transform 0.25s ease-out;
@@ -158,6 +158,10 @@
             position: absolute;
             z-index: 10;
             transition: z-index 0.2s;
+            text-align: center; /* 強制文字水平置中 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .pin-label:hover {
             z-index: 50;
@@ -196,30 +200,30 @@
 
         .pin-label-right-far { left: 62px; top: 50%; transform: translateY(-50%); }
         .pin-label-right-far::after { width: 44px; height: 1px; right: 100%; top: 50%; transform: translateY(-50%); }
-
-        /* 直書（Vertical Text）大氣小區名稱標題特效 */
+        /* 直書（Vertical Text）大氣小區名稱標題特效：完全純白對比，防止背景透明削掉字體 */
         .huge-zone-title-vertical {
             writing-mode: vertical-rl;
             text-orientation: upright;
-            font-size: 84px;
+            font-size: 80px;
             font-weight: 900;
-            letter-spacing: 0.2em;
-            background: linear-gradient(180deg, #FFFFFF 0%, #DFB754 40%, #B8860B 80%, #5C4000 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 4px 15px rgba(0, 0, 0, 0.9)) drop-shadow(0px 0px 20px rgba(223, 183, 84, 0.5));
+            letter-spacing: 0.18em;
+            color: #ffffff; /* 純白反白字 */
+            text-shadow: 0px 4px 12px rgba(0, 0, 0, 0.8), 0px 0px 8px rgba(0,0,0,0.6);
             user-select: none;
             pointer-events: none;
             line-height: 1;
         }
 
-        /* 直書旁的金箔古風外框線條條飾 */
-        .vertical-title-accent {
-            width: 3px;
-            height: 340px;
-            background: linear-gradient(180deg, transparent, rgba(223, 183, 84, 0.8), transparent);
-            border-radius: 2px;
-            box-shadow: 0 0 8px rgba(223, 183, 84, 0.4);
+        /* 金箔質感直書底框容器 */
+        .vertical-title-box {
+            background: linear-gradient(180deg, rgba(223, 183, 84, 0.95) 0%, rgba(184, 134, 11, 0.95) 50%, rgba(92, 64, 0, 0.95) 100%);
+            padding: 24px 12px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7), inset 0 0 15px rgba(255,255,255,0.4);
+            border: 2px solid #fff8cb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* 自訂滾動條 */
@@ -326,8 +330,8 @@
     <!-- 海報畫布工作區 -->
     <main class="w-full flex justify-center py-10 px-4 overflow-auto">
         <div class="poster-wrapper">
-            <!-- 易拉寶主體海報容器 (60cm x 160cm 比例：600px * 1600px) -->
-            <div id="poster" class="poster-canvas rounded-xl border-4 border-brand-gold/60">
+            <!-- 易拉寶主體海報容器 (去除外框 border 與圓角 rounded) -->
+            <div id="poster" class="poster-canvas">
                 
                 <!-- SVG 連線圖層 -->
                 <svg id="svg-connections" class="absolute inset-0 w-full h-full pointer-events-none z-30"></svg>
@@ -338,35 +342,35 @@
                         <div class="inline-block px-4 py-1 rounded-full bg-slate-950/80 border border-brand-gold text-brand-goldLight text-xs tracking-widest font-bold shadow-lg backdrop-blur-md">
                             TJC TAIWAN CENTENARY CONCERT
                         </div>
-                        <h2 class="text-3xl font-black poster-title-text font-serif tracking-wide leading-tight">
+                        <h2 class="text-3xl font-black poster-title-text font-serif tracking-wide leading-tight text-center">
                             真耶穌教會臺灣傳教百週年西區音樂會
                         </h2>
                         <div class="inline-block">
-                            <p id="poster-subtitle" class="poster-subtitle-text text-xs tracking-widest font-serif">
+                            <p id="poster-subtitle" class="poster-subtitle-text text-xs tracking-widest font-serif text-center">
                                 山川縱谷間的福音燈臺 • 泰雅爾足跡
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- 中間：直書小區名稱標題 (位於右側) -->
-                <div class="absolute top-[210px] right-[24px] z-20 flex items-center gap-3 pointer-events-none">
-                    <div class="vertical-title-accent"></div>
-                    <h1 id="huge-zone-name" class="huge-zone-title-vertical font-serif">
-                        復興小區
-                    </h1>
-                    <div class="vertical-title-accent"></div>
+                <!-- 中間：直書小區名稱標題 (位於右側，包裹於金箔底框內確保完全反白) -->
+                <div class="absolute top-[200px] right-[24px] z-20 pointer-events-none">
+                    <div class="vertical-title-box">
+                        <h1 id="huge-zone-name" class="huge-zone-title-vertical font-serif">
+                            復興小區
+                        </h1>
+                    </div>
                 </div>
 
-                <!-- 中間右側：西區傳教史 QR Code (移至大字下方，約離地 100cm 處的最佳手持掃描高度) -->
-                <div class="absolute top-[630px] right-[30px] z-40 bg-slate-950/90 border border-brand-gold/60 p-3.5 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] flex flex-col items-center gap-1.5 backdrop-blur-md">
-                    <div class="w-28 h-28 bg-white p-1.5 rounded-xl border border-brand-gold/40 flex items-center justify-center overflow-hidden">
+                <!-- 中間右側：西區傳教史 QR Code -->
+                <div class="absolute top-[670px] right-[24px] z-40 bg-slate-950/90 border border-brand-gold/60 p-3 rounded-2xl shadow-[0_15px_40px_rgba(0,0,0,0.8)] flex flex-col items-center gap-1.5 backdrop-blur-md">
+                    <div class="w-24 h-24 bg-white p-1.5 rounded-xl border border-brand-gold/40 flex items-center justify-center overflow-hidden">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://www.instagram.com/tjc100_west_concert/" 
                              crossorigin="anonymous"
                              alt="西區傳教史" 
                              class="w-full h-full object-contain" />
                     </div>
-                    <span class="text-xs font-bold text-brand-goldLight font-serif tracking-widest flex items-center gap-1.5 mt-1">
+                    <span class="text-xs font-bold text-brand-goldLight font-serif tracking-widest flex items-center gap-1.5 mt-0.5 text-center">
                         <i class="fa-solid fa-qrcode text-brand-gold"></i> 西區傳教史
                     </span>
                 </div>
@@ -720,8 +724,8 @@
 
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-90 group-hover:opacity-50 transition-opacity z-0 pointer-events-none"></div>
                             
-                            <div class="absolute bottom-2 inset-x-0 text-center px-1 z-20 pointer-events-none">
-                                <span class="px-2.5 py-0.5 rounded-full bg-slate-950/95 text-brand-goldLight text-[11px] font-bold tracking-wider border border-brand-gold/60 shadow-lg inline-block truncate max-w-[92%]">
+                            <div class="absolute bottom-2 inset-x-0 text-center px-1 z-20 pointer-events-none flex justify-center">
+                                <span class="px-2.5 py-0.5 rounded-full bg-slate-950/95 text-brand-goldLight text-[11px] font-bold tracking-wider border border-brand-gold/60 shadow-lg inline-flex items-center justify-center text-center truncate max-w-[92%]">
                                     ${church.name}${estYear}
                                 </span>
                             </div>
