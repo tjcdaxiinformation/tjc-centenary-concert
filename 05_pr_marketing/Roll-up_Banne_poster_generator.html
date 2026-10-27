@@ -96,6 +96,8 @@
             border-radius: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             backdrop-filter: blur(4px);
+        }
+
         /* 暗色地圖濾鏡與相容層 */
         .leaflet-container {
             background: #09111e !important;
@@ -693,6 +695,9 @@
                     mapMarkers.push(marker);
                 });
 
+                // 強制觸發 Leaflet 圖層重新重繪與標記顯示
+                map.invalidateSize();
+                
                 const photoChurches = churches.filter(c => c.showPhoto);
                 const totalPhotos = photoChurches.length;
 
