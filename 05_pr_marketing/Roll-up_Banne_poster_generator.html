@@ -15,6 +15,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- html2canvas Library for High-Res Image Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- jsPDF Library for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -94,19 +96,19 @@
             border-radius: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(223, 183, 84, 0.6);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1.2;
-        }
-
-        /* 暗色地圖濾鏡 */
+        /* 暗色地圖濾鏡與相容層 */
         .leaflet-container {
-            background: transparent !important;
+            background: #09111e !important;
         }
-        .dark-map-tiles .leaflet-tile {
-            filter: brightness(0.7) contrast(1.2) !important;
+        /* 改用實體深色混合層，防止 html2canvas 忽略 filter */
+        .map-dark-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: #0d1a2d;
+            mix-blend-mode: multiply;
+            opacity: 0.75;
+            pointer-events: none;
+            z-index: 400;
         }
 
         /* Leaflet 控制項隱藏 */
@@ -326,10 +328,16 @@
                 <span>刷新</span>
             </button>
 
-            <!-- 高畫質下載按鈕 -->
-            <button id="export-btn" onclick="exportHighResPoster()" class="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black px-5 py-2 rounded-lg transition-all text-sm shadow-xl flex items-center gap-2 transform active:scale-95">
-                <i class="fa-solid fa-file-export text-base"></i>
-                <span>廠商出圖 (產生 60×160cm 高解析度檔)</span>
+            <!-- 高畫質 PNG 下載按鈕 -->
+            <button id="export-btn" onclick="exportHighResPoster('png')" class="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black px-4 py-2 rounded-lg transition-all text-sm shadow-xl flex items-center gap-2 transform active:scale-95">
+                <i class="fa-solid fa-file-image text-base"></i>
+                <span>下載 PNG 圖檔 (60×160cm)</span>
+            </button>
+
+            <!-- 廠商出圖 PDF 按鈕 -->
+            <button id="export-pdf-btn" onclick="exportHighResPoster('pdf')" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-slate-800 hover:from-blue-500 hover:to-indigo-500 text-white font-black px-4 py-2 rounded-lg transition-all text-sm shadow-xl flex items-center gap-2 border border-blue-400/40 transform active:scale-95">
+                <i class="fa-solid fa-file-pdf text-base text-red-400"></i>
+                <span>廠商出圖 PDF 檔</span>
             </button>
         </div>
     </header>
@@ -382,10 +390,10 @@
                     </span>
                 </div>
 
-                <!-- 相片泡泡浮動層 (180px ~ 920px) -->
-                <div id="photos-container" class="absolute inset-0 w-full h-[950px] pointer-events-none z-30"></div>
+                <!-- 相片泡泡浮動層 (調整邊界 170px ~ 800px，確保不壓到地圖) -->
+                <div id="photos-container" class="absolute inset-0 w-full h-[830px] pointer-events-none z-30"></div>
 
-                <!-- 下半部：Leaflet 地圖區域 -->
+                <!-- 下半部：Leaflet 地圖區域 (Top 880px ~ 1550px) -->
                 <div class="absolute bottom-[50px] left-[30px] w-[540px] h-[670px] rounded-2xl overflow-hidden border-2 border-brand-gold/50 shadow-2xl z-20 bg-slate-950/90 backdrop-blur-md flex flex-col">
                     <!-- 地圖標題列 -->
                     <div class="bg-slate-950/90 border-b border-brand-gold/30 px-4 py-2 flex items-center justify-between z-10">
@@ -396,7 +404,10 @@
                     </div>
 
                     <!-- Leaflet 地圖實際載入區域 -->
-                    <div id="leaflet-map" class="w-full flex-1 dark-map-tiles z-0"></div>
+                    <div id="leaflet-map" class="w-full flex-1 relative z-0">
+                        <!-- 相容 html2canvas 的深色混合層 -->
+                        <div class="map-dark-overlay"></div>
+                    </div>
 
                     <!-- 地圖外框金邊裝飾角 -->
                     <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-brand-gold pointer-events-none z-10"></div>
@@ -685,8 +696,9 @@
                 const photoChurches = churches.filter(c => c.showPhoto);
                 const totalPhotos = photoChurches.length;
 
-                const startY = 180;
-                const endY = 880;
+                // 修正邊界：高度範圍為 170px ~ 800px，完美避開 880px 開始的地圖邊框
+                const startY = 170;
+                const endY = 800;
                 const availableHeight = endY - startY;
 
                 photoChurches.forEach((church, index) => {
@@ -695,9 +707,9 @@
                     const rowIndex = Math.floor(index / 2);
                     const rowStep = availableHeight / Math.max(rowCount, 1);
 
-                    const photoY = startY + (rowIndex * rowStep) + (index % 3 * 6 - 6);
-                    const photoX = col === 0 ? 45 + (index % 2 * 10) : 225 + (index % 2 * 10);
-                    const photoSize = 138 + (index % 3 * 8);
+                    const photoY = startY + (rowIndex * rowStep);
+                    const photoX = col === 0 ? 40 + (index % 2 * 8) : 215 + (index % 2 * 8);
+                    const photoSize = Math.min(132, Math.max(105, 125 - (rowCount > 6 ? 10 : 0)));
                     
                     const baseUrl = 'https://raw.githubusercontent.com/tjcdaxiinformation/tjc-centenary-concert/main/05_pr_marketing/';
                     let photoPath = church.photo.startsWith('http') ? church.photo : baseUrl + church.photo;
@@ -732,7 +744,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent opacity-90 group-hover:opacity-50 transition-opacity z-0 pointer-events-none"></div>
                             
                             <div class="absolute bottom-2 inset-x-0 text-center px-1 z-20 pointer-events-none flex justify-center">
-                                <span class="px-2.5 py-0.5 rounded-full bg-slate-950/95 text-brand-goldLight text-[11px] font-bold tracking-wider border border-brand-gold/60 shadow-lg inline-flex items-center justify-center text-center truncate max-w-[92%]">
+                                <span class="px-2 py-0.5 rounded-full bg-slate-950/95 text-brand-goldLight text-[10px] font-bold tracking-wider border border-brand-gold/60 shadow-lg inline-flex items-center justify-center text-center truncate max-w-[95%]">
                                     ${church.name}${estYear}
                                 </span>
                             </div>
@@ -750,11 +762,16 @@
             }, 250);
         }
 
-        async function exportHighResPoster() {
-            const btn = document.getElementById('export-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 高解析度渲染中...`;
-            btn.disabled = true;
+        async function exportHighResPoster(format = 'png') {
+            const pngBtn = document.getElementById('export-btn');
+            const pdfBtn = document.getElementById('export-pdf-btn');
+            
+            const targetBtn = format === 'pdf' ? pdfBtn : pngBtn;
+            const originalText = targetBtn.innerHTML;
+            
+            targetBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 高解析度渲染中...`;
+            pngBtn.disabled = true;
+            pdfBtn.disabled = true;
 
             const poster = document.getElementById('poster');
             const originalTransform = poster.style.transform;
@@ -771,18 +788,36 @@
 
                 const zoneSelect = document.getElementById('zone-select');
                 const zoneName = zoneSelect.options[zoneSelect.selectedIndex].text;
-                const link = document.createElement('a');
-                link.download = `西區百年音樂會_易拉寶海報_60x160cm_${zoneName}.png`;
-                link.href = canvas.toDataURL('image/png', 1.0);
-                link.click();
+                
+                if (format === 'pdf') {
+                    // 使用 jsPDF 導出 60x160cm 1:1 向量 PDF 檔
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({
+                        orientation: 'p',
+                        unit: 'cm',
+                        format: [60, 160]
+                    });
+
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 60, 160);
+                    pdf.save(`西區百年音樂會_易拉寶海報_60x160cm_${zoneName}.pdf`);
+                } else {
+                    // 導出 PNG 高畫質檔
+                    const link = document.createElement('a');
+                    link.download = `西區百年音樂會_易拉寶海報_60x160cm_${zoneName}.png`;
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+                }
 
             } catch (error) {
                 console.error("出圖失敗：", error);
                 alert("高畫質出圖過程中發生錯誤，請確認網頁圖片載入狀況。");
             } finally {
                 poster.style.transform = originalTransform;
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                pngBtn.innerHTML = `<i class="fa-solid fa-file-image text-base"></i> 下載 PNG 圖檔 (60×160cm)`;
+                pdfBtn.innerHTML = `<i class="fa-solid fa-file-pdf text-base text-red-400"></i> 廠商出圖 PDF 档`;
+                pngBtn.disabled = false;
+                pdfBtn.disabled = false;
             }
         }
 
