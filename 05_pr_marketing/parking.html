@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>真耶穌教會傳教百年西區音樂會 - 中央大學路線與停車示意圖產生器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #050b14;
+            color: #f3f4f6;
+        }
+
+        .font-serif-tc {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff8cb 0%, #e5c158 40%, #c99a22 80%, #aa7c11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* SVG Map Styling */
+        .map-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background-color: #0c1b33;
+            background-image: radial-gradient(circle at center, #112240 0%, #050b14 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.8);
+        }
+
+        /* Animated Dashed Line for Route */
+        .route-dash {
+            stroke-dasharray: 12, 12;
+            animation: dashMove 2s linear infinite;
+        }
+
+        @keyframes dashMove {
+            from { stroke-dashoffset: 24; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Map Elements */
+        .map-road {
+            fill: none;
+            stroke: #1a2c4e;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .map-road-border {
+            fill: none;
+            stroke: #0a1526;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .building {
+            fill: #1e3a5f;
+            stroke: #3b82f6;
+            stroke-width: 2;
+            rx: 6;
+        }
+
+        .building-main {
+            fill: rgba(212, 175, 55, 0.15);
+            stroke: #d4af37;
+            stroke-width: 3;
+            rx: 8;
+        }
+
+        .parking-zone {
+            fill: rgba(16, 185, 129, 0.1);
+            stroke: #10b981;
+            stroke-width: 2;
+            stroke-dasharray: 4,4;
+            rx: 6;
+        }
+
+        /* Hide specific elements based on classes */
+        .hide-layer {
+            display: none !important;
+            opacity: 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #081120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 3px;
+        }
+
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print, header, .controls-area, #toast {
+                display: none !important;
+            }
+            .map-container {
+                box-shadow: none !important;
+                border: 2px solid #ccc;
+                max-width: 100% !important;
+                width: 100% !important;
+                height: auto !important;
+                aspect-ratio: 4/3;
+                page-break-inside: avoid;
+            }
+            /* SVG Text colors for print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-3 md:p-6">
+
+    <!-- Header -->
+    <header class="w-full max-w-7xl text-center mb-6 no-print">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs md:text-sm tracking-widest mb-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            真耶穌教會臺灣傳教百週年 ‧ 西區音樂會公關與交管組
+        </div>
+        <h1 class="text-2xl md:text-4xl font-black tracking-wider gold-gradient-text font-serif-tc">
+            中央大學大禮堂 ‧ 路線與停車示意圖
+        </h1>
+        <p class="text-xs md:text-sm text-gray-400 mt-1.5 max-w-2xl mx-auto">
+            快速產生高質感的校內動線指引圖，提供車輛動線、步行路徑與停車區標示，方便會眾與貴賓順利抵達會場。
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-7xl grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+
+        <!-- Controls Panel (Left 4 cols) -->
+        <div class="controls-area xl:col-span-4 bg-[#112240] border border-blue-900/50 p-5 md:p-6 rounded-2xl shadow-2xl space-y-5">
+            <div class="flex items-center justify-between border-b border-blue-900/60 pb-3">
+                <h2 class="text-base font-bold text-amber-200 flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>圖資圖層與內容設定</span>
+                </h2>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Text Customization -->
+                <div class="space-y-3 p-3 bg-[#081120] rounded-xl border border-amber-500/30">
+                    <label class="block text-xs uppercase font-bold text-amber-300">📝 標題與資訊設定</label>
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1">主標題</label>
+                        <input type="text" id="inMapTitle" value="國立中央大學 大禮堂 交通示意圖" class="w-full bg-[#0c1b33] border border-blue-900/80 rounded-lg px-3 py-2 text-sm text-amber-100 font-bold focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-gray-400 mb-1">副標題/活動名稱</label>
+                        <input type="text" id="inMapSubtitle" value="真耶穌教會臺灣傳教百週年 西區詩歌音樂會" class="w-full bg-[#0c1b33] border border-blue-900/80 rounded-lg px-3 py-2 text-xs text-amber-200 focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                </div>
+
+                <!-- Layer Toggles -->
+                <div class="space-y-3 p-3 bg-[#081120] rounded-xl border border-blue-900/60">
+                    <label class="block text-xs uppercase font-bold text-emerald-400">🗺️ 顯示圖層切換 (Layers)</label>
+                    
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="toggleVehicle" checked class="w-4 h-4 rounded border-slate-700 text-amber-500 focus:ring-amber-400" onchange="toggleLayer('layer-vehicle', this.checked)">
+                            <span class="text-sm text-gray-200 font-bold">🚗 顯示車輛行駛動線 (黃色箭頭)</span>
+                        </label>
+
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="toggleWalking" checked class="w-4 h-4 rounded border-slate-700 text-amber-500 focus:ring-amber-400" onchange="toggleLayer('layer-walking', this.checked)">
+                            <span class="text-sm text-gray-200 font-bold">🚶 顯示步行指引動線 (綠色虛線)</span>
+                        </label>
+
+                        <label class="flex items-center gap-2 cursor-pointer mt-2 border-t border-slate-700 pt-2">
+                            <input type="checkbox" id="toggleGeneralParking" checked class="w-4 h-4 rounded border-slate-700 text-amber-500 focus:ring-amber-400" onchange="toggleLayer('layer-parking-general', this.checked)">
+                            <span class="text-sm text-gray-200 font-bold">🅿️ 顯示一般停車區 (P1, P2)</span>
+                        </label>
+
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="toggleVipParking" checked class="w-4 h-4 rounded border-slate-700 text-amber-500 focus:ring-amber-400" onchange="toggleLayer('layer-parking-vip', this.checked)">
+                            <span class="text-sm text-gray-200 font-bold">👑 顯示貴賓/工作人員專屬停車區</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="pt-2 space-y-2">
+                <button onclick="downloadMap()" class="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-xl transition transform active:scale-95 flex items-center justify-center gap-2 hover:brightness-110">
+                    <i class="fa-solid fa-download"></i>
+                    <span>下載高畫質路線圖 (PNG)</span>
+                </button>
+                <button onclick="window.print()" class="w-full bg-[#1d3557] hover:bg-[#284b63] text-amber-300 font-bold py-2.5 px-4 rounded-xl border border-blue-800 transition text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>直接列印 / 存為 PDF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Preview Area (Right 8 cols) -->
+        <div class="xl:col-span-8 flex flex-col items-center w-full">
+            
+            <div class="w-full flex justify-between items-center mb-2 no-print max-w-[800px]">
+                <div class="text-xs uppercase tracking-widest text-amber-400/90 font-mono flex items-center gap-1.5">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>平面示意圖即時預覽</span>
+                </div>
+                <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded border border-slate-600 font-mono">比例 4:3</span>
+            </div>
+
+            <!-- SVG Schematic Map Container -->
+            <div id="mapExportArea" class="map-container rounded-2xl border-4 border-[#1a2c4e] p-2">
+                
+                <svg viewBox="0 0 800 600" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    
+                    <defs>
+                        <!-- Drop shadow for buildings -->
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feDropShadow dx="2" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.6"/>
+                        </filter>
+                        <!-- Glow for route -->
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                        
+                        <marker id="arrowVehicle" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                        </marker>
+
+                        <marker id="arrowWalking" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+                        </marker>
+                    </defs>
+
+                    <!-- Background Base Grid / Texture (Optional) -->
+                    <rect width="100%" height="100%" fill="transparent" />
+
+                    <!-- ================= ROADS ================= -->
+                    <!-- Main Road Borders (Background) -->
+                    <g stroke-width="48" class="map-road-border">
+                        <!-- Entrance (Bottom Center) -->
+                        <path d="M 400,600 L 400,450" />
+                        <!-- Central Loop / Roundabout Area -->
+                        <circle cx="400" cy="380" r="70" />
+                        <!-- Road to Auditorium -->
+                        <path d="M 400,310 L 400,200 L 400,180" />
+                        <!-- Side Roads for Parking -->
+                        <path d="M 330,380 L 150,380 L 150,250" />
+                        <path d="M 470,380 L 650,380 L 650,280" />
+                        <!-- Side road to VIP -->
+                        <path d="M 400,220 L 580,220" />
+                    </g>
+                    
+                    <!-- Main Road Fill (Foreground) -->
+                    <g stroke-width="40" class="map-road">
+                        <!-- Entrance -->
+                        <path d="M 400,620 L 400,450" />
+                        <!-- Central Loop -->
+                        <circle cx="400" cy="380" r="70" />
+                        <!-- Road to Auditorium -->
+                        <path d="M 400,310 L 400,180" />
+                        <!-- Side Roads -->
+                        <path d="M 330,380 L 150,380 L 150,250" />
+                        <path d="M 470,380 L 650,380 L 650,280" />
+                        <!-- Side road to VIP -->
+                        <path d="M 400,220 L 580,220" stroke-width="30"/>
+                    </g>
+
+                    <!-- Road Labels -->
+                    <text x="400" y="550" fill="#475569" font-size="14" font-weight="bold" text-anchor="middle" transform="rotate(-90 400,550)">中 大 路 (入口)</text>
+                    <text x="400" y="385" fill="#475569" font-size="16" font-weight="bold" text-anchor="middle">圓環</text>
+
+
+                    <!-- ================= PARKING ZONES ================= -->
+                    <!-- General Parking -->
+                    <g id="layer-parking-general" class="transition-opacity duration-300">
+                        <!-- P1 Left -->
+                        <rect x="80" y="160" width="140" height="90" class="parking-zone" filter="url(#shadow)"/>
+                        <text x="150" y="200" fill="#10b981" font-size="24" font-weight="900" font-family="Arial" text-anchor="middle">P1</text>
+                        <text x="150" y="225" fill="#a7f3d0" font-size="14" font-weight="bold" text-anchor="middle">一般停車區</text>
+                        
+                        <!-- P2 Right -->
+                        <rect x="580" y="190" width="140" height="90" class="parking-zone" filter="url(#shadow)"/>
+                        <text x="650" y="230" fill="#10b981" font-size="24" font-weight="900" font-family="Arial" text-anchor="middle">P2</text>
+                        <text x="650" y="255" fill="#a7f3d0" font-size="14" font-weight="bold" text-anchor="middle">一般停車區</text>
+                    </g>
+
+                    <!-- VIP Parking -->
+                    <g id="layer-parking-vip" class="transition-opacity duration-300">
+                        <rect x="430" y="120" width="150" height="80" fill="rgba(212, 175, 55, 0.1)" stroke="#d4af37" stroke-width="2" stroke-dasharray="4,4" rx="6" filter="url(#shadow)"/>
+                        <text x="505" y="155" fill="#fbbf24" font-size="20" font-weight="900" font-family="Arial" text-anchor="middle">VIP</text>
+                        <text x="505" y="178" fill="#fde68a" font-size="12" font-weight="bold" text-anchor="middle">貴賓/工作人員停車</text>
+                    </g>
+
+
+                    <!-- ================= BUILDINGS ================= -->
+                    <!-- Guard House -->
+                    <rect x="430" y="480" width="40" height="30" class="building" filter="url(#shadow)"/>
+                    <text x="450" y="498" fill="#93c5fd" font-size="10" font-weight="bold" text-anchor="middle">警衛室</text>
+
+                    <!-- Main Auditorium -->
+                    <g filter="url(#shadow)">
+                        <!-- Building Base -->
+                        <rect x="300" y="60" width="200" height="110" class="building-main" />
+                        <!-- Entrance Steps -->
+                        <rect x="360" y="170" width="80" height="10" fill="#334155" />
+                        <rect x="370" y="180" width="60" height="5" fill="#475569" />
+                        
+                        <!-- Icon & Text -->
+                        <text x="400" y="115" fill="#fbbf24" font-size="28" font-weight="900" font-family="Noto Serif TC, serif" text-anchor="middle" class="font-serif-tc">
+                            大 禮 堂
+                        </text>
+                        <text x="400" y="145" fill="#fde68a" font-size="14" font-weight="bold" text-anchor="middle">
+                            西區音樂會會場
+                        </text>
+                    </g>
+
+
+                    <!-- ================= ROUTES ================= -->
+                    
+                    <!-- Vehicle Route -->
+                    <g id="layer-vehicle" class="transition-opacity duration-300">
+                        <!-- To Roundabout -->
+                        <path d="M 410,580 L 410,450 C 410,430 460,420 460,380 C 460,340 410,330 410,310" 
+                              fill="none" stroke="#f59e0b" stroke-width="4" class="route-dash" filter="url(#glow)" marker-end="url(#arrowVehicle)"/>
+                        
+                        <!-- To VIP -->
+                        <path d="M 410,300 L 410,230 L 470,230" 
+                              fill="none" stroke="#f59e0b" stroke-width="4" class="route-dash" filter="url(#glow)" marker-end="url(#arrowVehicle)"/>
+                              
+                        <!-- To P1 -->
+                        <path d="M 340,380 L 150,380 L 150,270" 
+                              fill="none" stroke="#f59e0b" stroke-width="4" class="route-dash" filter="url(#glow)" marker-end="url(#arrowVehicle)"/>
+
+                        <!-- To P2 -->
+                        <path d="M 460,380 L 650,380 L 650,300" 
+                              fill="none" stroke="#f59e0b" stroke-width="4" class="route-dash" filter="url(#glow)" marker-end="url(#arrowVehicle)"/>
+                    </g>
+
+                    <!-- Walking Route -->
+                    <g id="layer-walking" class="transition-opacity duration-300">
+                        <!-- From P1 to Aud -->
+                        <path d="M 150,150 L 150,110 L 290,110" 
+                              fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="6,6" class="route-dash" filter="url(#glow)" marker-end="url(#arrowWalking)"/>
+                              
+                        <!-- From P2 to Aud -->
+                        <path d="M 650,180 L 650,110 L 510,110" 
+                              fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="6,6" class="route-dash" filter="url(#glow)" marker-end="url(#arrowWalking)"/>
+                    </g>
+
+
+                    <!-- ================= TOP LEFT LEGEND & TITLE ================= -->
+                    <g transform="translate(20, 20)">
+                        <!-- Dynamic Title injected via JS -->
+                        <text id="svgMapTitle" x="0" y="20" fill="#fbbf24" font-size="22" font-weight="900" font-family="Noto Serif TC, serif" class="font-serif-tc">
+                            國立中央大學 大禮堂 交通示意圖
+                        </text>
+                        <text id="svgMapSubtitle" x="0" y="45" fill="#fde68a" font-size="14" font-weight="bold">
+                            真耶穌教會臺灣傳教百週年 西區詩歌音樂會
+                        </text>
+
+                        <!-- Legend Box -->
+                        <rect x="0" y="65" width="220" height="130" fill="rgba(15, 23, 42, 0.8)" stroke="#334155" stroke-width="2" rx="8"/>
+                        <text x="15" y="88" fill="#e2e8f0" font-size="14" font-weight="bold">圖例說明 (Legend)</text>
+                        <line x1="15" y1="95" x2="205" y2="95" stroke="#334155" stroke-width="1"/>
+                        
+                        <!-- Legend Items -->
+                        <line x1="15" y1="115" x2="45" y2="115" stroke="#f59e0b" stroke-width="4" stroke-dasharray="8,4"/>
+                        <text x="55" y="120" fill="#cbd5e1" font-size="12">車輛行駛動線</text>
+
+                        <line x1="15" y1="140" x2="45" y2="140" stroke="#10b981" stroke-width="3" stroke-dasharray="4,4"/>
+                        <text x="55" y="145" fill="#cbd5e1" font-size="12">步行指引動線</text>
+
+                        <rect x="15" y="160" width="30" height="16" class="building-main" stroke-width="1.5" rx="3"/>
+                        <text x="55" y="172" fill="#cbd5e1" font-size="12">音樂會會場 (大禮堂)</text>
+                    </g>
+                    
+                    <!-- Gate Icon Bottom Center -->
+                    <g transform="translate(350, 580)">
+                        <rect x="0" y="0" width="100" height="20" fill="#1e3a5f" rx="4"/>
+                        <text x="50" y="14" fill="#60a5fa" font-size="12" font-weight="bold" text-anchor="middle">中大正門口</text>
+                    </g>
+                    
+                    <!-- North Pointer -->
+                    <g transform="translate(730, 40)">
+                        <circle cx="20" cy="20" r="16" fill="rgba(15, 23, 42, 0.6)" stroke="#475569" stroke-width="2"/>
+                        <path d="M 20 5 L 28 30 L 20 25 L 12 30 Z" fill="#ef4444"/>
+                        <text x="20" y="55" fill="#94a3b8" font-size="14" font-weight="bold" text-anchor="middle">N</text>
+                    </g>
+
+                </svg>
+            </div>
+
+            <!-- Hint -->
+            <div class="w-full max-w-[800px] text-right mt-2 text-xs text-slate-500">
+                💡 提示：導出高畫質圖檔前，請確認左側設定面板中的圖層是否正確顯示。
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 hidden bg-amber-500 text-slate-950 font-bold px-6 py-3 rounded-2xl shadow-2xl z-50 text-xs md:text-sm transition no-print">
+        通知訊息
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-xs text-gray-500 border-t border-blue-900/40 pt-4 w-full max-w-7xl no-print">
+        真耶穌教會傳教百年西區音樂會籌備小組 ‧ 交通管制與公關組製作
+    </footer>
+
+    <script>
+        // DOM Elements
+        const inMapTitle = document.getElementById('inMapTitle');
+        const inMapSubtitle = document.getElementById('inMapSubtitle');
+        const svgMapTitle = document.getElementById('svgMapTitle');
+        const svgMapSubtitle = document.getElementById('svgMapSubtitle');
+        const mapExportArea = document.getElementById('mapExportArea');
+        const toast = document.getElementById('toast');
+
+        // Bind text inputs
+        inMapTitle.addEventListener('input', (e) => {
+            svgMapTitle.textContent = e.target.value;
+        });
+
+        inMapSubtitle.addEventListener('input', (e) => {
+            svgMapSubtitle.textContent = e.target.value;
+        });
+
+        // Toggle SVG Layers
+        function toggleLayer(layerId, isVisible) {
+            const layer = document.getElementById(layerId);
+            if (layer) {
+                if (isVisible) {
+                    layer.classList.remove('hide-layer');
+                } else {
+                    layer.classList.add('hide-layer');
+                }
+            }
+        }
+
+        // Export high resolution PNG using html2canvas
+        function downloadMap() {
+            showToast('⏳ 正在以高解析度繪製交通路線圖，請稍候...');
+
+            // Pause animations before export to ensure lines are captured solid
+            const dashes = document.querySelectorAll('.route-dash');
+            dashes.forEach(d => d.style.animation = 'none');
+
+            // Temporarily disable border/shadow for clean export boundary
+            const originalBorder = mapExportArea.style.border;
+            const originalShadow = mapExportArea.style.boxShadow;
+            
+            mapExportArea.style.border = 'none';
+            mapExportArea.style.boxShadow = 'none';
+
+            html2canvas(mapExportArea, {
+                scale: 3, // High-res export
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#0c1b33', 
+            }).then(canvas => {
+                // Restore styling
+                mapExportArea.style.border = originalBorder;
+                mapExportArea.style.boxShadow = originalShadow;
+                dashes.forEach(d => d.style.animation = ''); // resume animation
+
+                const link = document.createElement('a');
+                link.download = `西區音樂會_中央大學交通路線圖.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+
+                showToast('🎉 高解析度路線圖下載成功！');
+            }).catch(err => {
+                console.error(err);
+                
+                // Restore styling on error
+                mapExportArea.style.border = originalBorder;
+                mapExportArea.style.boxShadow = originalShadow;
+                dashes.forEach(d => d.style.animation = '');
+
+                showToast('❌ 圖檔匯出失敗，請嘗試使用列印功能。');
+            });
+        }
+
+        // Toast message utility
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
